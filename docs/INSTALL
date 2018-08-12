@@ -1,0 +1,88 @@
+COMPOSER INSTALL
+	curl -sS https://getcomposer.org/installer | php;
+	sudo mv composer.phar /usr/local/bin/composer;
+
+
+FOR DEVELOPER (User development branch)
+	git checkout -b development origin/development (development of release branch for staging)
+	git pull origin development
+
+TOOLKIT (SDK/FRAMEWORK) PACKAGES
+    composer install --no-dev (for development without --no-dev option)
+    composer update --no-dev (for development without --no-dev option)
+    
+//if you create any new class or route then please run bellow command
+composer dump-autoload
+    
+CONFIG
+    Create a new file in src\".env"
+    sudo vi .env
+Add following content in the file
+APP_ENV=local
+APP_DEBUG=true
+API_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inloyal_api
+DB_USERNAME=web
+DB_PASSWORD=websa
+
+To run a php local server
+cd public/
+php -S localhost:8000
+
+visit http://localhost:8000
+
+
+PHP INI SETTINGS For Development
+        post_max_size = 100M
+        upload_max_filesize = 100M
+        max_file_uploads = 100
+
+
+  
+And follow https://anton.logvinenko.name/en/blog/how-to-install-redis-and-redis-php-client.html   
+  
+
+Oauth Layer Access For getAaccessToken  for Mobile Grant
+
+INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES ("web8989dsad8ff365fdg843839b", "4c7f6f8fa93ghwd4302c0ae8c4aweb", "https://bitminepool.com/");
+
+// Client credential call
+curl http://api.bitminepool.com/getAaccessToken -d 'grant_type=client_credentials&client_id=web8989dsad8ff365fdg843839b&client_secret=4c7f6f8fa93ghwd4302c0ae8c4aweb'
+
+
+http://localhost:8000/getAaccessToken
+grant_type=mobile&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb&phone=9924539707&otp=2979
+
+To Start Bitcoin wallet service
+For dev:
+blockchain-wallet-service start --port 3000
+
+For production:
+nohup blockchain-wallet-service start --port 3000 & 
+
+//Verify Post request with Token in header
+curl -H "Authorization: Bearer 6de0734d69d54c98d79f4d0b905e2a788ef56d0c" http://localhost:8000/api-test -d ''
+// Token in body
+curl http://localhost:8000/api-test -d 'access_token=b28bef85b3c7769c4681fedbf5476c89c497183f'
+
+
+
+
+// Password credential call
+curl http://localhost:8000/getAaccessToken -d 'grant_type=password&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb&username=web@api.com&password=7u8i9o0p'
+
+// Client credential call
+curl http://localhost:8000/getAaccessToken -d 'grant_type=client_credentials&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb'
+
+// Mobile User call
+curl http://localhost:8000/getAaccessToken -d 'grant_type=user&phone=9924539707&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb'
+
+// Mobile Otp call
+curl http://localhost:8000/getAaccessToken -d 'grant_type=mobile&phone=9924539707&otp=2979&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb'
+
+// Refresh token call
+curl http://localhost:8000/getAaccessToken -d 'grant_type=refresh_token&refresh_token=0b04dce5e05ea9c82021d05532ae0bfbc0574682&client_id=web259ddd3ed8ff3843839b&client_secret=4c7f6f8fa93d59c45502c0ae8c4aweb'

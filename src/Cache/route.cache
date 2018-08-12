@@ -1,0 +1,619 @@
+<?php return array (
+  0 => 
+  array (
+    'GET' => 
+    array (
+      '/' => 
+      array (
+        0 => 'Api\\Controllers\\HomepageController',
+        1 => 'show',
+      ),
+      '/getStaticWebPage' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getStaticWebPage',
+      ),
+    ),
+    'POST' => 
+    array (
+      '/api-test' => 
+      array (
+        0 => 'Api\\Controllers\\HomepageController',
+        1 => 'showTest',
+      ),
+      '/getAccessToken' => 
+      array (
+        0 => 'Api\\Controllers\\OauthController',
+        1 => 'getAccessToken',
+      ),
+      '/getWalletBalance' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getWalletBalance',
+      ),
+      '/getAllWalletAddress' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWalletAddress',
+      ),
+      '/createCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomer',
+      ),
+      '/createCustomerLoyalty' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerLoyalty',
+      ),
+      '/createCustomerBill' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerBill',
+      ),
+      '/createCustomerTier' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerTier',
+      ),
+      '/createCustomerPoints' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerPoints',
+      ),
+      '/createCustomerLoginLogs' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerLoginLogs',
+      ),
+      '/createCustomerDeviceToken' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createCustomerDeviceToken',
+      ),
+      '/updateDeviceToken' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'updateDeviceToken',
+      ),
+      '/getCustomerBillDetails' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getCustomerBillDetails',
+      ),
+      '/getCustomerUpdatedBills' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getCustomerUpdatedBills',
+      ),
+      '/createTempBillDetails' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'createTempBillDetails',
+      ),
+      '/getCustomerNotifications' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getCustomerNotifications',
+      ),
+      '/earnPointsCalculation' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'earnPointsCalculation',
+      ),
+      '/createMerchant' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchant',
+      ),
+      '/createMerchantLocations' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantLocations',
+      ),
+      '/createMerchantLocationBrands' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantLocationBrands',
+      ),
+      '/createMerchantLoyaltyProgram' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantLoyaltyProgram',
+      ),
+      '/createMerchantLoyaltyProgramTiers' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantLoyaltyProgramTiers',
+      ),
+      '/createMerchantLoyaltyProgramCategorywiseTiers' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantLoyaltyProgramCategorywiseTiers',
+      ),
+      '/createMerchantOffers' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'createMerchantOffers',
+      ),
+      '/getMerchantOffers' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getMerchantOffers',
+      ),
+      '/getOfferDetails' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getOfferDetails',
+      ),
+      '/getOfferLocations' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getOfferLocations',
+      ),
+      '/getStoreLocations' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getStoreLocations',
+      ),
+      '/createCustomerOrder' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'createCustomerOrder',
+      ),
+      '/createCustomerOrderDetails' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'createCustomerOrderDetails',
+      ),
+      '/createCustomerOrderStatusTrack' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'createCustomerOrderStatusTrack',
+      ),
+      '/getCustomerOrders' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'getCustomerOrders',
+      ),
+      '/getCustomerOrderDetails' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'getCustomerOrderDetails',
+      ),
+      '/getIndividualOrderDetails' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'getIndividualOrderDetails',
+      ),
+      '/createProductMaster' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'createProductMaster',
+      ),
+      '/createProductMerchant' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'createProductMerchant',
+      ),
+      '/createProductImages' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'createProductImages',
+      ),
+      '/createProductInventories' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'createProductInventories',
+      ),
+      '/createProductLocationInventories' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'createProductLocationInventories',
+      ),
+      '/getProductList' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'getProductList',
+      ),
+      '/getProductDetails' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'getProductDetails',
+      ),
+      '/getProductLocationWiseQuantity' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'getProductLocationWiseQuantity',
+      ),
+      '/checkProductStatus' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'checkProductStatus',
+      ),
+      '/checkMerchantInventoryRestrictions' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'checkMerchantInventoryRestrictions',
+      ),
+      '/createOtherMerchantAttributes' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'createOtherMerchantAttributes',
+      ),
+      '/createOtherMerchantAttributeCustomers' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'createOtherMerchantAttributeCustomers',
+      ),
+      '/createOtherMerchantAttributeCustomersCrawl' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'createOtherMerchantAttributeCustomersCrawl',
+      ),
+      '/getOtherMerchantCrawledPoints' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'getOtherMerchantCrawledPoints',
+      ),
+      '/createLoyaltyProgram' => 
+      array (
+        0 => 'Api\\Controllers\\LoyaltyProgramController',
+        1 => 'createLoyaltyProgram',
+      ),
+      '/createLoyaltyProgramSettings' => 
+      array (
+        0 => 'Api\\Controllers\\LoyaltyProgramController',
+        1 => 'createLoyaltyProgramSettings',
+      ),
+      '/createLoyaltyProgramTiers' => 
+      array (
+        0 => 'Api\\Controllers\\LoyaltyProgramController',
+        1 => 'createLoyaltyProgramTiers',
+      ),
+      '/getLoyaltyProgramTierDetails' => 
+      array (
+        0 => 'Api\\Controllers\\LoyaltyProgramController',
+        1 => 'getLoyaltyProgramTierDetails',
+      ),
+      '/getCategory' => 
+      array (
+        0 => 'Api\\Controllers\\CategoryController',
+        1 => 'getCategory',
+      ),
+      '/createCategory' => 
+      array (
+        0 => 'Api\\Controllers\\CategoryController',
+        1 => 'createCategory',
+      ),
+      '/getBrand' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'getBrand',
+      ),
+      '/getSelectiveBrands' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'getSelectiveBrands',
+      ),
+      '/getBrandLocationDetails' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'getBrandLocationDetails',
+      ),
+      '/createBrand' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'createBrand',
+      ),
+      '/updateBrand' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'updateBrand',
+      ),
+      '/getOtp' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'getOtp',
+      ),
+      '/checkOtp' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'checkOtp',
+      ),
+      '/loginCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'loginCustomer',
+      ),
+      '/getUserDetails' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'getDetails',
+      ),
+      '/registerCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'registerCustomer',
+      ),
+      '/getMerchantDetails' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getMerchantDetails',
+      ),
+      '/getDetailsByURL' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getDetailsByURL',
+      ),
+      '/addMerchant' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'addMerchant',
+      ),
+      '/getMerchantDynamicFields' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'getMerchantDynamicFields',
+      ),
+      '/getOfferList' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getOfferList',
+      ),
+      '/deleteMerchantCard' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'deleteMerchantCard',
+      ),
+      '/managePhysicalCard' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'managePhysicalCard',
+      ),
+      '/getPoints' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getPoints',
+      ),
+      '/getDashboardIconDetails' => 
+      array (
+        0 => 'Api\\Controllers\\DashBoardController',
+        1 => 'getDashboardIconDetails',
+      ),
+      '/profileUpdate' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'profileUpdate',
+      ),
+      '/getLocation' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getLocation',
+      ),
+      '/getBrandName' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'getBrandName',
+      ),
+      '/getOtpVerifiedStatus' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'getOtpVerifiedStatus',
+      ),
+      '/validateBillNumber' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'validateBillNumber',
+      ),
+      '/submitBill' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'submitBill',
+      ),
+      '/trackUserLog' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'trackUserLog',
+      ),
+      '/testDeleteCustomerDetails' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'testDeleteCustomerDetails',
+      ),
+      '/createPOSUser' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'createPOSUser',
+      ),
+      '/luluMallApiCall' => 
+      array (
+        0 => 'Api\\Controllers\\LuluMallController',
+        1 => 'luluMallApiCall',
+      ),
+      '/checkSpecificProductStatus' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'checkSpecificProductStatus',
+      ),
+      '/placeOrder' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'placeOrder',
+      ),
+      '/validatePriceVsPoints' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'validatePriceVsPoints',
+      ),
+      '/checkForOMCredentials' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'checkForOMCredentials',
+      ),
+      '/getEarnRedeemPointDetails' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getEarnRedeemPointDetails',
+      ),
+      '/generateBarCode' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'generateBarCode',
+      ),
+      '/getPincode' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'getPincode',
+      ),
+      '/submitFeedback' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'submitFeedback',
+      ),
+      '/trackProductView' => 
+      array (
+        0 => 'Api\\Controllers\\ProductController',
+        1 => 'trackProductView',
+      ),
+      '/appInit' => 
+      array (
+        0 => 'Api\\Controllers\\DashBoardController',
+        1 => 'appInit',
+      ),
+      '/sendTransactionSms' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'sendTransactionSms',
+      ),
+      '/sendRefundSms' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'sendRefundSms',
+      ),
+      '/sendTierChangeSms' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'sendTierChangeSms',
+      ),
+      '/insertOrUpdateLoginAttribute' => 
+      array (
+        0 => 'Api\\Controllers\\OtherMerchantController',
+        1 => 'insertOrUpdateLoginAttribute',
+      ),
+      '/sendAddBonusPoints' => 
+      array (
+        0 => 'Api\\Controllers\\SmsController',
+        1 => 'sendAddBonusPoints',
+      ),
+      '/getPushNotificationCount' => 
+      array (
+        0 => 'Api\\Controllers\\PushNotificationController',
+        1 => 'getPushNotificationCount',
+      ),
+      '/getAllBrandsData' => 
+      array (
+        0 => 'Api\\Controllers\\BrandController',
+        1 => 'getAllBrandsData',
+      ),
+      '/earnRewardsCampaign' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'earnRewardsCampaign',
+      ),
+      '/brandWiseCampaign' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'brandWiseCampaign',
+      ),
+      '/checkEarnCampaignPriority' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'checkEarnCampaignPriority',
+      ),
+      '/billSubmissionCampaign' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'billSubmissionCampaign',
+      ),
+      '/birthdayAnniversaryCampaign' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'birthdayAnniversaryCampaign',
+      ),
+      '/referral1stTransactionCampaign' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'referral1stTransactionCampaign',
+      ),
+      '/verifyReferralOrCouponCode' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'verifyReferralOrCouponCode',
+      ),
+      '/initOrderTransaction' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'initOrderTransaction',
+      ),
+      '/confirmOrder' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'confirmOrder',
+      ),
+      '/getReferralDetails' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'getReferralDetails',
+      ),
+      '/getCouponCodeList' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'getCouponCodeList',
+      ),
+      '/eventDelivered' => 
+      array (
+        0 => 'Api\\Controllers\\WebhookController',
+        1 => 'eventDelivered',
+      ),
+      '/setNotificationTapped' => 
+      array (
+        0 => 'Api\\Controllers\\PushNotificationController',
+        1 => 'setNotificationTapped',
+      ),
+      '/setNotificationReceived' => 
+      array (
+        0 => 'Api\\Controllers\\PushNotificationController',
+        1 => 'setNotificationReceived',
+      ),
+      '/testGoFrugal' => 
+      array (
+        0 => 'Api\\Controllers\\CustomerController',
+        1 => 'testGoFrugal',
+      ),
+      '/testRazorPay' => 
+      array (
+        0 => 'Api\\Controllers\\OrderController',
+        1 => 'testRazorPay',
+      ),
+      '/submissionCouponCode' => 
+      array (
+        0 => 'Api\\Controllers\\CampaignController',
+        1 => 'submissionCouponCode',
+      ),
+      '/testDefaultTier' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'testDefaultTier',
+      ),
+      '/bulkUploadCustomers' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'bulkUploadCustomers',
+      ),
+    ),
+  ),
+  1 => 
+  array (
+  ),
+);

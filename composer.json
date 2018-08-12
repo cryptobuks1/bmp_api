@@ -1,0 +1,19 @@
+{
+    "require": {
+        "slim/slim": "^3.0", 
+		"filp/whoops": ">=1.1.2",
+        "patricklouys/http": ">=1.1.0",
+        "nikic/fast-route": "^1.0",
+        "rdlowrey/auryn": "^1.4",
+        "vlucas/phpdotenv": "^2.3",
+        "fobiaweb/barcode39": "*",
+        "aws/aws-sdk-php": "^3.19",
+        "bshaffer/oauth2-server-php": "~1.8",
+        "php-http/guzzle6-adapter": "^1.1"
+    },
+	"autoload": {
+        "psr-4": {
+            "Api\\": "src/"
+        }
+    }
+}
