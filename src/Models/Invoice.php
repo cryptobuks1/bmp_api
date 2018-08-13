@@ -127,7 +127,7 @@ class Invoice extends ApiModel {
      * return success response or error response in json 
      * return id in data params
      */
-    public function isInvoicePresent($username, $purpose, $status) {
+    public function isInvoicePresent($username, $purpose) {
         try {
             
             $where = "";

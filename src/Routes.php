@@ -9,7 +9,11 @@ return [
     //Wallet related routes
     ['POST', '/getWalletBalance', ['Api\Controllers\WalletController', 'getWalletBalance']], // To get wallet balance
     ['POST', '/getAllWalletAddress', ['Api\Controllers\WalletController', 'getAllWalletAddress']], // To get all wallet address
-
+    
+    //Payment receive related routes
+    ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
+    
+     
     // Customer related routes
     ['POST', '/createCustomer', ['Api\Controllers\CustomerController', 'createCustomer']], // Accept and insert the customer data
     ['POST', '/createCustomerLoyalty', ['Api\Controllers\CustomerController', 'createCustomerLoyalty']], // Accept and insert the customer loyalty data

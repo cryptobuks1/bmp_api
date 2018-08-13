@@ -4,7 +4,7 @@ namespace Api\Controllers;
 
 use Api\Controllers\ApiController;
 
-//use Api\Models\Customer;
+use Api\Models\Invoice;
 //use Api\Services\Oauth2\Oauth;
 use stdClass;
 use Exception;
@@ -23,11 +23,12 @@ class ReceiveController extends ApiController {
             $requestedParams = $this->request->getParameters();
             $this->response->setContent(json_encode($requestedParams));
             //array of required fields
-            $requiredData = array('user_id', 'invoice_id','invoice_type');
+            $requiredData = array('user_name', 'invoice_id','invoice_type');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
-            
-            
+            $invoice = new Invoice();
+            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['user_name'], $requestedParams['invoice_type']);
+            exit;
             //$this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             
             $result['balance'] = $this->blockchain->Wallet->getBalance();
