@@ -1,19 +1,6 @@
 <?php return array (
   0 => 
   array (
-    'GET' => 
-    array (
-      '/' => 
-      array (
-        0 => 'Api\\Controllers\\HomepageController',
-        1 => 'show',
-      ),
-      '/getStaticWebPage' => 
-      array (
-        0 => 'Api\\Controllers\\MerchantController',
-        1 => 'getStaticWebPage',
-      ),
-    ),
     'POST' => 
     array (
       '/api-test' => 
@@ -35,6 +22,11 @@
       array (
         0 => 'Api\\Controllers\\WalletController',
         1 => 'getAllWalletAddress',
+      ),
+      '/' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'generateAddressToRecivePayment',
       ),
       '/createCustomer' => 
       array (
@@ -610,6 +602,14 @@
       array (
         0 => 'Api\\Controllers\\MerchantController',
         1 => 'bulkUploadCustomers',
+      ),
+    ),
+    'GET' => 
+    array (
+      '/getStaticWebPage' => 
+      array (
+        0 => 'Api\\Controllers\\MerchantController',
+        1 => 'getStaticWebPage',
       ),
     ),
   ),

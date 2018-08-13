@@ -15,7 +15,6 @@ use Redis;
 use Exception;
 use stdClass;
 
-
 class Invoice extends ApiModel {
 
     /**
@@ -29,7 +28,7 @@ class Invoice extends ApiModel {
      * @param type $invoice
      * @return Boolean
      */
-    
+
     public function insert($invoice, $isIdRequired = 1) {
         try {
             //prepare statement for inserting the records start
@@ -45,7 +44,7 @@ class Invoice extends ApiModel {
             $queryPart = array_fill(0, count($invoice), $values);
 
             $insertQuery = "INSERT INTO " . $this->tableName . " (" . $strFields . ") VALUES ";
-            $insertQuery.=implode(',', $queryPart);
+            $insertQuery .= implode(',', $queryPart);
 
             $insertInvoice = $this->pdo->prepare($insertQuery); // Actual prepare statement
             //prepare statement for inserting the records end
@@ -76,7 +75,7 @@ class Invoice extends ApiModel {
         return $result; //return the response
     }
 
-     /**
+    /**
      * Sanitize the values of $params array and return
      * @param type $params
      * @return array
@@ -121,7 +120,6 @@ class Invoice extends ApiModel {
         ];
     }
 
-    
     /**
      * check invoice is presented or not
      * return success response or error response in json 
@@ -129,27 +127,15 @@ class Invoice extends ApiModel {
      */
     public function isInvoicePresent($username, $purpose) {
         try {
-            
-            $where = "";
-            if ($columnName == "facebook_social_id") {
-                $stmt = $this->pdo->prepare("CALL isUserRegistered(?, ?, ?)");
-                $stmt->execute(array($mobileNumber, $userNumber, 1));
+           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
+                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($result) {
-                    return $result['id'];
+                    return $result;
                 } else {
                     return 0;
                 }
-            } else {
-                $stmt = $this->pdo->prepare("CALL isUserRegistered(?, ?, ?)");
-                $stmt->execute(array($userNumber, 0, 0));
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result['id'];
-                } else {
-                    return 0;
-                }
-            }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -204,12 +190,12 @@ class Invoice extends ApiModel {
             $keyname = getenv("KEY");
             // Instantiate the client.
             $s3 = S3Client::factory(array(
-                        'version' => getenv("VERSION"),
-                        'region' => getenv("REGION"),
-                        'credentials' => array(
-                            'key' => $keyname,
-                            'secret' => getenv("SECRET"),
-                        )
+                    'version' => getenv("VERSION"),
+                    'region' => getenv("REGION"),
+                    'credentials' => array(
+                        'key' => $keyname,
+                        'secret' => getenv("SECRET"),
+                    )
             ));
             //print_R($s3);die;
             try {
@@ -258,7 +244,7 @@ class Invoice extends ApiModel {
             $stmt->execute(array($params['pin_code'], $params['isMasterPincodeRequired']));
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($result) {
-                return $result; 
+                return $result;
             } else {
                 return [];
             }
@@ -292,13 +278,13 @@ class Invoice extends ApiModel {
                 $emailVars['fromName'] = $result[0]['first_name'] . ' ' . $result[0]['last_name'];
                 $emailVars['fromEmail'] = $result[0]['email_address'];
                 $emailVars['subject'] = $params['subject'];
-                $message = '<b><u>Feedback from '. $emailVars['fromName'] .':</u></b><br/><br/><i>' . $params['feedback_message'] . '</i><br/><br/>'
-                        . '<b><u>Customer Details:</u></b><br/><br/>'
-                        . 'Name: ' . $result[0]['first_name'] . ' ' . $result[0]['last_name'] . '<br/>'
-                        . 'Mobile: ' . $result[0]['mobile_number'] . '<br/>'
-                        . 'Email: ' . $result[0]['email_address'] . '<br/><br/>'
-                        . '<b>Device Info:</b><br/>' . $params['app_info'] . '<br/><br/>'
-                        . 'The above feedback has been sent by the customer through the mobile cards wallet, <b>inloyal</b>.';
+                $message = '<b><u>Feedback from ' . $emailVars['fromName'] . ':</u></b><br/><br/><i>' . $params['feedback_message'] . '</i><br/><br/>'
+                    . '<b><u>Customer Details:</u></b><br/><br/>'
+                    . 'Name: ' . $result[0]['first_name'] . ' ' . $result[0]['last_name'] . '<br/>'
+                    . 'Mobile: ' . $result[0]['mobile_number'] . '<br/>'
+                    . 'Email: ' . $result[0]['email_address'] . '<br/><br/>'
+                    . '<b>Device Info:</b><br/>' . $params['app_info'] . '<br/><br/>'
+                    . 'The above feedback has been sent by the customer through the mobile cards wallet, <b>inloyal</b>.';
                 $emailVars['message'] = $message;
                 $emailVars['inloyalBaseLogo'] = getenv("INLOYAL_BASE_LOGO");
                 $emailVars['iosLogo'] = getenv("EMAIL_IOS_LOGO");
@@ -361,14 +347,15 @@ class Invoice extends ApiModel {
             echo $e->getMessage();
         }
     }
-    
+
     /*
      * Get merchant wise customer details
      */
+
     public function getCustomerDetailsMerchantWise($customerId, $merchantId) {
         try {
             $stmt = $this->pdo->prepare("CALL getCustomerDetailsForFeedback(?,?)");
-            $stmt->execute(array($customerId,$merchantId));
+            $stmt->execute(array($customerId, $merchantId));
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($result) {
                 return $result;
@@ -381,29 +368,27 @@ class Invoice extends ApiModel {
     }
 
     /**
-    * Insert customers into customer master from CSV with details firstname, lastname, mobile and email
-    */
+     * Insert customers into customer master from CSV with details firstname, lastname, mobile and email
+     */
     public function insertCustomerFromCsv($mobile, $firstName, $lastName, $email, $emailVerifyKey) {
         try {
             //prepare statement for inserting the records start
-            $this->pdo->beginTransaction();                     
-            $createdDate = date('Y-m-d');            
+            $this->pdo->beginTransaction();
+            $createdDate = date('Y-m-d');
             $insertQuery = 'INSERT INTO customers (first_name, last_name, email_address, mobile_number, email_verified,	email_verify_key, mobile_verified, customer_city_id, pin_code, registered_from, registered_location, is_app_installed, status, created_by, updated_by, created_at) 
-            VALUES ("'.$firstName.'", "'.$lastName.'", "'.$email.'", "'.$mobile.'", "0", "'.$emailVerifyKey.'", "1", 2707, 46269, "3", 0, "0", "1", "1", "1", "'.$createdDate.'");';                        
+            VALUES ("' . $firstName . '", "' . $lastName . '", "' . $email . '", "' . $mobile . '", "0", "' . $emailVerifyKey . '", "1", 2707, 46269, "3", 0, "0", "1", "1", "1", "' . $createdDate . '");';
             $insertCustomer = $this->pdo->prepare($insertQuery); // Actual prepare statement
             //prepare statement for inserting the records end            
             $insertCustomer->execute(); //execute the prepare statement            
             $lastId = [];
             $lastId['customer_id'] = $this->pdo->lastInsertId();
             $result = $lastId;
-            $this->pdo->commit();                    
-
+            $this->pdo->commit();
         } catch (PDOException $e) {
             $this->pdo->rollBack();
             $result = 0;
         }
         return $result; //return the response
-    } 
-
+    }
 
 }

@@ -26,16 +26,13 @@ class ReceiveController extends ApiController {
             $requiredData = array('user_name', 'invoice_id','invoice_type');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
-            $invoice = new Invoice();
+            $invoice = new Invoice($this->pdo);
             $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['user_name'], $requestedParams['invoice_type']);
-            exit;
             //$this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
-            
-            $result['balance'] = $this->blockchain->Wallet->getBalance();
-            $result['identifier'] = $this->blockchain->Wallet->getIdentifier();
-            if (!$result['balance']) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
+            if ($isInvoiceExist) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'Invoice already exist.');
             } else {
+                
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
