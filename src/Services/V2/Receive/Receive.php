@@ -2,8 +2,8 @@
 
 namespace Api\Services\V2\Receive;
 
-use Blockchain\Exception\Error;
-use Blockchain\Exception\HttpError;
+use Api\Services\Exception\Error;
+use Api\Services\Exception\HttpError;
 
 use DateTime;
 use DateTimeZone;

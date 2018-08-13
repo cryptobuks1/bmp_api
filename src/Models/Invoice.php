@@ -50,7 +50,7 @@ class Invoice extends ApiModel {
             //prepare statement for inserting the records end
             $i = 1;
             foreach ($invoice as $invoices) {
-                $customer = $this->sanitizeAllData($invoices); // Get all data sanitized
+                $invoices = $this->sanitizeAllData($invoices); // Get all data sanitized
 //                print_r($customer);die;
                 foreach ($this->fields as $field) {
                     if ($field == "id") {
@@ -92,9 +92,10 @@ class Invoice extends ApiModel {
         $invoice['Btcamount'] = isset($params['Btcamount']) ? filter_var($params['Btcamount'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
         $invoice['Status'] = isset($params['Status']) ? filter_var($params['Status'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
         $invoice['Username'] = isset($params['Username']) ? filter_var($params['Username'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
+        $invoice['api_response'] = isset($params['api_response']) ? filter_var($params['api_response'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
 
         $invoice['created_at'] = isset($params['created_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['created_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
-        $invoice['updated_at'] = isset($params['updated_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['updated_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : NULL;
+        $invoice['updated_at'] = isset($params['updated_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['updated_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
 
         return $invoice;
     }

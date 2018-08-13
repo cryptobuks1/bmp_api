@@ -12,6 +12,7 @@ return [
     
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
+    ['POST', '/getCallbacklogsByInvoiceId', ['Api\Controllers\ReceiveController', 'getCallbacklogsByInvoiceId']], // To get all wallet address
     
      
     // Customer related routes

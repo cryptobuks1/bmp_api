@@ -90,7 +90,7 @@ abstract class ApiController {
                 'status' => isSet($errorParams['error']) ? $errorParams['error'] : 'Failure',
                 'statusCode' => self::UNAUTH_RESPONSE_CODE,
                 'response' => null,
-                'statusDescription' => isSet($errorParams['error_description']) ? $errorParams['error_description'] : 'Something went Wrong'
+                'statusDescription' => isSet($errorParams['error_description']) ? $errorParams['error_description'] : 'Something went Wrong.'
             ]);
             $this->oauthServer->getResponse()->send();
             die;
