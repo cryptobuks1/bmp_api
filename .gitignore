@@ -2,14 +2,12 @@
 vendor/
 /nbproject
 composer.lock
-.env
 #Hidden files
 *.DS_Store
 *Thumbs.db
 *.sass-cache*
 *~imageoptim*
 /nbproject/private/
-.env
 /vendor
 composer.phar
 composer.lock
