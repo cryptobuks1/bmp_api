@@ -128,5 +128,26 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
+    
+    public function getAddressGap() {
+        // $this->response->setContent(json_encode(array('getWalletBalance is called')));
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            if (empty(getenv('X_PUB')) || empty(getenv('API_CODE'))) {
+                throw new Exception("The environment parameters are missing.");
+            }
+            $result =  $this->blockchain->ReceiveV2->checkAddressGap(getenv('API_CODE'), getenv('X_PUB'));
+
+            if (empty($result)) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
+            } else {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+            }
+        } catch (Exception $e) {
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
 
 }
