@@ -8,7 +8,7 @@ composer.lock
 *.sass-cache*
 *~imageoptim*
 /nbproject/private/
-.env
+
 /vendor
 composer.phar
 composer.lock
