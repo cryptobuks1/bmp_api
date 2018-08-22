@@ -13,6 +13,8 @@ $environment = getenv('APP_ENV');
  */
 $whoops = new \Whoops\Run;
 if ($environment !== 'production') {
+    error_reporting(E_ALL);
+ini_set('display_errors', 1);
     $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 } else {
     $whoops->pushHandler(function($e) {
