@@ -10,4 +10,6 @@ require_once('../src/Routes.php');
 $app->run();*/
 ?>
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require __DIR__ . '/../src/Bootstrap.php';
