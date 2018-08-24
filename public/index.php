@@ -10,4 +10,5 @@ require_once('../src/Routes.php');
 $app->run();*/
 ?>
 <?php
+
 require __DIR__ . '/../src/Bootstrap.php';
