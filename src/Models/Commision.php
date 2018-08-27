@@ -30,7 +30,7 @@ class Commission extends ApiModel {
      * @param type $params
      * @return array
      */
-    private function sanitizeAllData($params = []) {
+    public function sanitizeAllData($params = []) {
         $commission = array();
         $commission['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
         $commission['Balance'] = isset($params['Balance']) ? filter_var($params['Balance'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';

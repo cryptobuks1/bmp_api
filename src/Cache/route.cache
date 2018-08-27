@@ -36,6 +36,11 @@
         0 => 'Api\\Controllers\\WalletController',
         1 => 'getAllWalletAddress',
       ),
+      '/createWallet' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'createWallet',
+      ),
       '/generateAddressToRecivePayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',
@@ -336,15 +341,15 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'loginCustomer',
       ),
+      '/registerCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'registerCustomer',
+      ),
       '/getUserDetails' => 
       array (
         0 => 'Api\\Controllers\\UserController',
         1 => 'getDetails',
-      ),
-      '/registerCustomer' => 
-      array (
-        0 => 'Api\\Controllers\\CustomerController',
-        1 => 'registerCustomer',
       ),
       '/getMerchantDetails' => 
       array (

@@ -9,6 +9,7 @@ return [
     //Wallet related routes
     ['POST', '/getWalletBalance', ['Api\Controllers\WalletController', 'getWalletBalance']], // To get wallet balance
     ['POST', '/getAllWalletAddress', ['Api\Controllers\WalletController', 'getAllWalletAddress']], // To get all wallet address
+    ['POST', '/createWallet', ['Api\Controllers\WalletController', 'createWallet']], // To create wallet
     
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
@@ -87,10 +88,10 @@ return [
     //This service will check wheather this user is already registered or not. 
     //If registered then this service will return user related all merchant data
     ['POST', '/loginCustomer', ['Api\Controllers\UserController', 'loginCustomer']],
+    ['POST', '/registerCustomer', ['Api\Controllers\UserController', 'registerCustomer']],
     //get user details
     ['POST', '/getUserDetails', ['Api\Controllers\UserController', 'getDetails']],
-    //Register customer based on input
-    ['POST', '/registerCustomer', ['Api\Controllers\CustomerController', 'registerCustomer']],
+
     //get merchant details based on customer id
     ['POST', '/getMerchantDetails', ['Api\Controllers\MerchantController', 'getMerchantDetails']],
     //get merchant details based on merchant URL

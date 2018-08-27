@@ -29,7 +29,7 @@ class Grandpack extends ApiModel {
      * @return array
      */
 
-    private function sanitizeAllData($params = []) {
+    public function sanitizeAllData($params = []) {
         $grandpack = array();
         $grandpack['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
         $grandpack['PurchaseDate'] = isset($params['PurchaseDate']) ? filter_var($params['PurchaseDate'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';

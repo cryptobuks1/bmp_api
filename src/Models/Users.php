@@ -28,7 +28,8 @@ class Users extends ApiModel {
      * @param type $params
      * @return array
      */
-    private function sanitizeAllData($params = []) {
+
+    public function sanitizeAllData($params = []) {
         $users = array();
         $users['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
         $users['Fullname'] = isset($params['Fullname']) ? filter_var($params['Fullname'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
@@ -80,20 +81,104 @@ class Users extends ApiModel {
      * return success response or error response in json 
      * return id in data params
      */
-    public function isInvoicePresent($username, $purpose) {
+    public function checkLoginResponse($params) {
         try {
-           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result;
-                } else {
-                    return 0;
-                }
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+
+            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
+            $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            return $result;
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return $e->getMessage();
         }
     }
 
+    public function getUserDetailsByUserName($user_name, $token = 0) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            if ($token == 0) {
+                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name order by id desc limit 1");
+                $stmt->execute(['user_name' => $user_name]);
+            } else {
+                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token:token order by id desc limit 1");
+                $stmt->execute(['user_name' => $user_name, 'token' => $token]);
+            }
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            return $result;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function createUser($params) {
+
+        try {
+            $sponsorResponse = $this->getSponsorNameByAccount($params['sponsor_account']);
+            $sponsor = $sponsorResponse['Username'];
+            $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt->execute([
+                $params['name'],
+                $params['country'],
+                $params['email'],
+                $params['telephone'],
+                $params['gender'],
+                $params['user_name'],
+                $params['password'],
+                $params['token'],
+                $params['account'],
+                $sponsor,
+                $params['status'],
+                $params['activation'],
+                $params['platform']
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            if ($result) {
+                return $result;
+            } else {
+                return [];
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getSponsorNameByAccount($account = '24rgxpwex1b4ko88owko') {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("SELECT Username FROM users where Account =:account order by id desc limit 1");
+            $stmt->execute(['account' => $account]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            if ($result) {
+                return $result;
+            } else {
+                return 'mshai';
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    
+    public function activateUserCode($paramas) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("UPDATE users set Activation=:activation,Token=:token WHERE Username=:user_name limit 1;");
+           $result = $stmt->execute(['activation' => $paramas['activation'],'token' => $paramas['token'],'user_name' => $paramas['user_name']]);
+            $stmt->closeCursor();
+            if ($result) {
+                return $result;
+            } else {
+                return 'mshai';
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    
 }

@@ -2,11 +2,11 @@
 
 namespace Api\Controllers;
 
-use Api\Controllers\ApiController;
 //use Api\Models\Customer;
 //use Api\Services\Oauth2\Oauth;
 use stdClass;
 use Exception;
+use Api\Models\BmpWallet;
 
 class WalletController extends ApiController {
 
@@ -42,23 +42,59 @@ class WalletController extends ApiController {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
         try {
+            
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
-            $this->response->setContent(json_encode($requestedParams));
             //array of required fields
-            $requiredData = array('wallet_pass');
+            $requiredData = array('password', 'user_name','email_address');
+            $platform = parent::PLATFORM;
+            $transactionType = parent::TRANSACTION_TYPE;
+
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $transactionTypeKey = array_keys($transactionType);
+            if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
+                throw new Exception("Please enter valid transaction type.");
+            }
+
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
-            $result = $this->blockchain->Create->create($requestedParams['wallet_pass'], $requestedParams['wallet_email'], $requestedParams['wallet_label']);
-            if (!$result['guid']) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
+            if (empty($requestedParams["user_name"]) || empty($requestedParams["password"])) {
+                throw new Exception("Please enter all essential information.");
+            }
+
+            $bmpWalletObj = new BmpWallet($this->pdo);
+            $bmpWalletResponse = $bmpWalletObj->checkForWalletexist($requestedParams);
+            if ($bmpWalletResponse) {
+                $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $bmpWalletResponse, 'Wallet is alredy exist.');
             } else {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+                 $requestedParams['label'] = 'Main address of wallet of '.$requestedParams["user_name"];
+                //$result = $this->blockchain->Create->create($requestedParams['password'], $requestedParams['email_address'], $requestedParams['label']);
+                $result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
+                $result = json_decode($result);
+                if ($result->guid) {
+                    $requestedParams['guid'] = $result->guid;
+                    $requestedParams['address'] = $result->address;
+                    $requestedParams['status'] = 1;
+                    $bmpWallet = $bmpWalletObj->insert(array($requestedParams));
+                    if ($bmpWallet) {
+                        $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Wallet created successfully.');
+                    } else {
+                        $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to create user.');
+                    }
+                } else {
+                    $response = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $result, 'There is problem to create wallet.');
+                }
             }
         } catch (Exception $e) {
-            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+            $response = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
-        $this->response->setContent(json_encode($content)); // send response in json format*/
+        $this->response->setContent(json_encode($response)); // send response in json format*/
     }
 
     public function sendPayment() {
@@ -75,7 +111,7 @@ class WalletController extends ApiController {
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address'], $requestedParams['fee']);
-            if (!$result['tx_hash']) {
+            if (!$result->tx_hash) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
@@ -108,7 +144,7 @@ class WalletController extends ApiController {
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address'], $requestedParams['fee']);
-            if (!$result['tx_hash']) {
+            if (!$result->tx_hash) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
@@ -133,7 +169,7 @@ class WalletController extends ApiController {
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result['address'] = $this->blockchain->Wallet->getAddresses();
             $result['identifier'] = $this->blockchain->Wallet->getIdentifier();
-            if (!$result['address']) {
+            if (!$result->address) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
@@ -205,7 +241,7 @@ class WalletController extends ApiController {
             $this->validation($requestedParams, $requiredData);
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->archiveAddress($requestedParams['address']);
-            if (!$result['archived']) {
+            if (!$result->archived) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
@@ -229,7 +265,7 @@ class WalletController extends ApiController {
             $this->validation($requestedParams, $requiredData);
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->unarchiveAddress($requestedParams['address']);
-            if (!$result['archived']) {
+            if (!$result->archived) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');

@@ -83,6 +83,7 @@ abstract class ApiModel {
             $insertInvoice->execute(); //execute the prepare statement
             $lastId = [];
             $lastId['invoice_id'] = $this->pdo->lastInsertId();
+            $lastId['last_inserted_id'] = $this->pdo->lastInsertId();
             $this->pdo->commit();
             $result = $lastId;
         } catch (PDOException $e) {

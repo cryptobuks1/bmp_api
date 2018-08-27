@@ -44,13 +44,18 @@ abstract class ApiController {
     const INVENTORY_RESTRICTION_FAILURE_RESPONSE_CODE = 108;
     //SMS transaction type
     const SMS_MSG_TEMPLATES = [201 => "IN_LOGIN_OTP", 202 => "IN_MERCHANT_ADD", 203 => "IN_NUMBER_CHANGED_OTP", 204 => "LP_APP_CHANGE_NUMBER_OTP", 205 => "LP_KIOSK_CHANGE_NUMBER_OTP", 206 => "LP_KIOSK_REDEMPTION_OTP", 207 => "LP_KIOSK_PLACE_ORDER_OTP", 208 => "LP_REFUND_POINTS", 209 => "LP_REGISTRATION_OTP"];
+    
+    const PLATFORM = array("1" => "Android", "2" => "iOS", "3" => "Web");
+    # define platform for transaction type
+    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification","205"=>"Wallet Creation");
+    const GRANT_TYPE = array("client_credentials" => "client_credentials");
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Request $request, Response $response, PDO $pdo,  OAuthServer $oauthServer,Blockchain $blockchain) {
+    public function __construct(Request $request, Response $response, PDO $pdo, OAuthServer $oauthServer,Blockchain $blockchain) {
         $this->request = $request;
         $this->response = $response;
         $this->pdo = $pdo;
@@ -107,6 +112,7 @@ abstract class ApiController {
         try {
             $requestGlobal = \OAuth2\Request::createFromGlobals();
             //echo "<pre>";print_r($this->oauthServer);exit;
+           // return $this->oauthServer;
 
             if (isset($requestGlobal->request['grant_type']) && $requestGlobal->request['grant_type'] == "client_credentials") {
                 $this->oauthServer->setConfig('access_lifetime', 3600 * 24 * 30); // 30 day
@@ -116,7 +122,7 @@ abstract class ApiController {
 
             $this->oauthServer->setConfig('refresh_token_lifetime', 2419200); // 28 days
 
-            $this->oauthStorage = new \OAuth2\Storage\Pdo($this->pdo, ['user_table' => 'customers']);
+            $this->oauthStorage = new \OAuth2\Storage\Pdo($this->pdo, ['user_table' => 'Users']);
             $this->oauthServer->addStorage($this->oauthStorage);
             $oauthMobileStorage = new OauthMobileStorage($this->pdo, $this->redis);
             $this->oauthServer->addGrantType(new MobileGrant($oauthMobileStorage));
