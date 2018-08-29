@@ -1,14 +1,15 @@
 <?php
 
 namespace Api\Services;
-use PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 class EmailHelper {
 
     const DEBUG = true;
     public $log = Array();
     
     public function sendEmail($fromEmail='support@bitminepool.com',$fromEmailName='Support',$toEmail,$toEmailName,$subject='',$body=''){
-
+        
+        $mail = new PHPMailer;
         //To address and name
         $mail->addAddress($toEmail, $toEmailName);
 
