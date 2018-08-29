@@ -7,7 +7,7 @@ class EmailHelper {
     const DEBUG = true;
     public $log = Array();
     
-    public sendEmail($fromEmail='support@bitminepool.com',$fromEmailName='Support',$toEmail,$toEmailName,$subject='',$body=''){
+    public function sendEmail($fromEmail='support@bitminepool.com',$fromEmailName='Support',$toEmail,$toEmailName,$subject='',$body=''){
 
         //To address and name
         $mail->addAddress($toEmail, $toEmailName);
@@ -22,8 +22,7 @@ class EmailHelper {
         if(!$mail->send()) 
         {
            return 0; 
-        else 
-        {
+        } else {
             return 1; 
         }
     }
