@@ -39,7 +39,8 @@ class EmailHelper {
             $headers .= 'From: <'.$fromEmail.'>' . "\r\n";
             $headers .= 'Cc: '.$fromEmail.'' . "\r\n";
 
-            mail($toEmail, $subject, $body, $headers);
+            return mail($toEmail, $subject, $body, $headers);
+            
         } catch (Exception $e) {
             return $e->getMessage();
         }
