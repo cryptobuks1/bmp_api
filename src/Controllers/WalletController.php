@@ -7,6 +7,8 @@ namespace Api\Controllers;
 use stdClass;
 use Exception;
 use Api\Models\BmpWallet;
+use Api\Models\Users;
+use PDO;
 
 class WalletController extends ApiController {
 
@@ -42,11 +44,11 @@ class WalletController extends ApiController {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
         try {
-            
+
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
             //array of required fields
-            $requiredData = array('password', 'user_name','email_address');
+            $requiredData = array('password', 'user_name', 'email_address');
             $platform = parent::PLATFORM;
             $transactionType = parent::TRANSACTION_TYPE;
 
@@ -73,7 +75,7 @@ class WalletController extends ApiController {
             if ($bmpWalletResponse) {
                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $bmpWalletResponse, 'Wallet is alredy exist.');
             } else {
-                 $requestedParams['label'] = 'Main address of wallet of '.$requestedParams["user_name"];
+                $requestedParams['label'] = 'Main address of wallet of ' . $requestedParams["user_name"];
                 //$result = $this->blockchain->Create->create($requestedParams['password'], $requestedParams['email_address'], $requestedParams['label']);
                 $result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
                 $result = json_decode($result);
@@ -274,6 +276,51 @@ class WalletController extends ApiController {
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+
+    public function getAllWalletDetailByUserName() {
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $this->response->setContent(json_encode($requestedParams));
+            //array of required fields
+            $requiredData = array('user_name', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            $platform = parent::PLATFORM;
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            if (empty($requestedParams["user_name"])) {
+                throw new Exception("Please enter valid user credentials.");
+            }
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+            $response['user_data'] = $useResponse;
+            $walletData = [];
+            if ($useResponse) {
+                if ($useResponse['guid']) {
+                    $this->blockchain->Wallet->credentials($useResponse['guid'], $useResponse['password']);
+                    $walletData['balance'] = $this->blockchain->Wallet->getBalance();
+                    $walletData['addresses'] = $this->blockchain->Wallet->getAddresses();
+                } else {
+                    $walletData['balance'] = 0;
+                    $walletData['addresses'] = [];
+                }
+                $response['wallet_data'] = $walletData;
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
+                //$response = $useResponse;
+            } else {
+                throw new Exception('Please enter valid username and password.');
+            }
+        } catch (Exception $e) {
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/ 
     }
 
 }

@@ -10,6 +10,7 @@ return [
     ['POST', '/getWalletBalance', ['Api\Controllers\WalletController', 'getWalletBalance']], // To get wallet balance
     ['POST', '/getAllWalletAddress', ['Api\Controllers\WalletController', 'getAllWalletAddress']], // To get all wallet address
     ['POST', '/createWallet', ['Api\Controllers\WalletController', 'createWallet']], // To create wallet
+    ['POST', '/getAllWalletDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDetailByUserName']], // To get wallet details by user name
     
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
