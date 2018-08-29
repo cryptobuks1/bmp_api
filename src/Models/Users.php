@@ -99,7 +99,7 @@ class Users extends ApiModel {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
             if ($token == 0) {
-                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name order by id desc limit 1");
+                $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE  u.Username=:user_name AND bw.user_name =:user_name order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name]);
             } else {
                 $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token:token order by id desc limit 1");
