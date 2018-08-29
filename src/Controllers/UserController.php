@@ -158,7 +158,7 @@ class UserController extends ApiController {
            
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], 'Test email', 'Bit Mine Pool Email Verification Code', 'This is test message.');
             if ($result) {
-                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'User Details');
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Email sent successfully.');
             } else {
                  $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to send email.');
             }
