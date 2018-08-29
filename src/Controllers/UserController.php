@@ -136,15 +136,13 @@ class UserController extends ApiController {
 
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'Bit Mine Pool Email Verification Code', $params['token']);
             if ($result) {
-                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Email sent successfully.');
+                return 1;
             } else {
-                $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, $e->getMessage());
+                return 0;
             }
         } catch (Exception $e) {
-            $object = new stdClass();
-            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+            return 0;
         }
-         return $this->response->setContent(json_encode($response)); // send response in json format
     }
     
     public function sendTestEmail() {
@@ -158,15 +156,17 @@ class UserController extends ApiController {
             //PHPMailer Object
             $mail = new EmailHelper;
 
-            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], 'Test email', 'Bit Mine Pool Email Verification Code', "This is sample message.");
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], 'Test email', 'Bit Mine Pool Email Verification Code', 'This is test message.');
             if ($result) {
-                return 1;
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'User Details');
             } else {
-                return 0;
+                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, $e->getMessage());
             }
         } catch (Exception $e) {
-            return 0;
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
         }
+         return $this->response->setContent(json_encode($response)); // send response in json format
     }
     
     public function random_code($limit) {
