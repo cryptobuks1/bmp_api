@@ -25,7 +25,7 @@ class EmailHelper {
             $mail->AltBody = "This is the plain text version of the email content";
 
             if (!$mail->send()) {
-                return 0;
+                return $mail->ErrorInfo;
             } else {
                 return 1;
             }
