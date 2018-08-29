@@ -92,6 +92,8 @@ return [
     ['POST', '/registerCustomer', ['Api\Controllers\UserController', 'registerCustomer']],
     //get user details
     ['POST', '/getUserDetails', ['Api\Controllers\UserController', 'getDetails']],
+    ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
+    
 
     //get merchant details based on customer id
     ['POST', '/getMerchantDetails', ['Api\Controllers\MerchantController', 'getMerchantDetails']],

@@ -123,7 +123,7 @@ class UserController extends ApiController {
             $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
         } catch (Exception $e) {
             $object = new stdClass();
-            $response = $this->getResponse('Failure56', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
         }
 
         return $this->response->setContent(json_encode($response)); // send response in json format
@@ -136,6 +136,30 @@ class UserController extends ApiController {
 
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'Bit Mine Pool Email Verification Code', $params['token']);
             if ($result) {
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Email sent successfully.');
+            } else {
+                $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, $e->getMessage());
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+        }
+         return $this->response->setContent(json_encode($response)); // send response in json format
+    }
+    
+    public function sendTestEmail() {
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+            $requiredData = array('email_address');
+
+            $this->validation($requestedParams, $requiredData);
+            //PHPMailer Object
+            $mail = new EmailHelper;
+
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], 'Test email', 'Bit Mine Pool Email Verification Code', "This is sample message.");
+            if ($result) {
                 return 1;
             } else {
                 return 0;
@@ -144,7 +168,7 @@ class UserController extends ApiController {
             return 0;
         }
     }
-
+    
     public function random_code($limit) {
         return substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, $limit);
     }

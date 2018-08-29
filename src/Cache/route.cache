@@ -356,6 +356,11 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'getDetails',
       ),
+      '/sendTestEmail' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendTestEmail',
+      ),
       '/getMerchantDetails' => 
       array (
         0 => 'Api\\Controllers\\MerchantController',
