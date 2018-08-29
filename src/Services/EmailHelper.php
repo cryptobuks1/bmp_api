@@ -15,7 +15,7 @@ class EmailHelper {
             $mail = new PHPMailer;
             //To address and name
             $mail->addAddress($toEmail, $toEmailName);
-
+            $mail->setFrom($fromEmail, $fromEmailName);
             //Send HTML or Plain Text email
             $mail->isHTML(true);
             $mail->isSMTP();
