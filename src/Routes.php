@@ -93,6 +93,7 @@ return [
     //get user details
     ['POST', '/getUserDetails', ['Api\Controllers\UserController', 'getDetails']],
     ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
+    ['POST', '/sendForgetPassword', ['Api\Controllers\UserController', 'sendForgetPassword']],
     
 
     //get merchant details based on customer id

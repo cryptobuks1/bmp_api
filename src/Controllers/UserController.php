@@ -145,6 +145,22 @@ class UserController extends ApiController {
         }
     }
     
+    public function sendForgetPasswordEmail($params) {
+        try {
+            //PHPMailer Object
+            $mail = new EmailHelper;
+
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Name'], 'Bit Mine Pool Forget Password', $params['Password']);
+            if ($result) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+    
     public function sendTestEmail() {
         try {
             $this->validateOauthRequest();
@@ -211,9 +227,47 @@ class UserController extends ApiController {
             } else {
                 throw new Exception('Please enter valid verification code.');
             }
-            //$accessToken = $this->getOauthAccessToken();
-            //return  $this->response->setContent(json_encode($accessToken));
-            //$response->auth = $accessToken;
+
+            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+        }
+
+        return $this->response->setContent(json_encode($response)); // send response in json format
+    }
+    
+    public function sendForgetPassword() {
+
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+
+            $requiredData = array('user_name');
+            $this->validation($requestedParams, $requiredData);
+            $userDetails = "";
+            if (empty($requestedParams["user_name"]) ) {
+                throw new Exception("Please enter valid verification details.");
+            }
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams);
+
+            if ($useResponse) {
+                $sendForgetPassword = $this->sendVerficationEmail($requestedParams);
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The password has been sent to your register email address.');
+            } else {
+                throw new Exception('Please enter valid user name.');
+            }
+
             $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
         } catch (Exception $e) {
             $object = new stdClass();

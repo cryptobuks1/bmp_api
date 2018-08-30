@@ -361,6 +361,11 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'sendTestEmail',
       ),
+      '/sendForgetPassword' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendForgetPassword',
+      ),
       '/getMerchantDetails' => 
       array (
         0 => 'Api\\Controllers\\MerchantController',
