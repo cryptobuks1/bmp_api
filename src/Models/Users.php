@@ -98,12 +98,15 @@ class Users extends ApiModel {
     public function getUserDetailsByUserName($user_name, $token = 0) {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+
             if ($token == 0) {
                 $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE  u.Username=:user_name AND bw.user_name =:user_name order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name]);
+ 
             } else {
-                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token:token order by id desc limit 1");
+                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token=:token order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name, 'token' => $token]);
+
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             //$stmt->closeCursor();

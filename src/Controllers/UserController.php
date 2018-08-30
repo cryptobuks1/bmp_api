@@ -217,8 +217,7 @@ class UserController extends ApiController {
 
 
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams);
-
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name'],$requestedParams['token']);
             if ($useResponse) {
                 $response = $useResponse;
                 $requestedParams['token'] = mt_rand(0, 1000000);
@@ -259,7 +258,7 @@ class UserController extends ApiController {
 
 
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
 
             if ($useResponse) {
                 $sendForgetPassword = $this->sendVerficationEmail($requestedParams);

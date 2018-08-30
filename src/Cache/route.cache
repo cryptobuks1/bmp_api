@@ -366,6 +366,11 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'sendForgetPassword',
       ),
+      '/verifyEmail' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'verifyEmail',
+      ),
       '/getMerchantDetails' => 
       array (
         0 => 'Api\\Controllers\\MerchantController',
