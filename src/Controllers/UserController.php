@@ -71,7 +71,7 @@ class UserController extends ApiController {
             $transactionType = self::TRANSACTION_TYPE;
             $grantType = parent::GRANT_TYPE;
 
-            $requiredData = array('name', 'email', 'telephone', 'gender', 'password', 'user_name', 'platform', 'transaction_type', 'country', 'sponsor_account');
+            $requiredData = array('name', 'email', 'telephone', 'gender', 'password', 'user_name', 'platform', 'transaction_type', 'country');
 
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
