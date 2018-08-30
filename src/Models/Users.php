@@ -116,7 +116,8 @@ class Users extends ApiModel {
     public function createUser($params) {
 
         try {
-            $sponsorResponse = $this->getSponsorNameByAccount($params['sponsor_account']);
+            $sponsor_account = (isset($params['sponsor_account']))?$params['sponsor_account']:'';
+            $sponsorResponse = $this->getSponsorNameByAccount($sponsor_account);
             $sponsor = $sponsorResponse['Username'];
             $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $stmt->execute([
