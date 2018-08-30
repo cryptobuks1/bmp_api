@@ -108,7 +108,7 @@ class UserController extends ApiController {
                 if ($newUser) {
                     if ($newUser['response'] == 1) {
                         $sendVerifyCode = $this->sendVerficationEmail($requestedParams);
-                        $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'User Details');
+                        $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'User created successfully.');
                     } else {
                         $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $newUser, 'There is problem to create user.');
                     }

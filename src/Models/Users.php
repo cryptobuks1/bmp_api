@@ -88,7 +88,7 @@ class Users extends ApiModel {
             $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
             $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            //$stmt->closeCursor();
             return $result;
         } catch (PDOException $e) {
             return $e->getMessage();
@@ -106,7 +106,7 @@ class Users extends ApiModel {
                 $stmt->execute(['user_name' => $user_name, 'token' => $token]);
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            //$stmt->closeCursor();
             return $result;
         } catch (PDOException $e) {
             return $e->getMessage();
@@ -116,7 +116,7 @@ class Users extends ApiModel {
     public function createUser($params) {
 
         try {
-            $sponsor_account = (isset($params['sponsor_account']))?$params['sponsor_account']:'';
+            $sponsor_account = (isset($params['sponsor_account']))?$params['sponsor_account']:'24rgxpwex1b4ko88owko';
             $sponsorResponse = $this->getSponsorNameByAccount($sponsor_account);
             $sponsor = $sponsorResponse['Username'];
             $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -137,7 +137,7 @@ class Users extends ApiModel {
             ]);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            
 
             if ($result) {
                 return $result;
@@ -155,7 +155,6 @@ class Users extends ApiModel {
             $stmt = $this->pdo->prepare("SELECT Username FROM users where Account =:account order by id desc limit 1");
             $stmt->execute(['account' => $account]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
             if ($result) {
                 return $result;
             } else {
@@ -171,7 +170,7 @@ class Users extends ApiModel {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
             $stmt = $this->pdo->prepare("UPDATE users set Activation=:activation,Token=:token WHERE Username=:user_name limit 1;");
            $result = $stmt->execute(['activation' => $paramas['activation'],'token' => $paramas['token'],'user_name' => $paramas['user_name']]);
-            $stmt->closeCursor();
+           // $stmt->closeCursor();
             if ($result) {
                 return $result;
             } else {
