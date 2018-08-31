@@ -14,7 +14,6 @@ use Api\Controllers\WalletController;
 class UserController extends ApiController {
     # define constant for platform
 
-
     public function loginCustomer() {
 
         try {
@@ -46,14 +45,14 @@ class UserController extends ApiController {
             $useResponse = $usersObj->checkLoginResponse($requestedParams);
 
             if ($useResponse) {
-                $response = $useResponse;
+                $response = $usersObj->getUserDetailsByUserName($useResponse['Username']);
             } else {
                 throw new Exception('Please enter valid username and password.');
             }
             //$accessToken = $this->getOauthAccessToken();
             //return  $this->response->setContent(json_encode($accessToken));
             //$response->auth = $accessToken;
-            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
+            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'You have login successfully.');
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
@@ -144,7 +143,7 @@ class UserController extends ApiController {
             return 0;
         }
     }
-    
+
     public function sendForgetPasswordEmail($params) {
         try {
             //PHPMailer Object
@@ -160,7 +159,7 @@ class UserController extends ApiController {
             return 0;
         }
     }
-    
+
     public function sendTestEmail() {
         try {
             $this->validateOauthRequest();
@@ -171,24 +170,24 @@ class UserController extends ApiController {
             $this->validation($requestedParams, $requiredData);
             //PHPMailer Object
             $mail = new EmailHelper;
-           
+
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], 'Test email', 'Bit Mine Pool Email Verification Code', 'This is test message.');
             if ($result) {
                 $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Email sent successfully.');
             } else {
-                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to send email.');
+                $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to send email.');
             }
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
         }
-         return $this->response->setContent(json_encode($response)); // send response in json format
+        return $this->response->setContent(json_encode($response)); // send response in json format
     }
-    
+
     public function random_code($limit) {
         return substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, $limit);
     }
-    
+
     public function verifyEmail() {
 
         try {
@@ -217,7 +216,7 @@ class UserController extends ApiController {
 
 
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name'],$requestedParams['token']);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name'], $requestedParams['token']);
             if ($useResponse) {
                 $response = $useResponse;
                 $requestedParams['token'] = mt_rand(0, 1000000);
@@ -235,7 +234,7 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
-    
+
     public function sendForgetPassword() {
 
         try {
@@ -246,7 +245,7 @@ class UserController extends ApiController {
             $requiredData = array('user_name');
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
-            if (empty($requestedParams["user_name"]) ) {
+            if (empty($requestedParams["user_name"])) {
                 throw new Exception("Please enter valid verification details.");
             }
             //Get constant
@@ -267,7 +266,7 @@ class UserController extends ApiController {
                 throw new Exception('Please enter valid user name.');
             }
 
-            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
+            //$response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
@@ -275,4 +274,5 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
+
 }

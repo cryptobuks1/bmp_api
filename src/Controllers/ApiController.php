@@ -47,7 +47,7 @@ abstract class ApiController {
     
     const PLATFORM = array("1" => "Android", "2" => "iOS", "3" => "Web");
     # define platform for transaction type
-    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification","205"=>"Wallet Creation");
+    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification","205"=>"Wallet Creation","206"=>"Wallet Balance Fetch");
     const GRANT_TYPE = array("client_credentials" => "client_credentials");
 
     /**

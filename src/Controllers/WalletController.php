@@ -22,15 +22,35 @@ class WalletController extends ApiController {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
             $this->response->setContent(json_encode($requestedParams));
+            $platform = parent::PLATFORM;
+            $transactionType = parent::TRANSACTION_TYPE;
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_pass');
+            $requiredData = array('wallet_guid', 'wallet_password','platform', 'transaction_type',);
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
-            $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
+            
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $transactionTypeKey = array_keys($transactionType);
+            if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
+                throw new Exception("Please enter valid transaction type.");
+            }
+            
+            if (empty($requestedParams["wallet_guid"]) || empty($requestedParams["wallet_password"])) {
+                throw new Exception("Please enter wallet credentials.");
+            }
+            
+            $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_password']);
             $result['balance'] = $this->blockchain->Wallet->getBalance();
+            $result['balance_usd']= $this->blockchain->Rates->fromBTC((double)$result['balance'],'USD');
             $result['identifier'] = $this->blockchain->Wallet->getIdentifier();
             if (!$result['balance']) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Unable to fetch the wallet balance.');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
@@ -306,9 +326,11 @@ class WalletController extends ApiController {
                 if ($useResponse['guid']) {
                     $this->blockchain->Wallet->credentials($useResponse['guid'], $useResponse['password']);
                     $walletData['balance'] = $this->blockchain->Wallet->getBalance();
+                    $walletData['balance_usd'] = $this->blockchain->Rates->fromBTC((double)$walletData['balance'],'USD');
                     $walletData['addresses'] = $this->blockchain->Wallet->getAddresses();
                 } else {
                     $walletData['balance'] = 0;
+                    $walletData['balance_usd'] = 0;
                     $walletData['addresses'] = [];
                 }
                 $response['wallet_data'] = $walletData;
