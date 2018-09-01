@@ -260,7 +260,7 @@ class UserController extends ApiController {
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
 
             if ($useResponse) {
-                $sendForgetPassword = $this->sendVerficationEmail($requestedParams);
+                $sendForgetPassword = $this->sendForgetPasswordEmail($useResponse);
                 $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The password has been sent to your register email address.');
             } else {
                 throw new Exception('Please enter valid user name.');
