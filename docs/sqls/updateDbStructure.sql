@@ -229,3 +229,5 @@ ALTER TABLE `oauth_scopes`
 ALTER TABLE `oauth_users`
   ADD PRIMARY KEY (`username`);
 COMMIT;
+
+ALTER TABLE `users` ADD `is_wallet_user` ENUM('1','2') NOT NULL DEFAULT '2' COMMENT '1:Yes 2: No' AFTER `platform`;

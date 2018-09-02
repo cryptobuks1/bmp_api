@@ -122,7 +122,7 @@ class Users extends ApiModel {
             $sponsor_account = (isset($params['sponsor_account']))?$params['sponsor_account']:'24rgxpwex1b4ko88owko';
             $sponsorResponse = $this->getSponsorNameByAccount($sponsor_account);
             $sponsor = $sponsorResponse['Username'];
-            $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             $stmt->execute([
                 $params['name'],
                 $params['country'],
@@ -136,7 +136,8 @@ class Users extends ApiModel {
                 $sponsor,
                 $params['status'],
                 $params['activation'],
-                $params['platform']
+                $params['platform'],
+                $params['is_wallet_user']
             ]);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

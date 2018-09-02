@@ -56,6 +56,16 @@
         0 => 'Api\\Controllers\\ReceiveController',
         1 => 'getCallbacklogsByInvoiceId',
       ),
+      '/checkForAvailableInvoiceToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'checkForAvailableInvoiceToRecivePayment',
+      ),
+      '/getPoolDataToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'getPoolDataToRecivePayment',
+      ),
       '/createCustomer' => 
       array (
         0 => 'Api\\Controllers\\CustomerController',

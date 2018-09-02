@@ -148,8 +148,8 @@ class UserController extends ApiController {
         try {
             //PHPMailer Object
             $mail = new EmailHelper;
-
-            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Name'], 'Bit Mine Pool Forget Password', $params['Password']);
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Fullname'], 'Bit Mine Pool Forget Password', $params['Password']);
+            return $result;
             if ($result) {
                 return 1;
             } else {
@@ -261,7 +261,11 @@ class UserController extends ApiController {
 
             if ($useResponse) {
                 $sendForgetPassword = $this->sendForgetPasswordEmail($useResponse);
-                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The password has been sent to your register email address.');
+                if($sendForgetPassword) {
+                    $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The password has been sent to your register email address.');
+                } else {
+                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE,$sendForgetPassword , 'Please try after some time.');
+                }
             } else {
                 throw new Exception('Please enter valid user name.');
             }
