@@ -278,5 +278,42 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
+    
+      public function getAllMiningDataByUserName() {
 
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+            $requiredData = array('user_name', 'platform');
+            $this->validation($requestedParams, $requiredData);
+            $userDetails = "";
+            if (empty($requestedParams["user_name"]) ) {
+                throw new Exception("Please enter valid user credentials.");
+            }
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->checkLoginResponse($requestedParams);
+
+            if ($useResponse) {
+                $response = $usersObj->getUserDetailsByUserName($useResponse['Username']);
+            } else {
+                throw new Exception('Please enter valid username and password.');
+            }
+            //$accessToken = $this->getOauthAccessToken();
+            //return  $this->response->setContent(json_encode($accessToken));
+            //$response->auth = $accessToken;
+            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'You have login successfully.');
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+        }
+
+        return $this->response->setContent(json_encode($response)); // send response in json format
+    }
 }
