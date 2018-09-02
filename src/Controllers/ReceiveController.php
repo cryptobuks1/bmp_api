@@ -123,7 +123,43 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
+    
+    public function checkForPaidInvoiceToRecivePayment() {
+        // $this->response->setContent(json_encode(array('getWalletBalance is called')));
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $platform = parent::PLATFORM;
+            $requestedParams = $this->request->getParameters();
+            //array of required fields
+            $requiredData = array('Username', 'Purpose', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            if (empty($requestedParams["Username"]) || empty($requestedParams["Purpose"])) {
+                throw new Exception("Please enter valid user credentials.");
+            }
+            //Get constant
+            $platformKey = array_keys($platform);
 
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $invoice = new Invoice($this->pdo);
+            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['Username'], $requestedParams['Purpose'],'Paid');
+            //$this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
+            if ($isInvoiceExist) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'You have already paid for '.$requestedParams["Purpose"].'.');
+            } else {
+                $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, [], 'Please proceed ahead for Invoice generation.');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+    
     public function getCallbacklogsByInvoiceId() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();

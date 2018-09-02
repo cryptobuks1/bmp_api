@@ -711,7 +711,7 @@ ALTER TABLE `payment_callback_log`  ADD `status` ENUM('1','2') NOT NULL DEFAULT 
 	
   
   
-INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus) VALUES('Mshai', 'Kenya', 'family88@bitminepool.com', '33446611', '2', 'mshai', '123','', '14685', '24rgxpwex1b4ko88owko ', 'Open',  '1', 'notree');
+INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus) VALUES('Mshai', 'Kenya', 'family88@bitminepool.com', '33446611', '2', 'mshai', '123','', '14685', '24rgxpwex1b4ko88owko ', 'Close',  '1', 'notree');
 INSERT INTO accountbalance (Balance, Username)VALUES('0','mshai');
 INSERT INTO binaryincome(userid, day_bal, current_bal, total_bal)VALUES('mshai','0','0','0');
 INSERT INTO hubcoin (Balance, Username)VALUES('0','mshai');

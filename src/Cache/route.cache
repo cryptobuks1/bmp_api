@@ -61,6 +61,11 @@
         0 => 'Api\\Controllers\\ReceiveController',
         1 => 'checkForAvailableInvoiceToRecivePayment',
       ),
+      '/checkForPaidInvoiceToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'checkForPaidInvoiceToRecivePayment',
+      ),
       '/getPoolDataToRecivePayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',

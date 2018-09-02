@@ -16,6 +16,7 @@ return [
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
     ['POST', '/getCallbacklogsByInvoiceId', ['Api\Controllers\ReceiveController', 'getCallbacklogsByInvoiceId']], // To get all wallet address
     ['POST', '/checkForAvailableInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForAvailableInvoiceToRecivePayment']], // Check if invoice is already exist or not
+    ['POST', '/checkForPaidInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForPaidInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/getPoolDataToRecivePayment', ['Api\Controllers\ReceiveController', 'getPoolDataToRecivePayment']], // Check if invoice is already exist or not
     
      

@@ -126,11 +126,12 @@ class Invoice extends ApiModel {
      * return success response or error response in json 
      * return id in data params
      */
-    public function isInvoicePresent($username, $purpose) {
+    public function isInvoicePresent($username, $purpose,$status='Unpaid') {
         try {
            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
+                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status=:Status order by id desc limit 1");
+                $stmt->execute(['Purpose' => $purpose,'Username'=>$username,'Status'=>$status]);
+               
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($result) {
                     return $result;
