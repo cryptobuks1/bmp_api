@@ -96,8 +96,8 @@ class WalletController extends ApiController {
                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $bmpWalletResponse, 'Wallet is alredy exist.');
             } else {
                 $requestedParams['label'] = 'Main address of wallet of ' . $requestedParams["user_name"];
-                //$result = $this->blockchain->Create->create($requestedParams['password'], $requestedParams['email_address'], $requestedParams['label']);
-                $result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
+                $result = $this->blockchain->Create->create($requestedParams['password'], $requestedParams['email_address'], $requestedParams['label']);
+                //$result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
                 $result = json_decode($result);
                 if ($result->guid) {
                     $requestedParams['guid'] = $result->guid;
