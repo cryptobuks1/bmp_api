@@ -19,6 +19,10 @@ return [
     ['POST', '/checkForPaidInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForPaidInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/getPoolDataToRecivePayment', ['Api\Controllers\ReceiveController', 'getPoolDataToRecivePayment']], // Check if invoice is already exist or not
     
+    //Tree related routes
+    ['POST', '/joinTree', ['Api\Controllers\TreeController', 'joinTree']], // To get all wallet address
+    
+    
      
     // Customer related routes
     ['POST', '/createCustomer', ['Api\Controllers\CustomerController', 'createCustomer']], // Accept and insert the customer data

@@ -28,6 +28,7 @@ class Tree extends ApiModel {
      * @param type $params
      * @return array
      */
+
     public function sanitizeAllData($params = []) {
         $tree = array();
         $tree['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
@@ -70,15 +71,36 @@ class Tree extends ApiModel {
      */
     public function isInvoicePresent($username, $purpose) {
         try {
-           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result;
-                } else {
-                    return 0;
-                }
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
+            $stmt->execute(['Purpose' => $purpose, 'Username' => $username]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function addChildNode($params) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("CALL insertTree(?,?,?)");
+            $stmt->execute([
+                $params['parent_user'],
+                $params['side'],
+                $params['user_name']
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
