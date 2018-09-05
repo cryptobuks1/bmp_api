@@ -371,10 +371,10 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'registerCustomer',
       ),
-      '/getUserDetails' => 
+      '/getAllUserDataByUserName' => 
       array (
         0 => 'Api\\Controllers\\UserController',
-        1 => 'getDetails',
+        1 => 'getAllUserDataByUserName',
       ),
       '/sendTestEmail' => 
       array (

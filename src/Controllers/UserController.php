@@ -279,7 +279,7 @@ class UserController extends ApiController {
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
     
-      public function getAllMiningDataByUserName() {
+      public function getAllUserDataByUserName() {
 
         try {
             $this->validateOauthRequest();
@@ -298,17 +298,17 @@ class UserController extends ApiController {
                 throw new Exception("Please enter valid platform.");
             }
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->checkLoginResponse($requestedParams);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name']);
 
             if ($useResponse) {
-                $response = $usersObj->getUserDetailsByUserName($useResponse['Username']);
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'User details.');
             } else {
-                throw new Exception('Please enter valid username and password.');
+                throw new Exception('Please enter valid username.');
             }
             //$accessToken = $this->getOauthAccessToken();
             //return  $this->response->setContent(json_encode($accessToken));
             //$response->auth = $accessToken;
-            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'You have login successfully.');
+            
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());

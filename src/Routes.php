@@ -98,7 +98,7 @@ return [
     ['POST', '/loginCustomer', ['Api\Controllers\UserController', 'loginCustomer']],
     ['POST', '/registerCustomer', ['Api\Controllers\UserController', 'registerCustomer']],
     //get user details
-    ['POST', '/getUserDetails', ['Api\Controllers\UserController', 'getDetails']],
+    ['POST', '/getAllUserDataByUserName', ['Api\Controllers\UserController', 'getAllUserDataByUserName']],
     ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
     ['POST', '/sendForgetPassword', ['Api\Controllers\UserController', 'sendForgetPassword']],
     ['POST', '/verifyEmail', ['Api\Controllers\UserController', 'verifyEmail']],
