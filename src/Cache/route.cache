@@ -46,6 +46,11 @@
         0 => 'Api\\Controllers\\WalletController',
         1 => 'getAllWalletDetailByUserName',
       ),
+      '/sendPayment' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'sendPayment',
+      ),
       '/generateAddressToRecivePayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',

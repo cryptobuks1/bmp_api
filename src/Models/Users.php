@@ -100,15 +100,29 @@ class Users extends ApiModel {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
 
             if ($token == 0) {
-                $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE  u.Username=:user_name AND bw.user_name =:user_name order by id desc limit 1");
+                $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE  u.Username=:user_name order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name]);
- 
             } else {
                 $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token=:token order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name, 'token' => $token]);
-
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result;
+            //$stmt->closeCursor();
+            return $result;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function getChildNodeDataByUserName($user_name) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+
+            $stmt = $this->pdo->prepare("SELECT * FROM users where  Sponsor=? AND Status='Close' AND treestatus='notree' order by id");
+            $stmt->execute([$user_name]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
             //$stmt->closeCursor();
             return $result;
         } catch (PDOException $e) {
@@ -119,7 +133,7 @@ class Users extends ApiModel {
     public function createUser($params) {
 
         try {
-            $sponsor_account = (isset($params['sponsor_account']))?$params['sponsor_account']:'24rgxpwex1b4ko88owko';
+            $sponsor_account = (isset($params['sponsor_account'])) ? $params['sponsor_account'] : '24rgxpwex1b4ko88owko';
             $sponsorResponse = $this->getSponsorNameByAccount($sponsor_account);
             $sponsor = $sponsorResponse['Username'];
             $stmt = $this->pdo->prepare("CALL insertCustomer(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -141,7 +155,7 @@ class Users extends ApiModel {
             ]);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
 
             if ($result) {
                 return $result;
@@ -168,13 +182,13 @@ class Users extends ApiModel {
             return $e->getMessage();
         }
     }
-    
+
     public function activateUserCode($paramas) {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
             $stmt = $this->pdo->prepare("UPDATE users set Activation=:activation,Token=:token WHERE Username=:user_name limit 1;");
-           $result = $stmt->execute(['activation' => $paramas['activation'],'token' => $paramas['token'],'user_name' => $paramas['user_name']]);
-           // $stmt->closeCursor();
+            $result = $stmt->execute(['activation' => $paramas['activation'], 'token' => $paramas['token'], 'user_name' => $paramas['user_name']]);
+            // $stmt->closeCursor();
             if ($result) {
                 return $result;
             } else {
@@ -184,5 +198,5 @@ class Users extends ApiModel {
             return $e->getMessage();
         }
     }
-    
+
 }

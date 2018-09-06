@@ -106,4 +106,23 @@ class Tree extends ApiModel {
         }
     }
 
+    public function getTreeDataByUserName($user_name) {
+        try {
+             $stmt = $this->pdo->prepare("SELECT * FROM tree where userid =? order by id desc limit 1");
+            //$stmt = $this->pdo->prepare("CALL insertTree(?,?,?)");
+            $stmt->execute([
+                $user_name
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
 }

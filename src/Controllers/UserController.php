@@ -6,6 +6,8 @@ use Http\Response;
 use Http\Request;
 use PDO;
 use Api\Models\Users;
+use Api\Models\Tree;
+use Api\Models\Rank;
 use Exception;
 use stdClass;
 use Api\Services\EmailHelper;
@@ -298,16 +300,18 @@ class UserController extends ApiController {
                 throw new Exception("Please enter valid platform.");
             }
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name']);
-
-            if ($useResponse) {
+            $treeObj = new Tree($this->pdo);
+            $rankObj = new Rank($this->pdo);
+            $useResponse['user_data'] = $usersObj->getUserDetailsByUserName($requestedParams['user_name']);
+            $useResponse['tree_data'] = $treeObj->getTreeDataByUserName($requestedParams['user_name']);
+            $useResponse['rank_data'] = $rankObj->getRankDataByUserName($requestedParams['user_name']);
+            $useResponse['child_node_data'] = $usersObj->getChildNodeDataByUserName($requestedParams['user_name']);
+            if ($useResponse['user_data']) {
                 $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'User details.');
             } else {
                 throw new Exception('Please enter valid username.');
             }
-            //$accessToken = $this->getOauthAccessToken();
-            //return  $this->response->setContent(json_encode($accessToken));
-            //$response->auth = $accessToken;
+
             
         } catch (Exception $e) {
             $object = new stdClass();

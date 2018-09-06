@@ -8,6 +8,7 @@ use stdClass;
 use Exception;
 use Api\Models\BmpWallet;
 use Api\Models\Users;
+use Api\Models\BmpWalletSentReceiveTransactions;
 use PDO;
 
 class WalletController extends ApiController {
@@ -25,10 +26,10 @@ class WalletController extends ApiController {
             $platform = parent::PLATFORM;
             $transactionType = parent::TRANSACTION_TYPE;
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_password','platform', 'transaction_type',);
+            $requiredData = array('wallet_guid', 'wallet_password', 'platform', 'transaction_type',);
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
-            
+
             //Get constant
             $platformKey = array_keys($platform);
 
@@ -40,14 +41,14 @@ class WalletController extends ApiController {
             if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
                 throw new Exception("Please enter valid transaction type.");
             }
-            
+
             if (empty($requestedParams["wallet_guid"]) || empty($requestedParams["wallet_password"])) {
                 throw new Exception("Please enter wallet credentials.");
             }
-            
+
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_password']);
             $result['balance'] = $this->blockchain->Wallet->getBalance();
-            $result['balance_usd']= $this->blockchain->Rates->fromBTC((double)$result['balance'],'USD');
+            $result['balance_usd'] = $this->blockchain->Rates->fromBTC((double) $result['balance'], 'USD');
             $result['identifier'] = $this->blockchain->Wallet->getIdentifier();
             if (!$result['balance']) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Unable to fetch the wallet balance.');
@@ -114,6 +115,7 @@ class WalletController extends ApiController {
                 }
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $response = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($response)); // send response in json format*/
@@ -126,19 +128,48 @@ class WalletController extends ApiController {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
             $this->response->setContent(json_encode($requestedParams));
+
+            $platform = parent::PLATFORM;
+            $transactionType = parent::TRANSACTION_TYPE;
+
+
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_pass', 'to_address', 'amount');
+            $requiredData = array('user_name','wallet_guid', 'wallet_pass', 'from_address', 'fee', 'to_address', 'amount');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
 
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $transactionTypeKey = array_keys($transactionType);
+            if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
+                throw new Exception("Please enter valid transaction type.");
+            }
+
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address'], $requestedParams['fee']);
-            if (!$result->tx_hash) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No record found');
+            if ($result->tx_hash) {
+
+                $requestedParams['sent_receive_flag'] = 1;
+                $requestedParams['invoice_id'] = 0;
+                $requestedParams['status'] = 2;
+                $requestedParams['response'] = $result;
+                $bmpWalletSentReceiveTransactions = new BmpWalletSentReceiveTransactions($this->pdo);
+                $bmpWalletTransaction = $bmpWalletSentReceiveTransactions->insert(array($requestedParams));
+                if ($bmpWalletTransaction) {
+                    $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'The payment sent successfully.');
+                } else {
+                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to sent payment.');
+                }
             } else {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+                $response = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $result, 'There is problem to sent payment.');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -172,6 +203,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -197,6 +229,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -221,6 +254,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -245,6 +279,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -269,6 +304,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -293,6 +329,7 @@ class WalletController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
@@ -326,7 +363,7 @@ class WalletController extends ApiController {
                 if ($useResponse['guid']) {
                     $this->blockchain->Wallet->credentials($useResponse['guid'], $useResponse['password']);
                     $walletData['balance'] = $this->blockchain->Wallet->getBalance();
-                    $walletData['balance_usd'] = $this->blockchain->Rates->fromBTC((double)$walletData['balance'],'USD');
+                    $walletData['balance_usd'] = $this->blockchain->Rates->fromBTC((double) $walletData['balance'], 'USD');
                     $walletData['addresses'] = $this->blockchain->Wallet->getAddresses();
                 } else {
                     $walletData['balance'] = 0;
@@ -340,6 +377,7 @@ class WalletController extends ApiController {
                 throw new Exception('Please enter valid username and password.');
             }
         } catch (Exception $e) {
+            $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/ 
