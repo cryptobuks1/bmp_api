@@ -166,6 +166,7 @@ class UserController extends ApiController {
         try {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
+            return $this->response->setContent(json_encode($requestedParams)); 
             $platform = parent::PLATFORM;
             $requiredData = array('email_address');
 
