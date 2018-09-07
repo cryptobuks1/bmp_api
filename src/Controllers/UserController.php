@@ -130,6 +130,60 @@ class UserController extends ApiController {
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
 
+    public function updateCustomer() {
+
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+            $transactionType = self::TRANSACTION_TYPE;
+            $grantType = parent::GRANT_TYPE;
+
+            $requiredData = array('name', 'telephone', 'gender', 'platform', 'id');
+
+            $this->validation($requestedParams, $requiredData);
+            $userDetails = "";
+
+            if (empty($requestedParams["id"]) || empty($requestedParams["name"]) || empty($requestedParams["gender"])) {
+                throw new Exception("Please enter all valid user details.");
+            }
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $transactionTypeKey = array_keys($transactionType);
+            if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
+                throw new Exception("Please enter valid transaction type.");
+            }
+            $grantTypeKey = array_keys($grantType);
+            if (isset($requestedParams["grant_type"]) && !in_array($requestedParams["grant_type"], $grantTypeKey)) {
+                throw new Exception("Please enter valid grant type.");
+            }
+
+            $usersObj = new Users($this->pdo);
+
+            $newUser = $usersObj->updateUser($requestedParams);
+            if ($newUser) {
+                $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'User updated successfully.');
+            } else {
+                $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, [], 'There is problem to update user.');
+            }
+
+            //$accessToken = $this->getOauthAccessToken();
+            //return  $this->response->setContent(json_encode($accessToken));
+            //$response->auth = $accessToken;
+            //$response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Please login to proceed.');
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+        }
+
+        return $this->response->setContent(json_encode($response)); // send response in json format
+    }
+
     public function sendVerficationEmail($params) {
         try {
             //PHPMailer Object
@@ -166,7 +220,7 @@ class UserController extends ApiController {
         try {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
-            return $this->response->setContent(json_encode($requestedParams)); 
+            return $this->response->setContent(json_encode($requestedParams));
             $platform = parent::PLATFORM;
             $requiredData = array('email_address');
 
@@ -264,10 +318,10 @@ class UserController extends ApiController {
 
             if ($useResponse) {
                 $sendForgetPassword = $this->sendForgetPasswordEmail($useResponse);
-                if($sendForgetPassword) {
+                if ($sendForgetPassword) {
                     $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The password has been sent to your register email address.');
                 } else {
-                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE,$sendForgetPassword , 'Please try after some time.');
+                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $sendForgetPassword, 'Please try after some time.');
                 }
             } else {
                 throw new Exception('Please enter valid user name.');
@@ -281,8 +335,8 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
-    
-      public function getAllUserDataByUserName() {
+
+    public function getAllUserDataByUserName() {
 
         try {
             $this->validateOauthRequest();
@@ -291,7 +345,7 @@ class UserController extends ApiController {
             $requiredData = array('user_name', 'platform');
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
-            if (empty($requestedParams["user_name"]) ) {
+            if (empty($requestedParams["user_name"])) {
                 throw new Exception("Please enter valid user credentials.");
             }
             //Get constant
@@ -312,8 +366,6 @@ class UserController extends ApiController {
             } else {
                 throw new Exception('Please enter valid username.');
             }
-
-            
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
@@ -321,4 +373,5 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
+
 }

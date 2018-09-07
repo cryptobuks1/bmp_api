@@ -167,6 +167,21 @@ class Users extends ApiModel {
         }
     }
 
+    public function updateUser($params) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("UPDATE users SET Fullname = ?,Telephone=?,Gender=? WHERE users.id = ?");
+            $result = $stmt->execute([$params['name'], $params['telephone'], $params['gender'], $params['id']]);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function getSponsorNameByAccount($account = '24rgxpwex1b4ko88owko') {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
