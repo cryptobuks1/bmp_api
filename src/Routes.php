@@ -12,6 +12,7 @@ return [
     ['POST', '/createWallet', ['Api\Controllers\WalletController', 'createWallet']], // To create wallet
     ['POST', '/getAllWalletDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDetailByUserName']], // To get wallet details by user name
     ['POST', '/sendPayment', ['Api\Controllers\WalletController', 'sendPayment']], // To get wallet details by user name
+    ['POST', '/getAllWalletDBTransactionDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDBTransactionDetailByUserName']], // To get wallet transactions by user name
 
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
@@ -32,6 +33,11 @@ return [
     ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
     ['POST', '/sendForgetPassword', ['Api\Controllers\UserController', 'sendForgetPassword']],
     ['POST', '/verifyEmail', ['Api\Controllers\UserController', 'verifyEmail']],
+    
+    //Admin deatils
+    ['POST', '/getAllWalletDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllWalletDBTransactionDetails']], // To get wallet transactions by user name
+    ['POST', '/getAllInvoiceDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllInvoiceDBTransactionDetails']], // To get wallet transactions by user name
+    
     
     
 ];

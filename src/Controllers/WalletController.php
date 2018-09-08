@@ -69,7 +69,7 @@ class WalletController extends ApiController {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
             //array of required fields
-            $requiredData = array('password', 'user_name', 'email_address');
+            $requiredData = array('password', 'user_name', 'email_address','platform','transaction_type');
             $platform = parent::PLATFORM;
             $transactionType = parent::TRANSACTION_TYPE;
 
@@ -134,7 +134,7 @@ class WalletController extends ApiController {
 
 
             //array of required fields
-            $requiredData = array('user_name','wallet_guid', 'wallet_pass', 'from_address', 'fee', 'to_address', 'amount');
+            $requiredData = array('user_name', 'wallet_guid', 'wallet_pass', 'from_address', 'to_address', 'amount');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
 
@@ -151,7 +151,11 @@ class WalletController extends ApiController {
             }
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
-            $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address'], $requestedParams['fee']);
+            $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address']);
+            /*$result = new stdClass();
+            $result->message = "Sent 0.1 BTC to 1A8JiWcwvpY7tAopUkSnGuEYHmzGYfZPiq";
+            $result->tx_hash = "f322d01ad784e5deeb25464a5781c3b20971c1863679ca506e702e3e33c18e9c";
+            $result->notice = "Some funds are pending confirmation and cannot be spent yet (Value 0.001 BTC)";*/
             if ($result->tx_hash) {
 
                 $requestedParams['sent_receive_flag'] = 1;
@@ -161,9 +165,9 @@ class WalletController extends ApiController {
                 $bmpWalletSentReceiveTransactions = new BmpWalletSentReceiveTransactions($this->pdo);
                 $bmpWalletTransaction = $bmpWalletSentReceiveTransactions->insert(array($requestedParams));
                 if ($bmpWalletTransaction) {
-                    $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'The payment sent successfully.');
+                    $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'The payment sent successfully.');
                 } else {
-                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to sent payment.');
+                    $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to sent payment.');
                 }
             } else {
                 $response = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $result, 'There is problem to sent payment.');
@@ -217,7 +221,7 @@ class WalletController extends ApiController {
             $requestedParams = $this->request->getParameters();
             $this->response->setContent(json_encode($requestedParams));
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_pass');
+            $requiredData = array('wallet_guid', 'wallet_pass','platform');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
@@ -340,7 +344,6 @@ class WalletController extends ApiController {
         try {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
-            $this->response->setContent(json_encode($requestedParams));
             //array of required fields
             $requiredData = array('user_name', 'platform');
             //Validate input parameters
@@ -375,6 +378,46 @@ class WalletController extends ApiController {
                 //$response = $useResponse;
             } else {
                 throw new Exception('Please enter valid username and password.');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/ 
+    }
+
+    public function getAllWalletDBTransactionDetailByUserName() {
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            //array of required fields
+            $requiredData = array('user_name', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            $platform = parent::PLATFORM;
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            if (empty($requestedParams["user_name"])) {
+                throw new Exception("Please enter valid user credentials.");
+            }
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+            //$response['user_data'] = $useResponse;
+            $walletData = [];
+            if ($useResponse) {
+                $bmpWalletSentReceiveTransactions = new BmpWalletSentReceiveTransactions($this->pdo);
+                $walletDBResponse = $bmpWalletSentReceiveTransactions->getAllWalletDBTransactions($requestedParams['user_name']);
+
+                $response['wallet_data'] = $walletDBResponse;
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
+                //$response = $useResponse;
+            } else {
+                throw new Exception('Please enter valid username.');
             }
         } catch (Exception $e) {
             $object = new stdClass();

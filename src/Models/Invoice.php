@@ -126,18 +126,40 @@ class Invoice extends ApiModel {
      * return success response or error response in json 
      * return id in data params
      */
-    public function isInvoicePresent($username, $purpose,$status='Unpaid') {
+    public function isInvoicePresent($username, $purpose, $status = 'Unpaid') {
         try {
-           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status=:Status order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username,'Status'=>$status]);
-               
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result;
-                } else {
-                    return 0;
-                }
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status=:Status order by id desc limit 1");
+            $stmt->execute(['Purpose' => $purpose, 'Username' => $username, 'Status' => $status]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function getAllInvoiceDBTransactions($user_name = '') {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            if ($user_name == '') {
+                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` order by id desc ");
+                $stmt->execute();
+            } else {
+                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` where Username = ? order by id desc ");
+                $stmt->execute([$user_name]);
+            }
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return [];
+            }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

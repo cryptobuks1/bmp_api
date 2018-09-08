@@ -46,6 +46,11 @@
         0 => 'Api\\Controllers\\WalletController',
         1 => 'sendPayment',
       ),
+      '/getAllWalletDBTransactionDetailByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWalletDBTransactionDetailByUserName',
+      ),
       '/generateAddressToRecivePayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',
@@ -110,6 +115,16 @@
       array (
         0 => 'Api\\Controllers\\UserController',
         1 => 'verifyEmail',
+      ),
+      '/getAllWalletDBTransactionDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllWalletDBTransactionDetails',
+      ),
+      '/getAllInvoiceDBTransactionDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllInvoiceDBTransactionDetails',
       ),
     ),
   ),

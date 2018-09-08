@@ -231,3 +231,5 @@ ALTER TABLE `oauth_users`
 COMMIT;
 
 ALTER TABLE `users` ADD `is_wallet_user` ENUM('1','2') NOT NULL DEFAULT '2' COMMENT '1:Yes 2: No' AFTER `platform`;
+
+ALTER TABLE `users` ADD `is_admin_user` ENUM('1','2') NOT NULL DEFAULT '2' COMMENT '1:Yes 2: No' AFTER `is_wallet_user`;
