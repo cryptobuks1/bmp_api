@@ -10,7 +10,8 @@ addMiningBonus: BEGIN
             SET success = 0;
             SET lastInsertedId = 0;
                 innerBlock:BEGIN   
-                DECLARE targetUserCursor CURSOR FOR         
+                DECLARE targetUser
+Cursor CURSOR FOR         
 
                     SELECT
                         ppm.id,
