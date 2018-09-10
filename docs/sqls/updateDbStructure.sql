@@ -233,3 +233,46 @@ COMMIT;
 ALTER TABLE `users` ADD `is_wallet_user` ENUM('1','2') NOT NULL DEFAULT '2' COMMENT '1:Yes 2: No' AFTER `platform`;
 
 ALTER TABLE `users` ADD `is_admin_user` ENUM('1','2') NOT NULL DEFAULT '2' COMMENT '1:Yes 2: No' AFTER `is_wallet_user`;
+
+
+CREATE TABLE `bmp_pool_benifits` (
+  `id` int(11) NOT NULL,
+  `pool_name` varchar(250) DEFAULT NULL,
+  `pool_table_name` varchar(250) DEFAULT NULL,
+  `daily_bonus` decimal(14,4) NOT NULL DEFAULT '0.0000',
+  `monthly_bonus` decimal(14,4) NOT NULL DEFAULT '0.0000',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `bmp_pool_benifits`
+--
+
+INSERT INTO `bmp_pool_benifits` (`id`, `pool_name`, `pool_table_name`, `daily_bonus`, `monthly_bonus`, `created_at`, `updated_at`) VALUES
+(1, 'Starter', 'starterpack', '1.5000', '30.0000', '2018-09-10 14:23:08', '2018-09-10 14:23:08'),
+(2, 'Mini', 'minipack', '3.0000', '90.0000', '2018-09-10 14:23:08', '2018-09-10 14:23:08'),
+(3, 'Medium', 'mediumpack', '6.0000', '180.0000', '2018-09-10 14:25:05', '2018-09-10 14:25:05'),
+(4, 'Grand', 'grandpack', '12.0000', '360.0000', '2018-09-10 14:25:05', '2018-09-10 14:25:05'),
+(5, 'Ultimate', 'ultimatepack', '24.0000', '420.0000', '2018-09-10 14:25:05', '2018-09-10 14:25:05');
+
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bmp_pool_benifits`
+--
+ALTER TABLE `bmp_pool_benifits`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bmp_pool_benifits`
+--
+ALTER TABLE `bmp_pool_benifits`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;

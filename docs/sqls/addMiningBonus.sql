@@ -1,100 +1,131 @@
 DELIMITER $$
 DROP PROCEDURE IF EXISTS addMiningBonus$$
- CREATE PROCEDURE addMiningBonus()
+CREATE PROCEDURE addMiningBonus(IN pUserName VARCHAR(250))
 addMiningBonus: BEGIN
-        DECLARE success INT(11) DEFAULT 0;
-        DECLARE approve_bill, custBillCount, customerId,lastInsertedId INT(11) DEFAULT  0;
-        DECLARE responseMessage VARCHAR(250) DEFAULT '';
+        DECLARE success,done,doneInner,selectedUserId,lastInsertedId,isMonthlyApplicable,isDailyApplicable,selectedPoolId INT(11) DEFAULT 0;
+        DECLARE responseMessage,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selectedPoolName,selectedPooltableName,tempStr,miningMonthDate,currentMonthDate VARCHAR(250) DEFAULT '';
+        DECLARE selecetdCreatedAt DATE;
+        DECLARE selectedDailyBonus,selectedMonthlyBonus DECIMAL(14,4) DEFAULT 0.00;
+        SET success = 0;
+        SET lastInsertedId = 0;
 
-        
-            SET success = 0;
-            SET lastInsertedId = 0;
-                innerBlock:BEGIN   
-                DECLARE targetUser
-Cursor CURSOR FOR         
+            CREATE TEMPORARY TABLE IF NOT EXISTS tmp_target_user(
+                    temp_id integer(10) PRIMARY KEY AUTO_INCREMENT,
+                    user_name VARCHAR(250),
+                    pool_name VARCHAR(250),
+                    pool_table_name VARCHAR(250),
+                    benifit_type TINYINT DEFAULT 0, -- 1:Daily 2:Monthly 
+                    benifit_amount_usd DECIMAL(14,4),
+                    created_date DATE
+                );
+
+            innerBlock:BEGIN   
+            DECLARE targetUserCursor CURSOR FOR         
 
                     SELECT
-                        ppm.id,
-                        pm.merchant_id,
-                        trp.nextLocationVal,
-                       	trp.nextlenQtyVal,
-                        pm.product_category,
-                        pm.product_sub_category,
-                        (ppm.selling_price_points_value * ptsRatio),
-                        (ppm.special_price_points_value * ptsRatio),
-                        ppm.special_price_start_date,
-                        ppm.special_price_end_date
-
+                        id,
+                        Fullname,
+                        Username,
+                        Email,
+                        Status,
+                        Password,
+                        Sponsor,
+                        created_at
                     FROM
-                    	`tmp_redeeming_product` AS trp 
-                    JOIN
-                        `products_merchant` AS ppm ON ppm.id = trp.nextProductVal
-                    JOIN     
-                        `products_master` AS pm ON pm.id=ppm.product_id
-                    
-                    WHERE
-                        FIND_IN_SET(ppm.id,targetId)
-                    GROUP BY trp.nextProductVal,trp.nextLocationVal;
-                    -- AND
-                       -- pm.merchant_id=merchantId;
+                        users
+                    WHERE 
+                        Status = 'Close' 
+                    AND 
+                        Activation = '1'
+                    AND 
+                        if((pUserName <> ''),Username=pUserName, 1=1)
+                    ORDER BY
+                        id DESC;
             
                 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-                OPEN targetProductsCursor;
-                targetProduct: LOOP
-                    FETCH targetProductsCursor INTO selectedProductId,selectedProductMerchantId,salectedLocationId,quantityPassed,selectedProductCategoryId,selectedProductSubCategoryId,selectedProductSellingPricePoints,selectedProductSpecialPricePoints,selectedProductSpecialPriceStartDate,selectedProductSpecialPriceEndDate;
-
+                OPEN targetUserCursor;
+                targetUser: LOOP
+                    FETCH targetUserCursor INTO selectedUserId,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selecetdCreatedAt;
+                    
                     IF done = 1 THEN 
-                        -- SELECT 'PROMOCODE IS NOT VALID FOR THIS MERCHANT/PRODUCTS.' AS response,'0' AS isPromocodeValid;
-                        LEAVE targetProduct;
-                        -- LEAVE verifyPromocode;
+                        LEAVE targetUser;
                     END IF;
-                END LOOP targetProduct;
-                CLOSE targetProductsCursor;
+                   /* innerPoolBlock:BEGIN   
+                    DECLARE targetPoolCursor CURSOR FOR  
+                        SELECT
+                            id,
+                            pool_name,
+                            pool_table_name,
+                            daily_bonus,
+                            monthly_bonus
+                          FROM
+                            bmp_pool_benifits;
+
+                        DECLARE CONTINUE HANDLER FOR NOT FOUND SET doneInner = 1;
+                        OPEN targetPoolCursor;
+                        targetPool: LOOP
+                            FETCH targetPoolCursor INTO selectedPoolId,selectedPoolName,selectedPooltableName,selectedDailyBonus,selectedMonthlyBonus;
+
+                            IF doneInner = 1 THEN 
+                                LEAVE targetPool;
+                            END IF;
+                            
+                        -- ========================================================================================================================================================================================================
+                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE START
+                        -- ========================================================================================================================================================================================================
+                            SET @tempStr = CONCAT("SELECT *,DATE_FORMAT(MiningDate,'%d') AS miningMonthDate,DATE_FORMAT(CURRENT_DATE(),'%d') AS currentMonthDate FROM " , selectedPooltableName ," WHERE  CompletionDate > CURRENT_DATE() AND CompletionDate <> 0 AND MiningDate < CURRENT_DATE() AND MiningDate <> 0 AND  Username = '", selectedUserName ,"' AND Status = 'Active'");
+                            
+                            PREPARE stmt FROM @tempStr;
+                            EXECUTE stmt;
+                            
+                            SELECT miningMonthDate,currentMonthDate;
+                            IF EXISTS (tempStr) THEN
+                                -- QUERY TO INSERT DAILY BONUS --
+                                INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,selectedPoolName,selectedPooltableName,1,selectedDailyBonus,now());
+                                IF miningMonthDate = currentMonthDate THEN
+                                     -- QUERY TO INSERT MONTHLY BONUS --
+                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,selectedPoolName,selectedPooltableName,2,selectedMonthlyBonus,now());
+                                END IF;    
+                            END IF;
+                            DEALLOCATE PREPARE stmt;
+                        -- ========================================================================================================================================================================================================
+                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE END
+                        -- ========================================================================================================================================================================================================
+
+
+                            -- SELECT selectedUserId,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selecetdCreatedAt;
+                        
+                        END LOOP targetPool;
+                        CLOSE targetUserCursor;
+                    END innerPoolBlock;
+*/
+                         -- ========================================================================================================================================================================================================
+                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR STARTER START 
+                        -- ========================================================================================================================================================================================================
+
+                           IF EXISTS (SELECT * FROM starterpack WHERE  CompletionDate > CURRENT_DATE() AND CompletionDate <> 0 AND MiningDate < CURRENT_DATE() AND MiningDate <> 0 AND  Username = selectedUserName AND Status = 'Active' ) THEN
+                                
+                                SELECT DATE_FORMAT(MiningDate,'%d') AS miningMonthDate,DATE_FORMAT(CURRENT_DATE(),'%d') AS currentMonthDate  FROM starterpack WHERE  CompletionDate > CURRENT_DATE() AND CompletionDate <> 0 AND MiningDate < CURRENT_DATE() AND MiningDate <> 0 AND  Username = selectedUserName AND Status = 'Active';
+                                SELECT daily_bonus AS selectedDailyBonus,monthly_bonus AS selectedMonthlyBonus FROM bmp_pool_benifits WHERE pool_table_name = 'starterpack';
+                                SET selectedDailyBonus = selectedDailyBonus;
+                                -- QUERY TO INSERT DAILY BONUS --
+                                INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Starter','starterpack',1,selectedDailyBonus,now());
+                                IF miningMonthDate = currentMonthDate THEN
+                                     -- QUERY TO INSERT MONTHLY BONUS --
+                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Starter','starterpack',2,selectedMonthlyBonus,now());
+                                END IF;    
+                            END IF;
+                        -- ========================================================================================================================================================================================================
+                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE STARTER END
+                        -- ========================================================================================================================================================================================================
+
+
+
+
+                      END LOOP targetUser;
+                CLOSE targetUserCursor;
                 END innerBlock;
-                
- /*               START TRANSACTION;
-                IF NOT EXISTS (SELECT * FROM `users` WHERE  Username=user_name AND Password=password order by id desc limit 1) THEN
-
-                INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus,platform,is_wallet_user) VALUES(name,country,email,telephone,gender,user_name,password,sponsor_account,token,account,status,activation,'notree',platform,isWalletUser);
-                SET lastInsertedId = LAST_INSERT_ID(); 
-                SET customerId = LAST_INSERT_ID();
-                INSERT INTO accountbalance (Balance, Username) VALUES('0',user_name);
-                INSERT INTO binaryincome(userid, day_bal, current_bal, total_bal) VALUES(user_name,'0','0','0');
-                INSERT INTO hubcoin (Balance, Username) VALUES('0',user_name);
-                INSERT INTO team (Balance, Username) VALUES('0',user_name);
-                INSERT INTO teamvolume (Balance, Username) VALUES('0',user_name);
-                INSERT INTO rank (Rank, Rankid, Username, Sponsor) VALUES('Miner','1',user_name,sponsor_account);
-                INSERT INTO mining (Balance, Username) VALUES('0',user_name);
-                INSERT INTO commission (Balance, Username) VALUES('0',user_name);
-                INSERT INTO starterpack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '547.50', '0', 'Not-Purchased');
-                INSERT INTO minipack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '1095', '0', 'Not-Purchased');
-                INSERT INTO mediumpack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '2190', '0', 'Not-Purchased');
-                INSERT INTO grandpack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '4380', '0', 'Not-Purchased');
-                INSERT INTO ultimatepack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable, Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '8760', '0', 'Not-Purchased');
-                INSERT INTO register (EntryDate, Amount, Username) VALUES('0', '0', user_name);
-
-
-                
-                IF lastInsertedId = 0 THEN
-                        SET responseMessage = 'Problem to add customer.';
-                        SET success = 0;
-                        ROLLBACK;
-                        SELECT success AS response,lastInsertedId,responseMessage; 
-                        LEAVE insertCustomer;		
-                ELSE    
-                        SET responseMessage = 'Customer added succesfully.';
-                        SET success = 1;
-                    	COMMIT;
-                        SELECT success AS response,lastInsertedId,responseMessage; 
-                        LEAVE insertCustomer;
-
-                END IF;
-            ELSE 
-                SET responseMessage = 'Customer already exist.';
-                SET success = 0;
-            END IF;
-        SELECT success AS response, lastInsertedId,responseMessage; 
-        
-        COMMIT;  */ 
+                SELECT * FROM tmp_target_user;
+                DROP TEMPORARY TABLE tmp_target_user;
         END$$
 DELIMITER ;
