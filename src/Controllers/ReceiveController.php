@@ -60,7 +60,7 @@ class ReceiveController extends ApiController {
                     $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
                     print_r($response);
                     print_r($callbackUrl);
-                    exit;
+                    
                     // Show receive address to user:
                      $jsonResponse = array();
                      $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
@@ -77,7 +77,7 @@ class ReceiveController extends ApiController {
                 foreach ($requestedParams as $key => $value) {
                     $invoices[0][$key] = $value;
                 }
-
+                exit;
                 $result = $invoice->insert($invoices);
                 if ($result['invoice_id']) {
                     $requestedParams['invoice_id'] = $result['invoice_id'];
