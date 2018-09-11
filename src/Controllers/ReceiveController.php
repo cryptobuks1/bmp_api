@@ -53,12 +53,9 @@ class ReceiveController extends ApiController {
                     if (empty(getenv('CALLBACK_URL')) || empty(getenv('API_CODE')) || empty(getenv('X_PUB')) || empty(getenv('SECRET'))) {
                         throw new Exception("The environment parameters are missing.");
                     }
-                    //$callbackUrl = 'https://bitminepool.com/src/callback.php';
-                    //$callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
-                    $callbackUrl = 'https://bitminepool.com/src/callback.php?invoice=123&secret=10081988Mangesh';
-                    $callbackUrl = urlencode($callbackUrl);
-                    
-                    $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
+                    $callbackUrl = getenv('CALLBACK_URL');
+                    $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
+                    $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), urlencode($callbackUrl), getenv('GAP_LIMIT'));
                     // Show receive address to user:
                      $jsonResponse = array();
                      $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
@@ -75,6 +72,7 @@ class ReceiveController extends ApiController {
                 foreach ($requestedParams as $key => $value) {
                     $invoices[0][$key] = $value;
                 }
+
                 $result = $invoice->insert($invoices);
                 if ($result['invoice_id']) {
                     $requestedParams['invoice_id'] = $result['invoice_id'];
