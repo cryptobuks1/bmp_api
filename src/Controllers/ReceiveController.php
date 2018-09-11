@@ -55,20 +55,21 @@ class ReceiveController extends ApiController {
                     }
                     $callbackUrl = getenv('CALLBACK_URL');
                     $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
-                    //   $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), urlencode($callbackUrl), getenv('GAP_LIMIT'));
+                    $my_xpub = getenv('X_PUB');
+                    $my_api_key = getenv('API_CODE');
+
+                    $my_callback_url = getenv('CALLBACK_URL').'?invoice_id='.$requestedParams['Invoiceid'].'&secret=' . getenv('SECRET');
+                       $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), urlencode($my_callback_url) , getenv('GAP_LIMIT'));
                     // Show receive address to user:
-                    /* $jsonResponse = array();
+                     $jsonResponse = array();
                       $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
                       $jsonResponse['index'] = $response->getIndex();
                       $jsonResponse['callback'] = $response->getCallback();
                       $requestedParams['api_response'] = json_encode($jsonResponse);
                       //$requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj'; */
-                    $my_xpub = getenv('X_PUB');
-                    $my_api_key = getenv('API_CODE');
 
-                    $my_callback_url = getenv('CALLBACK_URL').'?invoice_id='.$requestedParams['Invoiceid'].'&secret=' . getenv('SECRET');
 
-                    $root_url = 'https://api.blockchain.info/v2/receive';
+                    /*$root_url = 'https://api.blockchain.info/v2/receive';
 
                     $parameters = 'xpub=' . $my_xpub . '&callback=' . urlencode($my_callback_url) . '&key=' . $my_api_key;
 
@@ -76,7 +77,7 @@ class ReceiveController extends ApiController {
 
                     $object = json_decode($response);
                     $requestedParams['Btcaddress'] = $object->address;
-                    $requestedParams['api_response'] = $object;
+                    $requestedParams['api_response'] = $object;*/
                     //$requestedParams['api_response'] = '{"btc_address":"18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj","index":8,"callback":"https:\/\/bitminepool.com\/bitcoin_system\/production\/payment\/callback.php?invoice=1234&secret=10081988Bmp"}';
                 } catch (Exception $e) {
                     $requestedParams['Btcaddress'] = '';
