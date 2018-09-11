@@ -175,7 +175,7 @@ class ReceiveController extends ApiController {
             }
             $callbackUrl = getenv('CALLBACK_URL');
             $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
-            $logs = $this->blockchain->ReceiveV2->callbackLogs(getenv('API_CODE'), $callbackUrl);
+            $logs = $this->blockchain->ReceiveV2->callbackLogs(getenv('API_CODE'), urlencode($callbackUrl));
             $result = [];
             foreach ($logs as $key => $log) {
                 $result[$key]['callback'] = $log->getCallback();
