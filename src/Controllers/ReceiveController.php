@@ -53,8 +53,8 @@ class ReceiveController extends ApiController {
                     if (empty(getenv('CALLBACK_URL')) || empty(getenv('API_CODE')) || empty(getenv('X_PUB')) || empty(getenv('SECRET'))) {
                         throw new Exception("The environment parameters are missing.");
                     }
-                    $callbackUrl = 'https://bitminepool.com/src/callback.php';
-                    $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
+                    //$callbackUrl = 'https://bitminepool.com/src/callback.php';
+                    //$callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
                     $callbackUrl = 'https://bitminepool.com/src/callback.php?invoice=123&secret=10081988Mangesh';
                     $callbackUrl = urlencode($callbackUrl);
                     
