@@ -55,14 +55,28 @@ class ReceiveController extends ApiController {
                     }
                     $callbackUrl = getenv('CALLBACK_URL');
                     $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
-                    $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), urlencode($callbackUrl), getenv('GAP_LIMIT'));
+                    //   $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), urlencode($callbackUrl), getenv('GAP_LIMIT'));
                     // Show receive address to user:
-                     $jsonResponse = array();
-                     $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
-                     $jsonResponse['index'] = $response->getIndex();
-                     $jsonResponse['callback'] = $response->getCallback();
-                     $requestedParams['api_response'] = json_encode($jsonResponse);
-                    //$requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj';
+                    /* $jsonResponse = array();
+                      $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
+                      $jsonResponse['index'] = $response->getIndex();
+                      $jsonResponse['callback'] = $response->getCallback();
+                      $requestedParams['api_response'] = json_encode($jsonResponse);
+                      //$requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj'; */
+                    $my_xpub = getenv('X_PUB');
+                    $my_api_key = getenv('API_CODE');
+
+                    $my_callback_url = 'https://bitminepool.com/src/callback.php?invoice_id=058921123&secret=' . getenv('SECRET');
+
+                    $root_url = 'https://api.blockchain.info/v2/receive';
+
+                    $parameters = 'xpub=' . $my_xpub . '&callback=' . urlencode($my_callback_url) . '&key=' . $my_api_key;
+
+                    $response = file_get_contents($root_url . '?' . $parameters);
+
+                    $object = json_decode($response);
+                    $requestedParams['Btcaddress'] = $object->address;
+                    $requestedParams['api_response'] = $object;
                     //$requestedParams['api_response'] = '{"btc_address":"18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj","index":8,"callback":"https:\/\/bitminepool.com\/bitcoin_system\/production\/payment\/callback.php?invoice=1234&secret=10081988Bmp"}';
                 } catch (Exception $e) {
                     $requestedParams['Btcaddress'] = '';
@@ -123,7 +137,7 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
-    
+
     public function checkForPaidInvoiceToRecivePayment() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
@@ -146,10 +160,10 @@ class ReceiveController extends ApiController {
             }
 
             $invoice = new Invoice($this->pdo);
-            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['Username'], $requestedParams['Purpose'],'Paid');
+            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['Username'], $requestedParams['Purpose'], 'Paid');
             //$this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             if ($isInvoiceExist) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'You have already paid for '.$requestedParams["Purpose"].'.');
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'You have already paid for ' . $requestedParams["Purpose"] . '.');
             } else {
                 $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, [], 'Please proceed ahead for Invoice generation.');
             }
@@ -159,7 +173,7 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
-    
+
     public function getCallbacklogsByInvoiceId() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
