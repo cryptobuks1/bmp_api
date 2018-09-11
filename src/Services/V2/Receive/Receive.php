@@ -49,7 +49,6 @@ class Receive
     public function generate($key, $xpub, $callback, $gap_limit = null)
     {
         $p = compact('key', 'xpub', 'callback');
-        return $p;
         if(!is_null($gap_limit))
             $p['gap_limit'] = $gap_limit;
         $q = http_build_query($p);
