@@ -53,7 +53,7 @@ class ReceiveController extends ApiController {
                     if (empty(getenv('CALLBACK_URL')) || empty(getenv('API_CODE')) || empty(getenv('X_PUB')) || empty(getenv('SECRET'))) {
                         throw new Exception("The environment parameters are missing.");
                     }
-                    $callbackUrl = getenv('CALLBACK_URL');
+                    $callbackUrl = urlencode(getenv('CALLBACK_URL'));
                     $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
                     $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
                     // Show receive address to user:
