@@ -66,7 +66,7 @@ class ReceiveController extends ApiController {
                     $my_xpub = getenv('X_PUB');
                     $my_api_key = getenv('API_CODE');
 
-                    $my_callback_url = 'https://bitminepool.com/src/callback.php?invoice_id=058921123&secret=' . getenv('SECRET');
+                    $my_callback_url = getenv('CALLBACK_URL').'?invoice_id='.$requestedParams['Invoiceid'].'&secret=' . getenv('SECRET');
 
                     $root_url = 'https://api.blockchain.info/v2/receive';
 
