@@ -74,7 +74,6 @@ class ReceiveController extends ApiController {
                 foreach ($requestedParams as $key => $value) {
                     $invoices[0][$key] = $value;
                 }
-                exit;
                 $result = $invoice->insert($invoices);
                 if ($result['invoice_id']) {
                     $requestedParams['invoice_id'] = $result['invoice_id'];
