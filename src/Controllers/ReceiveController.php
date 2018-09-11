@@ -55,15 +55,15 @@ class ReceiveController extends ApiController {
                     }
                     $callbackUrl = getenv('CALLBACK_URL');
                     $callbackUrl .= "?invoice=" . $requestedParams['Invoiceid'] . "&secret=" . getenv('SECRET');
-                    //  $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
+                    $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
                     // Show receive address to user:
-                    // $jsonResponse = array();
-                    // $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
-                    // $jsonResponse['index'] = $response->getIndex();
-                    // $jsonResponse['callback'] = $response->getCallback();
-                    // $requestedParams['api_response'] = json_encode($jsonResponse);
-                    $requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj';
-                    $requestedParams['api_response'] = '{"btc_address":"18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj","index":8,"callback":"https:\/\/bitminepool.com\/bitcoin_system\/production\/payment\/callback.php?invoice=1234&secret=10081988Bmp"}';
+                     $jsonResponse = array();
+                     $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
+                     $jsonResponse['index'] = $response->getIndex();
+                     $jsonResponse['callback'] = $response->getCallback();
+                     $requestedParams['api_response'] = json_encode($jsonResponse);
+                    //$requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj';
+                    //$requestedParams['api_response'] = '{"btc_address":"18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj","index":8,"callback":"https:\/\/bitminepool.com\/bitcoin_system\/production\/payment\/callback.php?invoice=1234&secret=10081988Bmp"}';
                 } catch (Exception $e) {
                     $requestedParams['Btcaddress'] = '';
                     $requestedParams['api_response'] = $e;
