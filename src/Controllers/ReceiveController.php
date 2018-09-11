@@ -58,7 +58,6 @@ class ReceiveController extends ApiController {
                     $callbackUrl = urlencode($callbackUrl);
                     
                     $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
-                   return  $this->response->setContent(json_encode([$response,$callbackUrl]));
                     // Show receive address to user:
                      $jsonResponse = array();
                      $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
