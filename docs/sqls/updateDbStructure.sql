@@ -276,3 +276,15 @@ ALTER TABLE `bmp_pool_benifits`
 --
 ALTER TABLE `bmp_pool_benifits`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+
+
+/*After 1st release on 12-09-2018*/
+
+ALTER TABLE `dailymine`  ADD `Username` VARCHAR(250) NULL DEFAULT NULL  AFTER `Status`,  ADD `is_monthly_mining` ENUM('1','0') NOT NULL DEFAULT '0' COMMENT '1:Yes 0:No'  AFTER `Username`,  ADD `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `is_monthly_mining`,  ADD `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `created_at`;
+
+ALTER TABLE `dailymine` CHANGE `Date` `Date` DATE NULL DEFAULT NULL;
+
+ALTER TABLE `dailymine` CHANGE `Btc` `Btc` DECIMAL(14,4) NOT NULL DEFAULT '0', CHANGE `Usd` `Usd` DECIMAL(14,4) NOT NULL DEFAULT '0';
+
+ALTER TABLE `mining` CHANGE `Balance` `Balance` DECIMAL(14,4) NOT NULL DEFAULT '0.0';
