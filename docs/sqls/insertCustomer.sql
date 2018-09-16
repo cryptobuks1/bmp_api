@@ -31,8 +31,10 @@ insertCustomer: BEGIN
                 INSERT INTO grandpack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '4380', '0', 'Not-Purchased');
                 INSERT INTO ultimatepack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable, Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '8760', '0', 'Not-Purchased');
                 INSERT INTO register (EntryDate, Amount, Username) VALUES('0', '0', user_name);
-
-
+                
+                IF EXISTS (SELECT * FROM `users` WHERE Username=sponsor_account AND is_admin_user = '1' order by id desc limit 1 ) THEN
+                    INSERT INTO tree (userid) VALUES(user_name);
+                END IF;
                 
                 IF lastInsertedId = 0 THEN
                         SET responseMessage = 'Problem to add customer.';

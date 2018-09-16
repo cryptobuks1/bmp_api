@@ -26,7 +26,7 @@ class WalletController extends ApiController {
             $platform = parent::PLATFORM;
             $transactionType = parent::TRANSACTION_TYPE;
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_password', 'platform', 'transaction_type',);
+            $requiredData = array('wallet_guid', 'wallet_password', 'platform', 'transaction_type');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
 

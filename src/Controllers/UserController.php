@@ -121,7 +121,7 @@ class UserController extends ApiController {
             //$accessToken = $this->getOauthAccessToken();
             //return  $this->response->setContent(json_encode($accessToken));
             //$response->auth = $accessToken;
-            $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Please login to proceed.');
+            //$response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Please login to proceed.');
         } catch (Exception $e) {
             $object = new stdClass();
             $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());

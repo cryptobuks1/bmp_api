@@ -15,7 +15,7 @@ use Redis;
 use Exception;
 use stdClass;
 
-class Rank extends ApiModel {
+class Minipack extends ApiModel {
 
     /**
      * table name used by model 
