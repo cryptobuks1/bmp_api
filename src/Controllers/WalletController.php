@@ -9,6 +9,7 @@ use Exception;
 use Api\Models\BmpWallet;
 use Api\Models\Users;
 use Api\Models\BmpWalletSentReceiveTransactions;
+use Api\Models\BmpWalletWithdrawlTransactions;
 use PDO;
 
 class WalletController extends ApiController {
@@ -69,7 +70,7 @@ class WalletController extends ApiController {
             $this->validateOauthRequest();
             $requestedParams = $this->request->getParameters();
             //array of required fields
-            $requiredData = array('password', 'user_name', 'email_address','platform','transaction_type');
+            $requiredData = array('password', 'user_name', 'email_address', 'platform', 'transaction_type');
             $platform = parent::PLATFORM;
             $transactionType = parent::TRANSACTION_TYPE;
 
@@ -152,10 +153,10 @@ class WalletController extends ApiController {
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             $result = $this->blockchain->Wallet->send($requestedParams['to_address'], $requestedParams['amount'], $requestedParams['from_address']);
-            /*$result = new stdClass();
-            $result->message = "Sent 0.1 BTC to 1A8JiWcwvpY7tAopUkSnGuEYHmzGYfZPiq";
-            $result->tx_hash = "f322d01ad784e5deeb25464a5781c3b20971c1863679ca506e702e3e33c18e9c";
-            $result->notice = "Some funds are pending confirmation and cannot be spent yet (Value 0.001 BTC)";*/
+            /* $result = new stdClass();
+              $result->message = "Sent 0.1 BTC to 1A8JiWcwvpY7tAopUkSnGuEYHmzGYfZPiq";
+              $result->tx_hash = "f322d01ad784e5deeb25464a5781c3b20971c1863679ca506e702e3e33c18e9c";
+              $result->notice = "Some funds are pending confirmation and cannot be spent yet (Value 0.001 BTC)"; */
             if ($result->tx_hash) {
 
                 $requestedParams['sent_receive_flag'] = 1;
@@ -221,7 +222,7 @@ class WalletController extends ApiController {
             $requestedParams = $this->request->getParameters();
             $this->response->setContent(json_encode($requestedParams));
             //array of required fields
-            $requiredData = array('wallet_guid', 'wallet_pass','platform');
+            $requiredData = array('wallet_guid', 'wallet_pass', 'platform');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
@@ -414,6 +415,51 @@ class WalletController extends ApiController {
                 $walletDBResponse = $bmpWalletSentReceiveTransactions->getAllWalletDBTransactions($requestedParams['user_name']);
 
                 $response['wallet_data'] = $walletDBResponse;
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
+                //$response = $useResponse;
+            } else {
+                throw new Exception('Please enter valid username.');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/ 
+    }
+
+    public function getAllWithdrawlDBTransactionByUserName() {
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            //array of required fields
+            $requiredData = array('user_name', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            $platform = parent::PLATFORM;
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            if (empty($requestedParams["user_name"])) {
+                throw new Exception("Please enter valid user credentials.");
+            }
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+            //$response['user_data'] = $useResponse;
+            $walletData = [];
+            if ($useResponse) {
+                $bmpWalletWithdrawlTransactions = new BmpWalletWithdrawlTransactions($this->pdo);
+                if ($useResponse['is_admin_user'] == 1) {
+                    $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions('');
+                } else {
+                    $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions($requestedParams['user_name']);
+                }
+
+
+                $response['withdrawl_data'] = $walletDBResponse;
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
                 //$response = $useResponse;
             } else {

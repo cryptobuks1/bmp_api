@@ -288,3 +288,35 @@ ALTER TABLE `dailymine` CHANGE `Date` `Date` DATE NULL DEFAULT NULL;
 ALTER TABLE `dailymine` CHANGE `Btc` `Btc` DECIMAL(14,4) NOT NULL DEFAULT '0', CHANGE `Usd` `Usd` DECIMAL(14,4) NOT NULL DEFAULT '0';
 
 ALTER TABLE `mining` CHANGE `Balance` `Balance` DECIMAL(14,4) NOT NULL DEFAULT '0.0';
+
+
+CREATE TABLE `bmp_wallet_withdrawl_transactions` (
+  `id` int(11) NOT NULL,
+  `user_name` varchar(250) DEFAULT NULL,
+  `to_address` varchar(250) DEFAULT NULL,
+  `amount` decimal(14,4) NOT NULL DEFAULT '0.0000',
+  `status` enum('1','2','3') NOT NULL DEFAULT '1' COMMENT '1:Pending 2:Processed 3:Rejected',
+  `response` text,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bmp_wallet_withdrawl_transactions`
+--
+ALTER TABLE `bmp_wallet_withdrawl_transactions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bmp_wallet_withdrawl_transactions`
+--
+ALTER TABLE `bmp_wallet_withdrawl_transactions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;

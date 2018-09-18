@@ -51,6 +51,11 @@
         0 => 'Api\\Controllers\\WalletController',
         1 => 'getAllWalletDBTransactionDetailByUserName',
       ),
+      '/getAllWithdrawlDBTransactionByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWithdrawlDBTransactionByUserName',
+      ),
       '/generateAddressToRecivePayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',

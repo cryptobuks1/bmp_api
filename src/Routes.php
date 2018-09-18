@@ -13,6 +13,7 @@ return [
     ['POST', '/getAllWalletDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDetailByUserName']], // To get wallet details by user name
     ['POST', '/sendPayment', ['Api\Controllers\WalletController', 'sendPayment']], // To get wallet details by user name
     ['POST', '/getAllWalletDBTransactionDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDBTransactionDetailByUserName']], // To get wallet transactions by user name
+    ['POST', '/getAllWithdrawlDBTransactionByUserName', ['Api\Controllers\WalletController', 'getAllWithdrawlDBTransactionByUserName']], // To get wallet withdrawl transactions by user name
 
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
