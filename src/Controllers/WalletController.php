@@ -9,7 +9,7 @@ use Exception;
 use Api\Models\BmpWallet;
 use Api\Models\Users;
 use Api\Models\BmpWalletSentReceiveTransactions;
-use Api\Models\BmpWalletWithdrawlTransactions;
+use Api\Models\BmpWalletWithdrawalTransactions;
 use PDO;
 
 class WalletController extends ApiController {
@@ -427,7 +427,7 @@ class WalletController extends ApiController {
         $this->response->setContent(json_encode($content)); // send response in json format*/ 
     }
 
-    public function getAllWithdrawlDBTransactionByUserName() {
+    public function getAllWithdrawalDBTransactionByUserName() {
         $object = new stdClass();
         try {
             $this->validateOauthRequest();
@@ -451,11 +451,11 @@ class WalletController extends ApiController {
             //$response['user_data'] = $useResponse;
             $walletData = [];
             if ($useResponse) {
-                $bmpWalletWithdrawlTransactions = new BmpWalletWithdrawlTransactions($this->pdo);
+                $bmpWalletWithdrawalTransactions = new BmpWalletWithdrawalTransactions($this->pdo);
                 if ((isset($useResponse['is_admin_user'])) && $useResponse['is_admin_user'] == 1) {
-                    $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions('');
+                    $walletDBResponse = $bmpWalletWithdrawalTransactions->getAllWalletWithdrawalDBTransactions('');
                 } else {
-                    $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions($requestedParams['user_name']);
+                    $walletDBResponse = $bmpWalletWithdrawalTransactions->getAllWalletWithdrawalDBTransactions($requestedParams['user_name']);
                 }
 
 

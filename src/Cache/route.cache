@@ -51,10 +51,10 @@
         0 => 'Api\\Controllers\\WalletController',
         1 => 'getAllWalletDBTransactionDetailByUserName',
       ),
-      '/getAllWithdrawlDBTransactionByUserName' => 
+      '/getAllWithdrawalDBTransactionByUserName' => 
       array (
         0 => 'Api\\Controllers\\WalletController',
-        1 => 'getAllWithdrawlDBTransactionByUserName',
+        1 => 'getAllWithdrawalDBTransactionByUserName',
       ),
       '/generateAddressToRecivePayment' => 
       array (
@@ -81,10 +81,10 @@
         0 => 'Api\\Controllers\\ReceiveController',
         1 => 'getPoolDataToRecivePayment',
       ),
-      '/withdrawlPayment' => 
+      '/withdrawalPayment' => 
       array (
         0 => 'Api\\Controllers\\ReceiveController',
-        1 => 'withdrawlPayment',
+        1 => 'withdrawalPayment',
       ),
       '/joinTree' => 
       array (

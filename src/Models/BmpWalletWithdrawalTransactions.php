@@ -15,7 +15,7 @@ use Redis;
 use Exception;
 use stdClass;
 
-class BmpWalletWithdrawlTransactions extends ApiModel {
+class BmpWalletWithdrawalTransactions extends ApiModel {
 
     /**
      * table name used by model 
@@ -61,7 +61,7 @@ class BmpWalletWithdrawlTransactions extends ApiModel {
         ];
     }
 
-    public function getAllWalletWithdrawlDBTransactions($user_name = '') {
+    public function getAllWalletWithdrawalDBTransactions($user_name = '') {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
             if ($user_name == '') {

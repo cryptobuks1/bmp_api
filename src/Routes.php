@@ -13,7 +13,7 @@ return [
     ['POST', '/getAllWalletDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDetailByUserName']], // To get wallet details by user name
     ['POST', '/sendPayment', ['Api\Controllers\WalletController', 'sendPayment']], // To get wallet details by user name
     ['POST', '/getAllWalletDBTransactionDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDBTransactionDetailByUserName']], // To get wallet transactions by user name
-    ['POST', '/getAllWithdrawlDBTransactionByUserName', ['Api\Controllers\WalletController', 'getAllWithdrawlDBTransactionByUserName']], // To get wallet withdrawl transactions by user name
+    ['POST', '/getAllWithdrawalDBTransactionByUserName', ['Api\Controllers\WalletController', 'getAllWithdrawalDBTransactionByUserName']], // To get wallet withdrawl transactions by user name
 
 
     //Payment receive related routes
@@ -22,7 +22,7 @@ return [
     ['POST', '/checkForAvailableInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForAvailableInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/checkForPaidInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForPaidInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/getPoolDataToRecivePayment', ['Api\Controllers\ReceiveController', 'getPoolDataToRecivePayment']], // Check if invoice is already exist or not
-    ['POST', '/withdrawlPayment', ['Api\Controllers\ReceiveController', 'withdrawlPayment']], // To add withdrawl request 
+    ['POST', '/withdrawalPayment', ['Api\Controllers\ReceiveController', 'withdrawalPayment']], // To add withdrawl request 
        
     //Tree related routes
     ['POST', '/joinTree', ['Api\Controllers\TreeController', 'joinTree']], // To get all wallet address

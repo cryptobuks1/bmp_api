@@ -5,7 +5,7 @@ namespace Api\Controllers;
 use Api\Controllers\ApiController;
 use Api\Models\Invoice;
 //use Api\Services\Oauth2\Oauth;
-use Api\Models\BmpWalletWithdrawlTransactions;
+use Api\Models\BmpWalletWithdrawalTransactions;
 use stdClass;
 use Exception;
 
@@ -282,7 +282,7 @@ class ReceiveController extends ApiController {
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
 
-    public function withdrawlPayment() {
+    public function withdrawalPayment() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
         try {
@@ -314,8 +314,8 @@ class ReceiveController extends ApiController {
                 throw new Exception("Please enter valid withdrawl parameters.");
             }
 
-            $bmpWalletWithdrawlTransactions = new BmpWalletWithdrawlTransactions($this->pdo);
-            $bmpWithdrawlTransaction = $bmpWalletWithdrawlTransactions->insert(array($requestedParams));
+            $bmpWalletWithdrawalTransactions = new BmpWalletWithdrawalTransactions($this->pdo);
+            $bmpWithdrawlTransaction = $bmpWalletWithdrawalTransactions->insert(array($requestedParams));
             if ($bmpWithdrawlTransaction) {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'The withdrawl request submitted successfully.');
             } else {
