@@ -15,13 +15,15 @@ return [
     ['POST', '/getAllWalletDBTransactionDetailByUserName', ['Api\Controllers\WalletController', 'getAllWalletDBTransactionDetailByUserName']], // To get wallet transactions by user name
     ['POST', '/getAllWithdrawlDBTransactionByUserName', ['Api\Controllers\WalletController', 'getAllWithdrawlDBTransactionByUserName']], // To get wallet withdrawl transactions by user name
 
+
     //Payment receive related routes
     ['POST', '/generateAddressToRecivePayment', ['Api\Controllers\ReceiveController', 'generateAddressToRecivePayment']], // To get all wallet address
     ['POST', '/getCallbacklogsByInvoiceId', ['Api\Controllers\ReceiveController', 'getCallbacklogsByInvoiceId']], // To get all wallet address
     ['POST', '/checkForAvailableInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForAvailableInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/checkForPaidInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForPaidInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/getPoolDataToRecivePayment', ['Api\Controllers\ReceiveController', 'getPoolDataToRecivePayment']], // Check if invoice is already exist or not
-    
+    ['POST', '/withdrawlPayment', ['Api\Controllers\ReceiveController', 'withdrawlPayment']], // To add withdrawl request 
+       
     //Tree related routes
     ['POST', '/joinTree', ['Api\Controllers\TreeController', 'joinTree']], // To get all wallet address
     

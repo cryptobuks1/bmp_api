@@ -81,6 +81,11 @@
         0 => 'Api\\Controllers\\ReceiveController',
         1 => 'getPoolDataToRecivePayment',
       ),
+      '/withdrawlPayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'withdrawlPayment',
+      ),
       '/joinTree' => 
       array (
         0 => 'Api\\Controllers\\TreeController',

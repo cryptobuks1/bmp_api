@@ -452,7 +452,7 @@ class WalletController extends ApiController {
             $walletData = [];
             if ($useResponse) {
                 $bmpWalletWithdrawlTransactions = new BmpWalletWithdrawlTransactions($this->pdo);
-                if ($useResponse['is_admin_user'] == 1) {
+                if ((isset($useResponse['is_admin_user'])) && $useResponse['is_admin_user'] == 1) {
                     $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions('');
                 } else {
                     $walletDBResponse = $bmpWalletWithdrawlTransactions->getAllWalletWithdrawlDBTransactions($requestedParams['user_name']);

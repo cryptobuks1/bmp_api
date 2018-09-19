@@ -5,6 +5,7 @@ namespace Api\Controllers;
 use Api\Controllers\ApiController;
 use Api\Models\Invoice;
 //use Api\Services\Oauth2\Oauth;
+use Api\Models\BmpWalletWithdrawlTransactions;
 use stdClass;
 use Exception;
 
@@ -54,15 +55,15 @@ class ReceiveController extends ApiController {
                         throw new Exception("The environment parameters are missing.");
                     }
                     $invoiceId = trim($requestedParams['Invoiceid']);
-                    $callbackUrl = trim(getenv('CALLBACK_URL'))."?invoice=".$invoiceId."&secret=".getenv('SECRET');
+                    $callbackUrl = trim(getenv('CALLBACK_URL')) . "?invoice=" . $invoiceId . "&secret=" . getenv('SECRET');
                     $callbackUrl = trim($callbackUrl);
-                   // $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
+                    // $response = $this->blockchain->ReceiveV2->generate(getenv('API_CODE'), getenv('X_PUB'), $callbackUrl, getenv('GAP_LIMIT'));
                     // Show receive address to user:
-                    /*$jsonResponse = array();
-                     $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
-                     $jsonResponse['index'] = $response->getIndex();
-                     $jsonResponse['callback'] = $response->getCallback();
-                     $requestedParams['api_response'] = json_encode($jsonResponse);*/
+                    /* $jsonResponse = array();
+                      $requestedParams['Btcaddress'] = $jsonResponse['btc_address'] = $response->getReceiveAddress();
+                      $jsonResponse['index'] = $response->getIndex();
+                      $jsonResponse['callback'] = $response->getCallback();
+                      $requestedParams['api_response'] = json_encode($jsonResponse); */
                     $requestedParams['Btcaddress'] = '18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj';
                     $requestedParams['api_response'] = '{"btc_address":"18jDWHD6ono1FyGf4eDKF4reQu9ZAkMGCj","index":8,"callback":"https:\/\/bitminepool.com\/bitcoin_system\/production\/payment\/callback.php?invoice=1234&secret=10081988Bmp"}';
                 } catch (Exception $e) {
@@ -124,7 +125,7 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
-    
+
     public function checkForPaidInvoiceToRecivePayment() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
@@ -147,10 +148,10 @@ class ReceiveController extends ApiController {
             }
 
             $invoice = new Invoice($this->pdo);
-            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['Username'], $requestedParams['Purpose'],'Paid');
+            $isInvoiceExist = $invoice->isInvoicePresent($requestedParams['Username'], $requestedParams['Purpose'], 'Paid');
             //$this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_pass']);
             if ($isInvoiceExist) {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'You have already paid for '.$requestedParams["Purpose"].'.');
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $isInvoiceExist, 'You have already paid for ' . $requestedParams["Purpose"] . '.');
             } else {
                 $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, [], 'Please proceed ahead for Invoice generation.');
             }
@@ -160,7 +161,7 @@ class ReceiveController extends ApiController {
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
-    
+
     public function getCallbacklogsByInvoiceId() {
         // $this->response->setContent(json_encode(array('getWalletBalance is called')));
         $object = new stdClass();
@@ -273,6 +274,52 @@ class ReceiveController extends ApiController {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No data found for requested pool.Please contact support@bitminepool.com');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+
+    public function withdrawlPayment() {
+        // $this->response->setContent(json_encode(array('getWalletBalance is called')));
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $this->response->setContent(json_encode($requestedParams));
+
+            $platform = parent::PLATFORM;
+            $transactionType = parent::TRANSACTION_TYPE;
+
+
+            //array of required fields
+            $requiredData = array('user_name', 'to_address', 'amount');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            $transactionTypeKey = array_keys($transactionType);
+            if (isset($requestedParams["transaction_type"]) && !in_array($requestedParams["transaction_type"], $transactionTypeKey)) {
+                throw new Exception("Please enter valid transaction type.");
+            }
+            if (empty($requestedParams["user_name"]) || empty($requestedParams["to_address"]) || empty($requestedParams["amount"])) {
+                throw new Exception("Please enter valid withdrawl parameters.");
+            }
+
+            $bmpWalletWithdrawlTransactions = new BmpWalletWithdrawlTransactions($this->pdo);
+            $bmpWithdrawlTransaction = $bmpWalletWithdrawlTransactions->insert(array($requestedParams));
+            if ($bmpWithdrawlTransaction) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'The withdrawl request submitted successfully.');
+            } else {
+                $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to sent withdrawl request.');
             }
         } catch (Exception $e) {
             $object = new stdClass();
