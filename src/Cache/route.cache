@@ -141,6 +141,16 @@
         0 => 'Api\\Controllers\\RankController',
         1 => 'getAllRankData',
       ),
+      '/getAllSupportTicketByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'getAllSupportTicketByUserName',
+      ),
+      '/addSupportRequest' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'addSupportRequest',
+      ),
     ),
   ),
   1 => 

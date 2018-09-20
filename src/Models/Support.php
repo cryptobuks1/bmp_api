@@ -31,18 +31,18 @@ class Support extends ApiModel {
      * @return array
      */
     public function sanitizeAllData($params = []) {
-        $team = array();
-        $team['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
-        $team['Ticketid'] = isset($params['Ticketid']) ? filter_var($params['Ticketid'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['Date'] = isset($params['Date']) ? filter_var($params['Date'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['Username'] = isset($params['Username']) ? filter_var($params['Username'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['Issue'] = isset($params['Issue']) ? filter_var($params['Issue'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['Status'] = isset($params['Status']) ? filter_var($params['Status'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['Category'] = isset($params['Category']) ? filter_var($params['Category'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
-        $team['created_at'] = isset($params['created_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['created_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
-        $team['updated_at'] = isset($params['updated_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['updated_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
+        $support = array();
+        $support['id'] = isset($params['id']) ? (int) filter_var($params['id'], FILTER_SANITIZE_NUMBER_INT) : NULL;
+        $support['ticket_id'] = isset($params['ticket_id']) ? filter_var($params['ticket_id'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
+        $support['date'] = isset($params['date']) ? date('Y-m-d', strtotime(filter_var($params['date'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d');
+        $support['user_name'] = isset($params['user_name']) ? filter_var($params['user_name'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
+        $support['issue'] = isset($params['issue']) ? filter_var($params['issue'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '';
+        $support['status'] = isset($params['status']) ? filter_var($params['status'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '1';
+        $support['category'] = isset($params['category']) ? filter_var($params['category'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES) : '4';
+        $support['created_at'] = isset($params['created_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['created_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
+        $support['updated_at'] = isset($params['updated_at']) ? date('Y-m-d H:i:s', strtotime(filter_var($params['updated_at'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES))) : date('Y-m-d H:i:s');
 
-        return $team;
+        return $support;
     }
 
     /**
@@ -52,33 +52,35 @@ class Support extends ApiModel {
     public function getAllTableFields() {
         return[
             'id',
-            'Ticketid',
-            'Date',
-            'Username',
-            'Issue',
-            'Status',
-            'Category',
+            'ticket_id',
+            'date',
+            'user_name',
+            'issue',
+            'status',
+            'category',
             'created_at',
             'updated_at'
         ];
     }
 
-    /**
-     * check invoice is presented or not
-     * return success response or error response in json 
-     * return id in data params
-     */
-    public function isInvoicePresent($username, $purpose) {
+    public function getAllSupportTicketByUserName($user_name = '') {
         try {
-           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result;
-                } else {
-                    return 0;
-                }
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            if ($user_name == '') {
+                $stmt = $this->pdo->prepare("SELECT id,ticket_id,date,user_name,issue,(CASE WHEN status = 1 THEN 'Pending' WHEN status = 2 THEN 'Processed' WHEN status = 3 THEN 'Rejected' ELSE '' END) AS status_view,status,(CASE WHEN category = 1 THEN 'Registration' WHEN category = 2 THEN 'Account Activation' WHEN category = 3 THEN 'Payment' WHEN category = 4 THEN 'Others' ELSE '' END) AS category_view,category,created_at FROM support order by id desc ");
+                $stmt->execute();
+            } else {
+
+                $stmt = $this->pdo->prepare("SELECT id,ticket_id,date,user_name,issue,(CASE WHEN status = 1 THEN 'Pending' WHEN status = 2 THEN 'Processed' WHEN status = 3 THEN 'Rejected' ELSE '' END) AS status_view,status,(CASE WHEN category = 1 THEN 'Registration' WHEN category = 2 THEN 'Account Activation' WHEN category = 3 THEN 'Payment' WHEN category = 4 THEN 'Others' ELSE '' END) AS category_view,category,created_at FROM support where user_name = ? order by id desc ");
+                $stmt->execute([$user_name]);
+            }
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return [];
+            }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

@@ -44,5 +44,11 @@ return [
     //Rank related routes
     ['POST', '/getAllRankData', ['Api\Controllers\RankController', 'getAllRankData']], // To get rank data by user name
     
+    //Support related routes
+    ['POST', '/getAllSupportTicketByUserName', ['Api\Controllers\SupportController', 'getAllSupportTicketByUserName']], // To get all support tickets
+    ['POST', '/addSupportRequest', ['Api\Controllers\SupportController', 'addSupportRequest']], // To get all support tickets
+    
+    
+    
     
 ];

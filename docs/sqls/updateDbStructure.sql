@@ -320,3 +320,10 @@ ALTER TABLE `bmp_wallet_withdrawl_transactions`
 --
 ALTER TABLE `bmp_wallet_withdrawl_transactions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `support` CHANGE `Ticketid` `ticket_id` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Date` `date` DATE NULL DEFAULT NULL, CHANGE `Username` `user_name` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Issue` `issue` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL, CHANGE `Status` `status` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL, CHANGE `Category` `category` ENUM('1','2','3','4') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '4' COMMENT '1:Registration 2:Account Activation 3:Payment 4: Others';
+
+
+ALTER TABLE `support`  ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `category`,  ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `created_at`;
+
+ALTER TABLE `support` CHANGE `status` `status` ENUM('1','2','3') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '1' COMMENT '1:Pending 2:Processed 3:Rejected';

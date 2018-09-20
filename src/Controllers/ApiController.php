@@ -13,6 +13,7 @@ use Api\Services\Oauth2\Grant\UserGrant;
 use Api\Services\RateLimiter;
 use Api\Services\Blockchain;
 use Exception;
+use Api\Services\EmailHelper;
 
 abstract class ApiController {
 
@@ -44,14 +45,14 @@ abstract class ApiController {
     //SMS transaction type
     const SMS_MSG_TEMPLATES = [201 => "IN_LOGIN_OTP", 202 => "IN_MERCHANT_ADD", 203 => "IN_NUMBER_CHANGED_OTP", 204 => "LP_APP_CHANGE_NUMBER_OTP", 205 => "LP_KIOSK_CHANGE_NUMBER_OTP", 206 => "LP_KIOSK_REDEMPTION_OTP", 207 => "LP_KIOSK_PLACE_ORDER_OTP", 208 => "LP_REFUND_POINTS", 209 => "LP_REGISTRATION_OTP"];
     const PLATFORM = array("1" => "Android", "2" => "iOS", "3" => "Web");
-    const POOLDATA = array("Starter" => array('price' => '300','tittle'=>'Pool 1','dbtable'=>'starterpack'),
-        "Mini" => array('price' => '600','tittle'=>'Pool 2','dbtable'=>'minipack'),
-        "Medium" => array('price' => '1200','tittle'=>'Pool 3','dbtable'=>'mediumpack'),
-        "Grand" => array('price' => '2400','tittle'=>'Pool 4','dbtable'=>'grandpack'),
-        "Ultimate" => array('price' => '4800','tittle'=>'Pool 5','dbtable'=>'ultimatepack')
+    const POOLDATA = array("Starter" => array('price' => '300', 'tittle' => 'Pool 1', 'dbtable' => 'starterpack'),
+        "Mini" => array('price' => '600', 'tittle' => 'Pool 2', 'dbtable' => 'minipack'),
+        "Medium" => array('price' => '1200', 'tittle' => 'Pool 3', 'dbtable' => 'mediumpack'),
+        "Grand" => array('price' => '2400', 'tittle' => 'Pool 4', 'dbtable' => 'grandpack'),
+        "Ultimate" => array('price' => '4800', 'tittle' => 'Pool 5', 'dbtable' => 'ultimatepack')
     );
     # define platform for transaction type
-    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification", "205" => "Wallet Creation", "206" => "Wallet Balance Fetch", "207" => "Wallet Send Money","208" => "Wallet Receive Money","301" => "Membership Invoice Creation", "302" => "Pool Purchase Invoice Creation","401"=>"Withdrawl Request");
+    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification", "205" => "Wallet Creation", "206" => "Wallet Balance Fetch", "207" => "Wallet Send Money", "208" => "Wallet Receive Money", "301" => "Membership Invoice Creation", "302" => "Pool Purchase Invoice Creation", "401" => "Withdrawl Request", "501" => "Raised Support Ticket");
     const GRANT_TYPE = array("client_credentials" => "client_credentials");
 
     /**
@@ -222,6 +223,24 @@ abstract class ApiController {
 
         if (!empty($missingInput)) {
             throw new Exception(implode(", ", $missingInput));
+        }
+    }
+
+    public function sendEmail() {
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+
+            $mail = new EmailHelper;
+
+            $result = $mail->sendEmail($requestedParams['from_email_address'], $requestedParams['from_email_name'], $requestedParams['to_email_address'], $requestedParams['to_email_name'], $requestedParams['subject'], $requestedParams['message']);
+            if ($result) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } catch (Exception $e) {
+            return 0;
         }
     }
 

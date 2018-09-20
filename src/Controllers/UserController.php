@@ -299,7 +299,7 @@ class UserController extends ApiController {
             $requestedParams = $this->request->getParameters();
             $platform = parent::PLATFORM;
 
-            $requiredData = array('user_name','platform');
+            $requiredData = array('user_name', 'platform');
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
             if (empty($requestedParams["user_name"])) {
