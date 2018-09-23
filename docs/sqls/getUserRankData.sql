@@ -66,7 +66,7 @@ getUserRankData: BEGIN
                     SELECT (balance >= 2000000) INTO crownDealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
                     SELECT (count(*) >= 3 ) INTO crownDealerThreeExecutiveDealersEnrollment FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 4;
 
-                IF(crownDealerTotalEnrollment = 1 AND executiveDealerThreeExecutiveDealersEnrollment = 1 ) THEN 
+                IF(crownDealerTotalEnrollment = 1 AND crownDealerThreeExecutiveDealersEnrollment = 1 ) THEN 
                     SET isCrownRankAchieved = 1;
                     UPDATE rank SET Rank='Crown Dealer', Rankid='5' WHERE Username = pUserName;
                 END IF;

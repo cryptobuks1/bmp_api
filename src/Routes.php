@@ -48,7 +48,7 @@ return [
     ['POST', '/getAllSupportTicketByUserName', ['Api\Controllers\SupportController', 'getAllSupportTicketByUserName']], // To get all support tickets
     ['POST', '/addSupportRequest', ['Api\Controllers\SupportController', 'addSupportRequest']], // To get all support tickets
     
-    
-    
+    //Cron related routes
+    ['POST', '/addMiningBonus', ['Api\Controllers\CommandController', 'addMiningBonus']], // To get all support tickets
     
 ];

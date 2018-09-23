@@ -6,6 +6,7 @@ addMiningBonus: BEGIN
         DECLARE responseMessage,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selectedPoolName,selectedPooltableName,tempStr,miningMonthDate,currentMonthDate VARCHAR(250) DEFAULT '';
         DECLARE selecetdCreatedAt DATE;
         DECLARE selectedStarterDailyBonus,selectedStarterMonthlyBonus,selectedMiniDailyBonus,selectedMiniMonthlyBonus,selectedMediumDailyBonus,selectedMediumMonthlyBonus DECIMAL(14,4) DEFAULT 0.00;
+        DECLARE selectedSponsorResidualBonus DECIMAL(14,4) DEFAULT 0.00;
         DECLARE selectedGrandDailyBonus,selectedGrandMonthlyBonus,selectedUltimateDailyBonus,selectedUltimatMonthlyBonus,sumOfbenifits DECIMAL(14,4) DEFAULT 0.00;
         DECLARE selectedStarterPurchaseDate,selectedStarterMiningDate,selectedStarterCompletionDate,selectedStarterStatus VARCHAR(250) DEFAULT '';
         DECLARE selectedMiniPurchaseDate,selectedMiniMiningDate,selectedMiniCompletionDate,selectedMiniStatus VARCHAR(250) DEFAULT '';
@@ -185,6 +186,14 @@ addMiningBonus: BEGIN
                         -- ========================================================================================================================================================================================================
                             
                         UPDATE mining SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
+                        UPDATE accountbalance SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
+                        -- TO PROCESS RESIDUAL BONUS --
+                        SET selectedSponsorResidualBonus = 0; 
+                        IF(selectedSponsor IS NOT NULL) THEN
+                            SET selectedSponsorResidualBonus = (sumOfbenifits * 0.005);
+                            UPDATE team SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
+                            UPDATE accountbalance SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
+                        END IF;
                         
                       END LOOP targetUser;
                 CLOSE targetUserCursor;

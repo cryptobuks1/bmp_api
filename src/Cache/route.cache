@@ -151,6 +151,11 @@
         0 => 'Api\\Controllers\\SupportController',
         1 => 'addSupportRequest',
       ),
+      '/addMiningBonus' => 
+      array (
+        0 => 'Api\\Controllers\\CommandController',
+        1 => 'addMiningBonus',
+      ),
     ),
   ),
   1 => 
