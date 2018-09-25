@@ -359,7 +359,7 @@ class UserController extends ApiController {
             $rankObj = new Rank($this->pdo);
             $useResponse['user_data'] = $usersObj->getUserDetailsByUserName($requestedParams['user_name']);
             $useResponse['tree_data'] = $treeObj->getTreeDataByUserName($requestedParams['user_name']);
-            $useResponse['rank_data'] = $rankObj->getRankDataByUserName($requestedParams['user_name']);
+            $useResponse['rank_data'] = $rankObj->getSimpleRankDataByUserName($requestedParams['user_name']);
             $useResponse['child_node_data'] = $usersObj->getChildNodeDataByUserName($requestedParams['user_name']);
             if ($useResponse['user_data']) {
                 $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'User details.');

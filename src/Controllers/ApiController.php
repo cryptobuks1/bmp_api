@@ -52,7 +52,7 @@ abstract class ApiController {
         "Ultimate" => array('price' => '4800', 'tittle' => 'Pool 5', 'dbtable' => 'ultimatepack')
     );
     # define platform for transaction type
-    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification", "205" => "Wallet Creation", "206" => "Wallet Balance Fetch", "207" => "Wallet Send Money", "208" => "Wallet Receive Money", "301" => "Membership Invoice Creation", "302" => "Pool Purchase Invoice Creation", "401" => "Withdrawl Request", "501" => "Raised Support Ticket");
+    const TRANSACTION_TYPE = array("201" => "Customer Login", "202" => "Registration", "203" => "Pool Registration", "204" => "Email verification", "205" => "Wallet Creation", "206" => "Wallet Balance Fetch", "207" => "Wallet Send Money", "208" => "Wallet Receive Money", "301" => "Membership Invoice Creation", "302" => "Pool Purchase Invoice Creation", "401" => "Withdrawl Request", "501" => "Raised Support Ticket","601"=>"Join Tree");
     const GRANT_TYPE = array("client_credentials" => "client_credentials");
 
     /**
