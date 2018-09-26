@@ -136,6 +136,11 @@
         0 => 'Api\\Controllers\\AdminController',
         1 => 'getAllInvoiceDBTransactionDetails',
       ),
+      '/getAllCommissionBonusDBDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllCommissionBonusDBDetails',
+      ),
       '/getAllRankData' => 
       array (
         0 => 'Api\\Controllers\\RankController',

@@ -22,7 +22,7 @@ insertCustomer: BEGIN
                 INSERT INTO hubcoin (Balance, Username) VALUES('0',user_name);
                 INSERT INTO team (Balance, Username) VALUES('0',user_name);
                 INSERT INTO teamvolume (Balance, Username) VALUES('0',user_name);
-                INSERT INTO rank (Rank, Rankid, Username, Sponsor) VALUES('Miner','1',user_name,sponsor_account);
+                INSERT INTO rank (Rank, Rankid, Username, Sponsor) VALUES('Guest','0',user_name,sponsor_account);
                 INSERT INTO mining (Balance, Username) VALUES('0',user_name);
                 INSERT INTO commission (Balance, Username) VALUES('0',user_name);
                 INSERT INTO starterpack (PurchaseDate, MiningDate, Username, Status, CompletionDate, TotalMinable,Withdrawal, Comment) VALUES('0', '0', user_name, 'Inactive', '0', '547.50', '0', 'Not-Purchased');

@@ -327,3 +327,22 @@ ALTER TABLE `support` CHANGE `Ticketid` `ticket_id` VARCHAR(250) CHARACTER SET l
 ALTER TABLE `support`  ADD `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `category`,  ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  AFTER `created_at`;
 
 ALTER TABLE `support` CHANGE `status` `status` ENUM('1','2','3') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '1' COMMENT '1:Pending 2:Processed 3:Rejected';
+
+
+/*26-09-2018 */
+
+
+CREATE TABLE `bmp_bonus_commission_earn_log` (
+  `id` int(11) NOT NULL,
+  `user_name` varchar(250) DEFAULT NULL,
+  `reason_id` enum('0','1','2','3','4','5') NOT NULL DEFAULT '0' COMMENT '0: N/A,1:Direct Commission , 2:Indirect Commission, 3:Matching Bonus, 4:Residual Bonus, 5:Mining Earning ',
+  `reason_description` text,
+  `is_added_by_cron` enum('1','0') NOT NULL DEFAULT '0' COMMENT '1:Yes 0:No',
+  `amount` decimal(14,4) NOT NULL,
+  `added_in` varchar(250) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `bmp_bonus_commission_earn_log`
+  ADD PRIMARY KEY (`id`);

@@ -185,16 +185,25 @@ addMiningBonus: BEGIN
                         -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR ULTIMATE END 
                         -- ========================================================================================================================================================================================================
                             
-                        UPDATE mining SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
-                        UPDATE accountbalance SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
-                        -- TO PROCESS RESIDUAL BONUS --
-                        SET selectedSponsorResidualBonus = 0; 
-                        IF(selectedSponsor IS NOT NULL) THEN
-                            SET selectedSponsorResidualBonus = (sumOfbenifits * 0.005);
-                            UPDATE team SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
-                            UPDATE accountbalance SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
+                        IF(sumOfbenifits > 0 ) THEN 
+                            UPDATE mining SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
+                            UPDATE accountbalance SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
+
+                            INSERT INTO bmp_bonus_commission_earn_log (user_name, reason_id, reason_description, is_added_by_cron, amount, added_in) 
+                                                              VALUES (selectedUserName, '5', CONCAT('Mining earning of user ',selectedUserName), '1', sumOfbenifits, 'mining');
+
+                            -- TO PROCESS RESIDUAL BONUS --
+                            SET selectedSponsorResidualBonus = 0; 
+                            IF(selectedSponsor <> '' AND selectedSponsor IS NOT NULL) THEN
+                                SET selectedSponsorResidualBonus = (sumOfbenifits * 0.005);
+                                UPDATE team SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
+                                UPDATE accountbalance SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
+
+                                INSERT INTO bmp_bonus_commission_earn_log (user_name, reason_id, reason_description, is_added_by_cron, amount, added_in) 
+                                                              VALUES (selectedSponsor, '4', CONCAT('Residual bonus of parent user ',selectedSponsor,' on joining of ',selectedUserName), '1', selectedSponsorResidualBonus, 'team');
+
+                            END IF;
                         END IF;
-                        
                       END LOOP targetUser;
                 CLOSE targetUserCursor;
                 END innerBlock;
