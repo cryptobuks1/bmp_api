@@ -126,6 +126,11 @@
         0 => 'Api\\Controllers\\UserController',
         1 => 'verifyEmail',
       ),
+      '/sendEmailVerificationCode' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendEmailVerificationCode',
+      ),
       '/getAllWalletDBTransactionDetails' => 
       array (
         0 => 'Api\\Controllers\\AdminController',

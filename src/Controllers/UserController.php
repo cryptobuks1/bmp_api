@@ -190,6 +190,7 @@ class UserController extends ApiController {
             $mail = new EmailHelper;
 
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'Bit Mine Pool Email Verification Code', $params['token']);
+            
             if ($result) {
                 return 1;
             } else {
@@ -271,7 +272,6 @@ class UserController extends ApiController {
                 throw new Exception("Please enter valid transaction type.");
             }
 
-
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams['user_name'], $requestedParams['token']);
             if ($useResponse) {
@@ -335,7 +335,51 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
+    
+    public function sendEmailVerificationCode() {
 
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+
+            $requiredData = array('user_name', 'platform');
+            $this->validation($requestedParams, $requiredData);
+            $userDetails = "";
+            if (empty($requestedParams["user_name"])) {
+                throw new Exception("Please enter valid verification details.");
+            }
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+
+            $usersObj = new Users($this->pdo);
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+
+            if ($useResponse) {
+                $sendVerificationCode = $this->sendVerficationEmail($useResponse);
+                if ($sendVerificationCode) {
+                    $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The code has been sent to your register email address.');
+                } else {
+                    $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $sendVerificationCode, 'Please try after some time.');
+                }
+            } else {
+                throw new Exception('Please enter valid user name.');
+            }
+
+            //$response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $object, $e->getMessage());
+        }
+
+        return $this->response->setContent(json_encode($response)); // send response in json format
+    }
+    
     public function getAllUserDataByUserName() {
 
         try {

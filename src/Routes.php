@@ -36,6 +36,7 @@ return [
     ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
     ['POST', '/sendForgetPassword', ['Api\Controllers\UserController', 'sendForgetPassword']],
     ['POST', '/verifyEmail', ['Api\Controllers\UserController', 'verifyEmail']],
+    ['POST', '/sendEmailVerificationCode', ['Api\Controllers\UserController', 'sendEmailVerificationCode']],
     
     //Admin deatils
     ['POST', '/getAllWalletDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllWalletDBTransactionDetails']], // To get wallet transactions by user name
