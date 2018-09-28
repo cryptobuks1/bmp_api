@@ -211,5 +211,25 @@ class Users extends ApiModel {
             return $e->getMessage();
         }
     }
+    
+    
+    public function getDashboardDataByUserName($user_name) {
+        try {
+            //$stmt = $this->pdo->prepare("SELECT * FROM rank where Username =? order by id desc limit 1");
+            $stmt = $this->pdo->prepare("CALL getUserDashboardData(?)");
+            $stmt->execute([
+                $user_name
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 
 }

@@ -405,6 +405,7 @@ class UserController extends ApiController {
             $useResponse['tree_data'] = $treeObj->getTreeDataByUserName($requestedParams['user_name']);
             $useResponse['rank_data'] = $rankObj->getSimpleRankDataByUserName($requestedParams['user_name']);
             $useResponse['child_node_data'] = $usersObj->getChildNodeDataByUserName($requestedParams['user_name']);
+            $useResponse['dashboard_data'] = $usersObj->getDashboardDataByUserName($requestedParams['user_name']);
             if ($useResponse['user_data']) {
                 $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'User details.');
             } else {

@@ -85,5 +85,20 @@ class Support extends ApiModel {
             echo $e->getMessage();
         }
     }
+    
+     public function updateTicket($params) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("UPDATE support SET status = ?,updated_at=now() WHERE support.id = ?");
+            $result = $stmt->execute([$params['status'],$params['ticket_id']]);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
 
 }

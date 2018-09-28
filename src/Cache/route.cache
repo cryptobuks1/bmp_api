@@ -161,6 +161,11 @@
         0 => 'Api\\Controllers\\SupportController',
         1 => 'addSupportRequest',
       ),
+      '/processTicket' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'processTicket',
+      ),
       '/addMiningBonus' => 
       array (
         0 => 'Api\\Controllers\\CommandController',

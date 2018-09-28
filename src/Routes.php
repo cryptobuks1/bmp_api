@@ -28,9 +28,11 @@ return [
     ['POST', '/joinTree', ['Api\Controllers\TreeController', 'joinTree']], // To get all wallet address
     
 
+    
     ['POST', '/loginCustomer', ['Api\Controllers\UserController', 'loginCustomer']],
     ['POST', '/registerCustomer', ['Api\Controllers\UserController', 'registerCustomer']],
     ['POST', '/updateCustomer', ['Api\Controllers\UserController', 'updateCustomer']],
+    
     //get user details
     ['POST', '/getAllUserDataByUserName', ['Api\Controllers\UserController', 'getAllUserDataByUserName']],
     ['POST', '/sendTestEmail', ['Api\Controllers\UserController', 'sendTestEmail']],
@@ -49,6 +51,7 @@ return [
     //Support related routes
     ['POST', '/getAllSupportTicketByUserName', ['Api\Controllers\SupportController', 'getAllSupportTicketByUserName']], // To get all support tickets
     ['POST', '/addSupportRequest', ['Api\Controllers\SupportController', 'addSupportRequest']], // To get all support tickets
+    ['POST', '/processTicket', ['Api\Controllers\SupportController', 'processTicket']],// To update ticket status
     
     //Cron related routes
     ['POST', '/addMiningBonus', ['Api\Controllers\CommandController', 'addMiningBonus']], // To get all support tickets
