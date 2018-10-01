@@ -64,19 +64,18 @@ class Binaryincome extends ApiModel {
      * return success response or error response in json 
      * return id in data params
      */
-    public function isInvoicePresent($username, $purpose) {
+    public function resetDailyBinaryIncome() {
         try {
-           // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Purpose=:Purpose AND Username=:Username AND Status='Unpaid' order by id desc limit 1");
-                $stmt->execute(['Purpose' => $purpose,'Username'=>$username]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($result) {
-                    return $result;
-                } else {
-                    return 0;
-                }
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("UPDATE binaryincome SET day_bal = '0',updated_at=now()");
+            $result = $stmt->execute([]);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return $e->getMessage();
         }
     }
 

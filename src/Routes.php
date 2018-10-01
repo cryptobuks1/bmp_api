@@ -55,5 +55,6 @@ return [
     
     //Cron related routes
     ['POST', '/addMiningBonus', ['Api\Controllers\CommandController', 'addMiningBonus']], // To get all support tickets
+    ['POST', '/resetDailyBinaryIncome', ['Api\Controllers\CommandController', 'resetDailyBinaryIncome']], // To reset the day bal
     
 ];

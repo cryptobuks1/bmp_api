@@ -24,30 +24,28 @@ getUserDashboardData: BEGIN
 
                 SELECT MiningDate INTO selectedStarterMiningDate FROM starterpack WHERE Username=pUserName AND Status='Active' AND MiningDate <> '0' order by id desc limit 1;
                 IF (selectedStarterMiningDate <> '0') THEN 
-                    SELECT sum(Usd) INTO starterDailyMine FROM dailymine WHERE Pack='Starter' AND Username = pUserName AND Date Between selectedStarterMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
+                    SELECT COALESCE(SUM(Usd),0) INTO starterDailyMine FROM dailymine WHERE Pack='Starter' AND Username = pUserName AND Date Between selectedStarterMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
                 END IF;
                 
                 SELECT MiningDate INTO selectedMiniMiningDate FROM minipack WHERE Username=pUserName AND Status='Active' AND MiningDate <> '0' order by id desc limit 1;
                 IF (selectedMiniMiningDate <> '0') THEN 
-                    SELECT sum(Usd) INTO miniDailyMine FROM dailymine WHERE Pack='Mini' AND Username = pUserName AND Date Between selectedMiniMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
+                    SELECT COALESCE(SUM(Usd),0) INTO miniDailyMine FROM dailymine WHERE Pack='Mini' AND Username = pUserName AND Date Between selectedMiniMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
                 END IF;
 
                 SELECT MiningDate INTO selectedMediumMiningDate FROM mediumpack WHERE Username=pUserName AND Status='Active' AND MiningDate <> '0' order by id desc limit 1;
                 IF (selectedMediumMiningDate <> '0') THEN 
-                    SELECT sum(Usd) INTO mediumDailyMine FROM dailymine WHERE Pack='Medium' AND Username = pUserName AND Date Between selectedMediumMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
+                    SELECT COALESCE(SUM(Usd),0) INTO mediumDailyMine FROM dailymine WHERE Pack='Medium' AND Username = pUserName AND Date Between selectedMediumMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
                 END IF;
 
                 SELECT MiningDate INTO selectedGrandMiningDate FROM grandpack WHERE Username=pUserName AND Status='Active' AND MiningDate <> '0' order by id desc limit 1;
                 IF (selectedGrandMiningDate <> '0') THEN 
-                    SELECT sum(Usd) INTO grandDailyMine FROM dailymine WHERE Pack='Grand' AND Username = pUserName AND Date Between selectedGrandMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
+                    SELECT COALESCE(SUM(Usd),0) INTO grandDailyMine FROM dailymine WHERE Pack='Grand' AND Username = pUserName AND Date Between selectedGrandMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
                 END IF;
 
                 SELECT MiningDate INTO selectedUltimateMiningDate FROM ultimatepack WHERE Username=pUserName AND Status='Active' AND MiningDate <> '0' order by id desc limit 1;
                 IF (selectedUltimateMiningDate <> '0') THEN 
-                    SELECT sum(Usd) INTO ultimateDailyMine FROM dailymine WHERE Pack='Ultimate' AND Username = pUserName AND Date Between selectedUltimateMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
+                    SELECT COALESCE(SUM(Usd),0) INTO ultimateDailyMine FROM dailymine WHERE Pack='Ultimate' AND Username = pUserName AND Date Between selectedUltimateMiningDate AND ( CURRENT_DATE - INTERVAL 1 DAY );
                 END IF;
-
-                
 
                 SET responseMessage = 'Success';
                 SET success = 1;

@@ -171,6 +171,11 @@
         0 => 'Api\\Controllers\\CommandController',
         1 => 'addMiningBonus',
       ),
+      '/resetDailyBinaryIncome' => 
+      array (
+        0 => 'Api\\Controllers\\CommandController',
+        1 => 'resetDailyBinaryIncome',
+      ),
     ),
   ),
   1 => 
