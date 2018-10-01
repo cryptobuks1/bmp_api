@@ -76,8 +76,8 @@ class BmpWallet extends ApiModel {
         public function checkForWalletexist($params) {
         try {
            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
-                $stmt = $this->pdo->prepare("SELECT * FROM `bmp_wallet` WHERE user_name=:user_name AND email_address=:user_name AND password=:password order by id desc limit 1");
-                $stmt->execute(['user_name' => $params['user_name'],'email_address'=>$params['email_address'],'password'=>$params['password']]);
+                $stmt = $this->pdo->prepare("SELECT * FROM `bmp_wallet` WHERE user_name=:user_name AND email_address=:user_name  order by id desc limit 1");
+                $stmt->execute(['user_name' => $params['user_name'],'email_address'=>$params['email_address']]);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($result) {
                     return $result;

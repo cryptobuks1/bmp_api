@@ -85,7 +85,7 @@ class Users extends ApiModel {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
 
-            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
+            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=PASSWORD(:password) order by id desc limit 1");
             $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             //$stmt->closeCursor();

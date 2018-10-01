@@ -44,6 +44,7 @@ return [
     ['POST', '/getAllWalletDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllWalletDBTransactionDetails']], // To get wallet transactions by user name
     ['POST', '/getAllInvoiceDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllInvoiceDBTransactionDetails']], // To get wallet transactions by user name
     ['POST', '/getAllCommissionBonusDBDetails', ['Api\Controllers\AdminController', 'getAllCommissionBonusDBDetails']], // To get bonus transactions by user name
+    ['POST', '/processWithdrawal', ['Api\Controllers\AdminController', 'processWithdrawal']], // To process withdrawal transactions by user name
     
     //Rank related routes
     ['POST', '/getAllRankData', ['Api\Controllers\RankController', 'getAllRankData']], // To get rank data by user name

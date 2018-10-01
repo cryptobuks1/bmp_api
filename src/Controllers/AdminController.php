@@ -10,6 +10,7 @@ use Api\Models\Users;
 use Api\Models\BmpWallet;
 use Api\Models\Invoice;
 use Api\Models\BmpWalletSentReceiveTransactions;
+use Api\Models\BmpWalletWithdrawalTransactions;
 use Api\Models\BmpBonusCommissionEarnLog;
 use Api\Models\Tree;
 use PDO;
@@ -140,7 +141,7 @@ class AdminController extends ApiController {
         $this->response->setContent(json_encode($content)); // send response in json format*/ 
     }
 
-    public function processTicket() {
+    public function processWithdrawal() {
         $object = new stdClass();
         try {
             $this->validateOauthRequest();
@@ -174,11 +175,11 @@ class AdminController extends ApiController {
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
-                $addSupportTicket = $support->updateTicket($requestedParams);
-                if ($addSupportTicket) {
-                    $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Support ticket processed successfully.');
+                $UpdateWithdrawalTransaction = $bmpWalletWithdrawalTransactions->updateWithdrawalTransaction($requestedParams);
+                if ($UpdateWithdrawalTransaction) {
+                    $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Transaction processed successfully.');
                 } else {
-                    $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to process ticket.');
+                    $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to process transaction.');
                 }
             } else {
                 throw new Exception('Please enter valid username.');

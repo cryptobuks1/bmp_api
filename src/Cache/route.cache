@@ -146,6 +146,11 @@
         0 => 'Api\\Controllers\\AdminController',
         1 => 'getAllCommissionBonusDBDetails',
       ),
+      '/processWithdrawal' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'processWithdrawal',
+      ),
       '/getAllRankData' => 
       array (
         0 => 'Api\\Controllers\\RankController',

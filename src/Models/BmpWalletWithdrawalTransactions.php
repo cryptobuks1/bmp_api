@@ -84,4 +84,20 @@ class BmpWalletWithdrawalTransactions extends ApiModel {
         }
     }
 
+    public function updateWithdrawalTransaction($params) {
+        try {
+            $stmt = $this->pdo->prepare("CALL processWithDrawalTransaction(?,?,?)");
+            $stmt->execute([$params['user_name'], $params['status'], $params['transaction_id']]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
 }

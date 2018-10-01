@@ -12,9 +12,9 @@ insertCustomer: BEGIN
             
                 
                 START TRANSACTION;
-                IF NOT EXISTS (SELECT * FROM `users` WHERE  Username=user_name AND Password=password order by id desc limit 1) THEN
+                IF NOT EXISTS (SELECT * FROM `users` WHERE  Username=user_name AND Password=PASSWORD(password) order by id desc limit 1) THEN
 
-                INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus,platform,is_wallet_user) VALUES(name,country,email,telephone,gender,user_name,password,sponsor_account,token,account,status,activation,'notree',platform,isWalletUser);
+                INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus,platform,is_wallet_user) VALUES(name,country,email,telephone,gender,user_name,PASSWORD(password),sponsor_account,token,account,status,activation,'notree',platform,isWalletUser);
                 SET lastInsertedId = LAST_INSERT_ID(); 
                 SET customerId = LAST_INSERT_ID();
                 INSERT INTO accountbalance (Balance, Username) VALUES('0',user_name);

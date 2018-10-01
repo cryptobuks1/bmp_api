@@ -346,3 +346,8 @@ CREATE TABLE `bmp_bonus_commission_earn_log` (
 
 ALTER TABLE `bmp_bonus_commission_earn_log`
   ADD PRIMARY KEY (`id`);
+
+-- 01/10/2018
+
+UPDATE users SET Password = PASSWORD(Password);
+UPDATE bmp_wallet SET password = PASSWORD(password);
