@@ -85,7 +85,7 @@ class Users extends ApiModel {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
 
-            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=PASSWORD(:password) order by id desc limit 1");
+            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
             $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             //$stmt->closeCursor();
@@ -99,7 +99,7 @@ class Users extends ApiModel {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
             if ($token == '') {
-                $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE  u.Username=:user_name order by id desc limit 1");
+                $stmt = $this->pdo->prepare("SELECT u.*,bw.address,bw.password,bw.guid FROM `users` AS u LEFT JOIN bmp_wallet AS bw ON bw.user_name=u.Username WHERE u.Username=:user_name order by id desc limit 1");
                 $stmt->execute(['user_name' => $user_name]);
             } else {
                 $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Token=:token order by id desc limit 1");

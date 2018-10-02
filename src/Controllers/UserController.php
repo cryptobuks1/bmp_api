@@ -11,6 +11,7 @@ use Api\Models\Rank;
 use Exception;
 use stdClass;
 use Api\Services\EmailHelper;
+use Api\Services\McryptCipher;
 use Api\Controllers\WalletController;
 
 class UserController extends ApiController {
