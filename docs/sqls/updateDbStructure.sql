@@ -351,3 +351,5 @@ ALTER TABLE `bmp_bonus_commission_earn_log`
 
 UPDATE users SET Password = PASSWORD(Password);
 UPDATE bmp_wallet SET password = PASSWORD(password);
+
+ALTER TABLE `accountbalance` CHANGE `Register` `Register` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
