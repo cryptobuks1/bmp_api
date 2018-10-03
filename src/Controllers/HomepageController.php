@@ -15,10 +15,10 @@ class HomepageController extends ApiController {
         //$accessToken = $this->getOauthAccessToken();
         
        /*$c = new McryptCipher(getenv('ENCRYPTION_KEY'));
-        $encrypted = $c->my_simple_crypt('7u8i9o0p','e');
+        $encrypted = $c->encryptDecrypt('7u8i9o0p','e');
 
-        $decrypted = $c->my_simple_crypt($encrypted,'d');
-        echo $encrypted.'---'.$decrypted;*/
+        $decrypted = $c->encryptDecrypt($encrypted,'d');
+        echo $encrypted.'---'.$decrypted; exit;*/
         $this->limitApiRequestsInMinutes(2, 1);
         $response = $this->validateOauthRequest();
         $oauthUser = $this->getOauthUser();

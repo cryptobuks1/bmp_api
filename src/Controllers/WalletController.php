@@ -48,8 +48,8 @@ class WalletController extends ApiController {
                 throw new Exception("Please enter wallet credentials.");
             }
 
-            //$mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
-            //$useResponse['Password'] = $mcryptCipher->encryptDecrypt($useResponse['Password'], 'd');
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $requestedParams['wallet_password'] = $mcryptCipher->encryptDecrypt($requestedParams['wallet_password'], 'd');
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_password']);
             $result['balance'] = $this->blockchain->Wallet->getBalance();

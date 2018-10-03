@@ -210,7 +210,6 @@ class UserController extends ApiController {
             //PHPMailer Object
             $mail = new EmailHelper;
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Fullname'], 'Bit Mine Pool Forget Password', $params['Password']);
-            return $result;
             if ($result) {
                 return 1;
             } else {
