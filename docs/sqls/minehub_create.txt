@@ -711,9 +711,9 @@ ALTER TABLE `payment_callback_log`  ADD `status` ENUM('1','2') NOT NULL DEFAULT 
 	
   
   
-INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus,is_wallet_user,is_admin_user) VALUES('Mshai', 'Kenya', 'admin@bitminepool.com', '33446611', '2', 'mshai', '123','', '14685', '24rgxpwex1b4ko88owko ', 'Close',  '1', 'notree','1','1');
+INSERT INTO users (Fullname, Country, Email, Telephone, Gender, Username, Password, Sponsor, Token, Account, Status, Activation, treestatus,is_wallet_user,is_admin_user) VALUES('Mshai', 'Kenya', 'admin@bitminepool.com', '33446611', '2', 'mshai', 'NTluQVErbUtNaFNFWFBiWVk4VGJRZz09','', '14685', '24rgxpwex1b4ko88owko ', 'Close',  '1', 'notree','1','1');
 INSERT INTO `bmp_wallet` (`user_name`, `email_address`, `address`, `password`, `label`, `guid`, `status`, `is_register_for_bmp`) VALUES
-('mshai', 'admin@bitminepool.com', '1HsKtBJ5AkaxmxvVWeiGbXDByLhRvWoF33', '123', 'Main address of wallet of mshai', 'ccb06d56-7bcc-419a-b267-b29fa5866506', '1', '1');
+('mshai', 'admin@bitminepool.com', '1HsKtBJ5AkaxmxvVWeiGbXDByLhRvWoF33', 'NTluQVErbUtNaFNFWFBiWVk4VGJRZz09', 'Main address of wallet of mshai', 'ccb06d56-7bcc-419a-b267-b29fa5866506', '1', '1');
 INSERT INTO accountbalance (Balance, Username)VALUES('0','mshai');
 INSERT INTO binaryincome(userid, day_bal, current_bal, total_bal)VALUES('mshai','0','0','0');
 INSERT INTO hubcoin (Balance, Username)VALUES('0','mshai');

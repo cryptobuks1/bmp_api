@@ -43,7 +43,8 @@ class UserController extends ApiController {
                 throw new Exception("Please enter valid transaction type.");
             }
 
-
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $requestedParams["password"] = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'e');
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->checkLoginResponse($requestedParams);
 
@@ -101,6 +102,8 @@ class UserController extends ApiController {
             $requestedParams["status"] = 'Open';
             $requestedParams["activation"] = '0';
             $usersObj = new Users($this->pdo);
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $requestedParams["password"] = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'e');
             $useResponse = $usersObj->checkLoginResponse($requestedParams);
             if ($useResponse) {
                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $useResponse, 'User is alredy exist.');
@@ -191,7 +194,7 @@ class UserController extends ApiController {
             $mail = new EmailHelper;
 
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'Bit Mine Pool Email Verification Code', $params['token']);
-            
+
             if ($result) {
                 return 1;
             } else {
@@ -316,7 +319,8 @@ class UserController extends ApiController {
 
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
-
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $useResponse['Password'] = $mcryptCipher->encryptDecrypt($useResponse['Password'], 'd');
             if ($useResponse) {
                 $sendForgetPassword = $this->sendForgetPasswordEmail($useResponse);
                 if ($sendForgetPassword) {
@@ -336,7 +340,7 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
-    
+
     public function sendEmailVerificationCode() {
 
         try {
@@ -356,8 +360,6 @@ class UserController extends ApiController {
             if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
                 throw new Exception("Please enter valid platform.");
             }
-
-
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
 
@@ -380,7 +382,7 @@ class UserController extends ApiController {
 
         return $this->response->setContent(json_encode($response)); // send response in json format
     }
-    
+
     public function getAllUserDataByUserName() {
 
         try {

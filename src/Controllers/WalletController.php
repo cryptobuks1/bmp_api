@@ -11,6 +11,7 @@ use Api\Models\Users;
 use Api\Models\BmpWalletSentReceiveTransactions;
 use Api\Models\BmpWalletWithdrawalTransactions;
 use PDO;
+use Api\Services\McryptCipher;
 
 class WalletController extends ApiController {
 
@@ -46,6 +47,9 @@ class WalletController extends ApiController {
             if (empty($requestedParams["wallet_guid"]) || empty($requestedParams["wallet_password"])) {
                 throw new Exception("Please enter wallet credentials.");
             }
+
+            //$mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            //$useResponse['Password'] = $mcryptCipher->encryptDecrypt($useResponse['Password'], 'd');
 
             $this->blockchain->Wallet->credentials($requestedParams['wallet_guid'], $requestedParams['wallet_password']);
             $result['balance'] = $this->blockchain->Wallet->getBalance();
@@ -91,14 +95,18 @@ class WalletController extends ApiController {
             if (empty($requestedParams["user_name"]) || empty($requestedParams["password"])) {
                 throw new Exception("Please enter all essential information.");
             }
-
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $requestedParams["password"] = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'e');
+            
             $bmpWalletObj = new BmpWallet($this->pdo);
             $bmpWalletResponse = $bmpWalletObj->checkForWalletexist($requestedParams);
             if ($bmpWalletResponse) {
                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $bmpWalletResponse, 'Wallet is alredy exist.');
             } else {
                 $requestedParams['label'] = 'Main address of wallet of ' . $requestedParams["user_name"];
-                $result = $this->blockchain->Create->create($requestedParams['password'], $requestedParams['email_address'], $requestedParams['label']);
+                
+                $decodedPassword = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'd');
+                $result = $this->blockchain->Create->create($decodedPassword, $requestedParams['email_address'], $requestedParams['label']);
                 //$result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
                 //$result = json_decode($result);
                 if ($result->guid) {
@@ -361,6 +369,8 @@ class WalletController extends ApiController {
             }
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+            $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
+            $useResponse['password'] = $mcryptCipher->encryptDecrypt($useResponse["password"], 'd');
             $response['user_data'] = $useResponse;
             $walletData = [];
             if ($useResponse) {

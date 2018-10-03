@@ -14,12 +14,11 @@ class HomepageController extends ApiController {
         // allow a maximum of 100 requests for the IP in 5 minutes
         //$accessToken = $this->getOauthAccessToken();
         
-       $c = new McryptCipher(getenv('ENCRYPTION_KEY'));
-        $encrypted = $c->encrypt('7u8i9o0p');
+       /*$c = new McryptCipher(getenv('ENCRYPTION_KEY'));
+        $encrypted = $c->my_simple_crypt('7u8i9o0p','e');
 
-        $decrypted = $c->decrypt($encrypted);
-        echo $encrypted.'---'.$decrypted;
-        exit;
+        $decrypted = $c->my_simple_crypt($encrypted,'d');
+        echo $encrypted.'---'.$decrypted;*/
         $this->limitApiRequestsInMinutes(2, 1);
         $response = $this->validateOauthRequest();
         $oauthUser = $this->getOauthUser();
