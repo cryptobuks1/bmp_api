@@ -346,10 +346,13 @@ CREATE TABLE `bmp_bonus_commission_earn_log` (
 
 ALTER TABLE `bmp_bonus_commission_earn_log`
   ADD PRIMARY KEY (`id`);
-
+ALTER TABLE `bmp_bonus_commission_earn_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- 01/10/2018
 
 UPDATE users SET Password = PASSWORD(Password);
 UPDATE bmp_wallet SET password = PASSWORD(password);
 
 ALTER TABLE `accountbalance` CHANGE `Register` `Register` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+
+ALTER TABLE `accountbalance` CHANGE `Balance` `Balance` DECIMAL(14,4) NOT NULL DEFAULT '0';
