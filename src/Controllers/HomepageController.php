@@ -24,6 +24,7 @@ class HomepageController extends ApiController {
             $requestedParams = $this->request->getParameters();
             $requiredData = array('password', 'platform');
             $this->validation($requestedParams, $requiredData);
+            $this->validateOauthRequest();
             $c = new McryptCipher(getenv('ENCRYPTION_KEY'));
             $encrypted = $c->encryptDecrypt($requestedParams['password'], 'e');
 

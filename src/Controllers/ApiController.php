@@ -94,7 +94,12 @@ abstract class ApiController {
         $this->oauthStorage = new \OAuth2\Storage\Pdo($this->pdo, ['user_table' => 'customers']);
         $this->oauthServer->addStorage($this->oauthStorage);
         // Handle a request to a resource and authenticate the access token
-        if (!$this->oauthServer->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
+        $tempRequest = \OAuth2\Request::createFromGlobals();
+        if(!empty($tempRequest->headers('ACCESS_TOKEN'))){
+           $tempRequest->request['access_token']=$tempRequest->headers('ACCESS_TOKEN'); 
+        }
+        
+        if (!$this->oauthServer->verifyResourceRequest($tempRequest)) {
             $errorParams = $this->oauthServer->getResponse()->getParameters();
             $this->oauthServer->getResponse()->addParameters([
                 'status' => isSet($errorParams['error']) ? $errorParams['error'] : 'Failure',
