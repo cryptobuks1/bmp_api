@@ -31,7 +31,7 @@ BEGIN
                  transaction_ref_no VARCHAR(500),
                  withdrawal DECIMAL(14,2),
                  deposit DECIMAL(14,2),
-                 created_date DATE            
+                 created_date DATE          
         );  
 
         OPEN dateCursor;
@@ -41,63 +41,18 @@ BEGIN
                     LEAVE affiliate;
                 END IF;
 
-                INSERT INTO temp_account_statement (user_name,transaction_date) VALUES (pUserName,selectedDate);
-                /*SELECT ppcode.affiliate_id,ppcode.merchant_id,
-                (SELECT merchant_name FROM merchants WHERE id = ppcode.merchant_id) ,
-                (SELECT location_name FROM merchant_locations WHERE id = ppcode.location_id),
-                (SELECT tittle FROM affiliate_partners WHERE id = ppcode.affiliate_id), 
-                (SELECT IF(status=1,'Active','Inactive') FROM affiliate_partners WHERE id = ppcode.affiliate_id), 
-                
-                ((SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') <= selectedDate) -
-                 (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') < selectedDate)) as opening, 
-                ((SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') <= selectedDate) -
-                 (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') < selectedDate)) * 
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids), 
-
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate) as added,
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate) * 
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids),
-
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') = selectedDate) as used,
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') = selectedDate) *  
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids),
-
-                ((SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') <= selectedDate) -
-                 (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') <= selectedDate)) as current_stk,
-                ((SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND DATE_FORMAT(created_at,'%Y-%m-%d') <= selectedDate) -
-                 (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 1 AND DATE_FORMAT(updated_at,'%Y-%m-%d') <= selectedDate)) *  
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids),
-
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 0 AND DATE_FORMAT(promocode_end_date,'%Y-%m-%d') > selectedDate) as expired,
-                (SELECT COUNT(id) FROM package_promocodes WHERE affiliate_id = ppcode.affiliate_id AND promocode_used = 0 AND DATE_FORMAT(promocode_end_date,'%Y-%m-%d') > selectedDate) *  
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids),
-                (SELECT package_price FROM affiliate_partners_packages WHERE id = ppcode.target_Ids),selectedDate
-                FROM package_promocodes as ppcode               
-                WHERE DATE_FORMAT(ppcode.created_at,'%Y-%m-%d') = selectedDate OR DATE_FORMAT(ppcode.updated_at,'%Y-%m-%d') = selectedDate
-                ORDER BY ppcode.id DESC;*/
+                INSERT INTO temp_account_statement (
+                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date)
+               
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,id,0,amount,CURDATE() FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate
+                    UNION
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),id,amount,0,CURDATE() FROM `bmp_wallet_withdrawl_transactions`
+                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate;
             END LOOP affiliate;
         CLOSE dateCursor;
     END innerBlock;
-SELECT * FROM temp_account_statement;
-/*SELECT COUNT(id) INTO lifetime_stock_issued_quantity FROM package_promocodes
-WHERE affiliate_id != 0
-AND IF(affiliateId != 0,affiliate_id = affiliateId,1=1)
-AND IF(merchantId != 0,merchant_id = merchantId,1=1)
-AND DATE_FORMAT(created_at,'%Y-%m-%d') BETWEEN startDate AND endDate;
+SELECT * FROM temp_account_statement order by transaction_date desc;
 
-SELECT COUNT(id) INTO lifetime_stock_used_quantity  FROM package_promocodes 
-WHERE affiliate_id != 0
-AND promocode_used = 1
-AND IF(affiliateId != 0,affiliate_id = affiliateId,1=1)
-AND IF(merchantId != 0,merchant_id = merchantId,1=1)
-AND DATE_FORMAT(updated_at,'%Y-%m-%d') BETWEEN startDate AND endDate;
-
-SELECT temp_affiliate_inventory.*,lifetime_stock_issued_quantity,lifetime_stock_used_quantity FROM temp_affiliate_inventory
-WHERE affiliate_id != 0
-AND IF(affiliateId != 0,affiliate_id = affiliateId,1=1)
-AND IF(merchantId != 0,merchant_id = merchantId,1=1)
-AND (stock_added_quantity > 0 OR stock_used_quantity > 0 OR expired_stock_quantity > 0) 
-GROUP BY affiliate_id,created_date;*/
 DROP TEMPORARY TABLE temp_account_statement;
 END$$
 DELIMITER ;
