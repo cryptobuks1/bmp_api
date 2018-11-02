@@ -43,6 +43,7 @@ return [
     //Admin deatils
     ['POST', '/getAllWalletDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllWalletDBTransactionDetails']], // To get wallet transactions by user name
     ['POST', '/getAllInvoiceDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllInvoiceDBTransactionDetails']], // To get wallet transactions by user name
+    ['POST', '/getAllAccountDBTransactionDetails', ['Api\Controllers\AdminController', 'getAllAccountDBTransactionDetails']], // To get wallet transactions by user name
     ['POST', '/getAllCommissionBonusDBDetails', ['Api\Controllers\AdminController', 'getAllCommissionBonusDBDetails']], // To get bonus transactions by user name
     ['POST', '/processWithdrawal', ['Api\Controllers\AdminController', 'processWithdrawal']], // To process withdrawal transactions by user name
     

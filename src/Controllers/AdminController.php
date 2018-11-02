@@ -79,12 +79,18 @@ class AdminController extends ApiController {
             $startDate = '';
             $endDate = '';
             if (!empty($requestedParams["start_date"])) {
-                $startDate = $requestedParams["start_date"];
+                $startDate = date('Y-m-d 00:00:00', strtotime($requestedParams["start_date"]));
             } else {
-                $startDate = $requestedParams["start_date"];
+                $startDate = date('Y-m-d 00:00:00', strtotime("-1 Months"));
             }
+            if (!empty($requestedParams["end_date"])) {
+                $endDate =  date('Y-m-d 00:00:00', strtotime($requestedParams["end_date"]));
+            } else {
+                $endDate = date('Y-m-d H:i:s');
+            }
+
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getAccountDetailsByUserName($requestedParams["user_name"]);
+            $useResponse = $usersObj->getAccountDetailsByUserName($requestedParams["user_name"],$startDate,$enDate);
             //$response['user_data'] = $useResponse;
             
             $walletData = [];
