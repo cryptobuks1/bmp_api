@@ -40,7 +40,15 @@ BEGIN
                 IF done = 1 THEN 
                     LEAVE affiliate;
                 END IF;
-
+				IF pUserName <> NULL OR pUserName <> '' THEN 
+					INSERT INTO temp_account_statement (
+                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date)
+               
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,id,0,amount,CURDATE() FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName
+                    UNION
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),id,amount,0,CURDATE() FROM `bmp_wallet_withdrawl_transactions` 
+                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName;
+				ELSE 
                 INSERT INTO temp_account_statement (
                     user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date)
                
@@ -48,6 +56,8 @@ BEGIN
                     UNION
                     SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),id,amount,0,CURDATE() FROM `bmp_wallet_withdrawl_transactions`
                     WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate;
+				END IF;	
+				
             END LOOP affiliate;
         CLOSE dateCursor;
     END innerBlock;

@@ -90,12 +90,19 @@ class AdminController extends ApiController {
             }
 
             $usersObj = new Users($this->pdo);
-            $useResponse = $usersObj->getAccountDetailsByUserName($requestedParams["user_name"],$startDate,$enDate);
+			$useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+            //$useResponse = $usersObj->getAccountDetailsByUserName($requestedParams["user_name"],$startDate,$endDate);
+			if ((isset($useResponse['is_admin_user'])) && $useResponse['is_admin_user'] == 1) {
+				$statementDBResponse = $usersObj->getAccountDetailsByUserName('',$startDate,$endDate);
+			} else {
+				$statementDBResponse = $usersObj->getAccountDetailsByUserName($requestedParams["user_name"],$startDate,$endDate);
+			}
+				
             //$response['user_data'] = $useResponse;
             
             $walletData = [];
             if ($useResponse) {
-                $response['user_account_data'] = $useResponse;
+                $response['data'] = $statementDBResponse;
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
                 //$response = $useResponse;
             } else {

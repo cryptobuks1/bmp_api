@@ -232,4 +232,25 @@ class Users extends ApiModel {
         }
     }
 
+    public function getAccountDetailsByUserName($user_name,$startDate,$endDate) {
+        try {
+            //$stmt = $this->pdo->prepare("SELECT * FROM rank where Username =? order by id desc limit 1");
+            $stmt = $this->pdo->prepare("CALL getUserAccountStatementData(?,?,?)");
+            $stmt->execute([
+                $user_name,
+                $startDate,
+                $endDate
+            ]);
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
 }
