@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS insertTree$$
  CREATE PROCEDURE insertTree(IN parentUser VARCHAR(250), IN side VARCHAR(250),IN pUserName VARCHAR(250))
 insertTree: BEGIN
         DECLARE success INT(11) DEFAULT 0;
-        DECLARE customerId,lastInsertedId,parentRankId,capping INT(11) DEFAULT  0;
+        DECLARE customerId,lastInsertedId,parentRankId,capping,parentLeftCount,parentRightCount,parentLeftCredits,parentRightCredits  INT(11) DEFAULT  0;
         DECLARE responseMessage,parentUserSponsor,parantLeftNode,parantRightNode VARCHAR(250) DEFAULT '';
         DECLARE dayBal,currentBal,totalBal,inDirectBinaryCommisionAmount,matchingBonusAmount DECIMAL(14,4) DEFAULT 0.00;
         
@@ -21,11 +21,13 @@ insertTree: BEGIN
                 IF NOT EXISTS (SELECT * FROM tree WHERE userid = pUserName) THEN
                     INSERT INTO tree (userid) VALUES (pUserName);
                 END IF;
+                
+                SELECT tree.left,tree.right,tree.leftcount,tree.rightcount,tree.leftcredits,tree.rightcredits INTO parantLeftNode,parantRightNode,parentLeftCount,parentRightCount,parentLeftCredits,parentRightCredits  FROM tree WHERE userid = parentUser;
 
                 IF side = 'left' THEN 
-                    UPDATE tree SET `left` = pUserName WHERE userid = parentUser;
+                    UPDATE tree SET `left` = pUserName,tree.leftcount = (parentLeftCount + 1),tree.leftcredits = (parentLeftCredits + 10)  WHERE userid = parentUser;
                 ELSE 
-                    UPDATE tree SET `right` = pUserName WHERE userid = parentUser;
+                    UPDATE tree SET `right` = pUserName ,tree.rightcount = (parentRightCount + 1),tree.rightcredits = (parentRightCredits + 10) WHERE userid = parentUser;
                 END IF;
                 
                 SELECT Rankid INTO parentRankId FROM rank WHERE Username = pUserName;
@@ -49,7 +51,7 @@ insertTree: BEGIN
                 SELECT day_bal,current_bal,total_bal INTO dayBal,currentBal,totalBal FROM binaryincome WHERE userid=pUserName;
                 SELECT Sponsor INTO parentUserSponsor FROM users WHERE Username=pUserName;
                 IF (currentBal < capping) THEN 
-                    SELECT tree.left,tree.right INTO parantLeftNode,parantRightNode FROM tree WHERE userid = parentUser;
+                    -- SELECT tree.left,tree.right INTO parantLeftNode,parantRightNode FROM tree WHERE userid = parentUser;
                     
                     -- CODE TO ADD INDIRECT BINARY COMMISSION --
                     IF((parantLeftNode <> '' AND parantLeftNode IS NOT NULL) AND (parantRightNode <> '' AND parantRightNode IS NOT NULL)) THEN
