@@ -353,3 +353,23 @@ ALTER TABLE `bmp_bonus_commission_earn_log`
 ALTER TABLE `accountbalance` CHANGE `Register` `Register` VARCHAR(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 
 ALTER TABLE `accountbalance` CHANGE `Balance` `Balance` DECIMAL(14,4) NOT NULL DEFAULT '0';
+
+--15/11/2018
+
+CREATE TABLE `site_options` (
+  `id` int(11) NOT NULL,
+  `option_name` varchar(250) DEFAULT NULL,
+  `option_value` varchar(250) DEFAULT NULL,
+  `option_description` varchar(500) DEFAULT NULL,
+  `status` enum('1','2') NOT NULL DEFAULT '1' COMMENT '1:Active 2:Inactive',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `site_options`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `site_options`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+INSERT INTO `site_options` (`id`, `option_name`, `option_value`, `option_description`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'transaction_percentage', '0', 'This is transaction percentage which will be charged for each transaction', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
