@@ -156,6 +156,11 @@
         0 => 'Api\\Controllers\\AdminController',
         1 => 'processWithdrawal',
       ),
+      '/getSiteOption' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getSiteOption',
+      ),
       '/getAllRankData' => 
       array (
         0 => 'Api\\Controllers\\RankController',
