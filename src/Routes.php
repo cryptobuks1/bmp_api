@@ -61,4 +61,7 @@ return [
     ['POST', '/addMiningBonus', ['Api\Controllers\CommandController', 'addMiningBonus']], // To get all support tickets
     ['POST', '/resetDailyBinaryIncome', ['Api\Controllers\CommandController', 'resetDailyBinaryIncome']], // To reset the day bal
     
+    
+    ['POST', '/sendApiEmail', ['Api\Controllers\AdminController', 'sendApiEmail']], // To send email
+    
 ];

@@ -115,6 +115,18 @@ class WalletController extends ApiController {
                     $requestedParams['status'] = 1;
                     $bmpWallet = $bmpWalletObj->insert(array($requestedParams));
                     if ($bmpWallet) {
+                        // Email triggered after registartion
+                        $userEmailMessage = "<table>";
+                        $userEmailMessage .= "<tr><td>User Name</td><td>".$requestedParams["user_name"]."</td></tr>";
+                        $userEmailMessage .= "<tr><td>Wallet GUID</td><td>".$requestedParams['guid']."</td></tr>";
+                        
+                        $userEmailMessage .= "<tr><td>Wallet Address</td><td>".$requestedParams['address']."</td></tr>";
+                        
+                        $userEmailMessage .= "</table>";
+                        $sendUserEmail = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), $requestedParams['email_address'], $requestedParams["user_name"], "Welcome to BitMine Pool", $userEmailMessage);
+                        $sendAdminEmail = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), "New user is registered.", $userEmailMessage);
+
+
                         $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Wallet created successfully.');
                     } else {
                         $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to create user.');

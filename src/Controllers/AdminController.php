@@ -347,4 +347,51 @@ class AdminController extends ApiController {
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
 
+    public function sendApiEmail() {
+        $object = new stdClass();
+        try {
+            $this->validateOauthRequest();
+            $requestedParams = $this->request->getParameters();
+            $this->response->setContent(json_encode($requestedParams));
+
+            $platform = parent::PLATFORM;
+            $transactionType = parent::TRANSACTION_TYPE;
+
+            //array of required fields
+            $requiredData = array('to_email_address', 'to_email_name', 'subject','message');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+
+            //Get constant
+            $platformKey = array_keys($platform);
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+
+            if(empty($requestedParams["from_email_name"])){
+                $requestedParams["from_email_name"] = getenv('REGISTER_FROM_EMAIL_NAME');
+            }
+            if(empty($requestedParams["from_email_address"])){
+                $requestedParams["from_email_address"] = getenv('REGISTER_FROM_EMAIL');
+            }
+
+            if (empty($requestedParams["to_email_address"]) || empty($requestedParams["to_email_name"]) || empty($requestedParams["subject"]) || empty($requestedParams["message"])) {
+                throw new Exception("Please enter valid option parameters.");
+            }
+            $result = $this->sendEmail($requestedParams["from_email_address"], $requestedParams["from_email_name"], $requestedParams["to_email_address"], $requestedParams["to_email_name"], $requestedParams["subject"], $requestedParams["message"]);
+                       
+                if ($result) {
+                    $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Email sent successfully.');
+                } else {
+                    $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, [], 'There is problem to sent email.');
+                }
+            } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+
+
 }

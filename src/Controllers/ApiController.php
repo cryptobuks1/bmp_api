@@ -231,14 +231,14 @@ abstract class ApiController {
         }
     }
 
-    public function sendEmail() {
+    public function sendEmail($from_email_address,$from_email_name,$to_email_address,$to_email_name,$subject,$message) {
         try {
-            $this->validateOauthRequest();
-            $requestedParams = $this->request->getParameters();
+           // $this->validateOauthRequest();
+            //$requestedParams = $this->request->getParameters();
 
             $mail = new EmailHelper;
 
-            $result = $mail->sendEmail($requestedParams['from_email_address'], $requestedParams['from_email_name'], $requestedParams['to_email_address'], $requestedParams['to_email_name'], $requestedParams['subject'], $requestedParams['message']);
+            $result = $mail->sendEmail($from_email_address,$from_email_name,$to_email_address,$to_email_name,$subject,$message);
             if ($result) {
                 return 1;
             } else {
