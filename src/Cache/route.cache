@@ -1,0 +1,209 @@
+<?php return array (
+  0 => 
+  array (
+    'GET' => 
+    array (
+      '/' => 
+      array (
+        0 => 'Api\\Controllers\\HomepageController',
+        1 => 'show',
+      ),
+    ),
+    'POST' => 
+    array (
+      '/api-test' => 
+      array (
+        0 => 'Api\\Controllers\\HomepageController',
+        1 => 'showTest',
+      ),
+      '/getAccessToken' => 
+      array (
+        0 => 'Api\\Controllers\\OauthController',
+        1 => 'getAccessToken',
+      ),
+      '/getWalletBalance' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getWalletBalance',
+      ),
+      '/getAllWalletAddress' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWalletAddress',
+      ),
+      '/createWallet' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'createWallet',
+      ),
+      '/getAllWalletDetailByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWalletDetailByUserName',
+      ),
+      '/sendPayment' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'sendPayment',
+      ),
+      '/getAllWalletDBTransactionDetailByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWalletDBTransactionDetailByUserName',
+      ),
+      '/getAllWithdrawalDBTransactionByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\WalletController',
+        1 => 'getAllWithdrawalDBTransactionByUserName',
+      ),
+      '/generateAddressToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'generateAddressToRecivePayment',
+      ),
+      '/getCallbacklogsByInvoiceId' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'getCallbacklogsByInvoiceId',
+      ),
+      '/checkForAvailableInvoiceToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'checkForAvailableInvoiceToRecivePayment',
+      ),
+      '/checkForPaidInvoiceToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'checkForPaidInvoiceToRecivePayment',
+      ),
+      '/getPoolDataToRecivePayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'getPoolDataToRecivePayment',
+      ),
+      '/withdrawalPayment' => 
+      array (
+        0 => 'Api\\Controllers\\ReceiveController',
+        1 => 'withdrawalPayment',
+      ),
+      '/joinTree' => 
+      array (
+        0 => 'Api\\Controllers\\TreeController',
+        1 => 'joinTree',
+      ),
+      '/loginCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'loginCustomer',
+      ),
+      '/registerCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'registerCustomer',
+      ),
+      '/updateCustomer' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'updateCustomer',
+      ),
+      '/getAllUserDataByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'getAllUserDataByUserName',
+      ),
+      '/sendTestEmail' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendTestEmail',
+      ),
+      '/sendForgetPassword' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendForgetPassword',
+      ),
+      '/verifyEmail' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'verifyEmail',
+      ),
+      '/sendEmailVerificationCode' => 
+      array (
+        0 => 'Api\\Controllers\\UserController',
+        1 => 'sendEmailVerificationCode',
+      ),
+      '/getAllWalletDBTransactionDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllWalletDBTransactionDetails',
+      ),
+      '/getAllInvoiceDBTransactionDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllInvoiceDBTransactionDetails',
+      ),
+      '/getAllAccountDBTransactionDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllAccountDBTransactionDetails',
+      ),
+      '/getAllCommissionBonusDBDetails' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getAllCommissionBonusDBDetails',
+      ),
+      '/processWithdrawal' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'processWithdrawal',
+      ),
+      '/getSiteOption' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'getSiteOption',
+      ),
+      '/updateSiteOption' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'updateSiteOption',
+      ),
+      '/getAllRankData' => 
+      array (
+        0 => 'Api\\Controllers\\RankController',
+        1 => 'getAllRankData',
+      ),
+      '/getAllSupportTicketByUserName' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'getAllSupportTicketByUserName',
+      ),
+      '/addSupportRequest' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'addSupportRequest',
+      ),
+      '/processTicket' => 
+      array (
+        0 => 'Api\\Controllers\\SupportController',
+        1 => 'processTicket',
+      ),
+      '/addMiningBonus' => 
+      array (
+        0 => 'Api\\Controllers\\CommandController',
+        1 => 'addMiningBonus',
+      ),
+      '/resetDailyBinaryIncome' => 
+      array (
+        0 => 'Api\\Controllers\\CommandController',
+        1 => 'resetDailyBinaryIncome',
+      ),
+      '/sendApiEmail' => 
+      array (
+        0 => 'Api\\Controllers\\AdminController',
+        1 => 'sendApiEmail',
+      ),
+    ),
+  ),
+  1 => 
+  array (
+  ),
+);
