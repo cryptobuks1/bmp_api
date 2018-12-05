@@ -328,4 +328,40 @@ class ReceiveController extends ApiController {
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
 
+    public function getInvoiceByID() {
+        // $this->response->setContent(json_encode(array('getWalletBalance is called')));
+        $object = new stdClass();
+        try {
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+            $poolData = parent::POOLDATA;
+            //array of required fields
+            $requiredData = array('invoiceId', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            //Get constant
+            $platformKey = array_keys($platform);
+            //Get constant
+
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+            if (empty($requestedParams["invoiceId"])) {
+                throw new Exception("Please enter valid invoice id.");
+            }
+            $invoice = new Invoice($this->pdo);
+            $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
+            if (empty($result)) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No data found for requested invoice id.Please contact support@bitminepool.com');
+            } else {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+
 }

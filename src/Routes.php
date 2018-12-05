@@ -23,7 +23,8 @@ return [
     ['POST', '/checkForPaidInvoiceToRecivePayment', ['Api\Controllers\ReceiveController', 'checkForPaidInvoiceToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/getPoolDataToRecivePayment', ['Api\Controllers\ReceiveController', 'getPoolDataToRecivePayment']], // Check if invoice is already exist or not
     ['POST', '/withdrawalPayment', ['Api\Controllers\ReceiveController', 'withdrawalPayment']], // To add withdrawl request 
-       
+    ['POST', '/getInvoiceByID', ['Api\Controllers\ReceiveController', 'getInvoiceByID']], // To get invoice by id
+           
     //Tree related routes
     ['POST', '/joinTree', ['Api\Controllers\TreeController', 'joinTree']], // To get all wallet address
     
@@ -63,5 +64,6 @@ return [
     
     
     ['POST', '/sendApiEmail', ['Api\Controllers\AdminController', 'sendApiEmail']], // To send email
+
     
 ];

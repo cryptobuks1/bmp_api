@@ -142,6 +142,28 @@ class Invoice extends ApiModel {
             echo $e->getMessage();
         }
     }
+    
+    
+    /**
+     * check invoice is presented or not
+     * return success response or error response in json 
+     * return id in data params
+     */
+    public function getInvoiceByID($invoiceId) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("SELECT * FROM `invoice` WHERE Invoiceid=:Invoiceid order by id desc limit 1");
+            $stmt->execute(['Invoiceid' => $invoiceId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 
     public function getAllInvoiceDBTransactions($user_name = '') {
         try {
