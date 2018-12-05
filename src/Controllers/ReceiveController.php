@@ -4,6 +4,7 @@ namespace Api\Controllers;
 
 use Api\Controllers\ApiController;
 use Api\Models\Invoice;
+use Api\Models\Users;
 //use Api\Services\Oauth2\Oauth;
 use Api\Models\BmpWalletWithdrawalTransactions;
 use stdClass;
@@ -353,6 +354,48 @@ class ReceiveController extends ApiController {
             $invoice = new Invoice($this->pdo);
             $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
             if (empty($result)) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No data found for requested invoice id.Please contact support@bitminepool.com');
+            } else {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+            }
+        } catch (Exception $e) {
+            $object = new stdClass();
+            $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
+        }
+        $this->response->setContent(json_encode($content)); // send response in json format*/
+    }
+
+    public function sendInvoiceNotificationByID() {
+        // $this->response->setContent(json_encode(array('getWalletBalance is called')));
+        $object = new stdClass();
+        try {
+            $requestedParams = $this->request->getParameters();
+            $platform = parent::PLATFORM;
+            $poolData = parent::POOLDATA;
+            //array of required fields
+            $requiredData = array('invoiceId', 'userName', 'platform');
+            //Validate input parameters
+            $this->validation($requestedParams, $requiredData);
+            //Get constant
+            $platformKey = array_keys($platform);
+            //Get constant
+
+
+            if (isset($requestedParams["platform"]) && !in_array($requestedParams["platform"], $platformKey)) {
+                throw new Exception("Please enter valid platform.");
+            }
+            if (empty($requestedParams["invoiceId"]) || empty($requestedParams["userName"])) {
+                throw new Exception("Please enter all valid invoice & user details.");
+            }
+            $invoice = new Invoice($this->pdo);
+            $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
+
+            $usersObj = new Users($this->pdo);
+
+            $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["userName"]);
+
+            if (empty($useResponse)) {
+                
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No data found for requested invoice id.Please contact support@bitminepool.com');
             } else {
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
