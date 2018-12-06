@@ -389,17 +389,27 @@ class ReceiveController extends ApiController {
             }
             $invoice = new Invoice($this->pdo);
             $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
-            print_r($result);
-            exit;
+
             $usersObj = new Users($this->pdo);
 
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["userName"]);
-
-            if (empty($useResponse)) {
+            $purpose = $result['Purpose'];
+            $message = "<table>";
+            $message .= "<tr><td>Invoice ID</td><td>".$result['Invoiceid']."</td></tr>";
+            $message .= "<tr><td>Purpose</td><td>".$poolData[$purpose]['tittle']."</td></tr>";
+            $message .= "<tr><td>Amount</td><td>".$result['Btcamount']."(In BTC)</td></tr>";
+            $message .= "<tr><td>Paydate</td><td>".$result['Paydate']."(In BTC)</td></tr>";
+            $message .= "</table>";
+            //print_r($result);
+            //print_r($useResponse);
+            //print_r($message);
+            //exit;
+            $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$message);
+            if (empty($emailSent)) {
                 
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'No data found for requested invoice id.Please contact support@bitminepool.com');
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, [], 'Email sent sucessfully.');
             } else {
-                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $result, 'Success');
+                $content = $this->getResponse('Failure', parent::SUCCESS_RESPONSE_CODE,$requestedParams, 'No data found for requested invoice id.Please contact support@bitminepool.com');
             }
         } catch (Exception $e) {
             $object = new stdClass();
