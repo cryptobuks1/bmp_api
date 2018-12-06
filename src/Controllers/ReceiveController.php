@@ -389,6 +389,7 @@ class ReceiveController extends ApiController {
             }
             $invoice = new Invoice($this->pdo);
             $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
+            print_r($result);
             exit;
             $usersObj = new Users($this->pdo);
 
