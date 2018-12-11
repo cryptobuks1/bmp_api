@@ -373,3 +373,45 @@ ALTER TABLE `site_options`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 INSERT INTO `site_options` (`id`, `option_name`, `option_value`, `option_description`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'transaction_percentage', '0', 'This is transaction percentage which will be charged for each transaction', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+
+-- 11-12-2018
+
+
+CREATE TABLE `system_emails` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email_to` text COLLATE utf8_unicode_ci,
+  `email_cc` text COLLATE utf8_unicode_ci,
+  `email_bcc` text COLLATE utf8_unicode_ci,
+  `email_from` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `text1` text COLLATE utf8_unicode_ci NOT NULL,
+  `text2` text COLLATE utf8_unicode_ci NOT NULL,
+  `email_type` tinyint(1) UNSIGNED NOT NULL COMMENT '1 : Email to Admin, 2 : Email to User, 3 : Email to Others',
+  `tags` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1 : Active, 0 : Inactive',
+  `created_by` int(10) UNSIGNED NOT NULL,
+  `updated_by` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+--
+-- Indexes for table `system_emails`
+--
+ALTER TABLE `system_emails`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `system_emails_name_index` (`name`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `system_emails`
+--
+ALTER TABLE `system_emails`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
