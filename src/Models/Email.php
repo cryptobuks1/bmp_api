@@ -5,7 +5,7 @@ namespace Api\Models;
 use Api\Models\ApiModel;
 use Exception;
 use PDO;
-use Api\Helper\MailgunHelper;
+
 
 class Email extends ApiModel {
 
@@ -51,14 +51,14 @@ class Email extends ApiModel {
      * Send Email to user mobile
      * return success response or error response in json 
      */
-    public function sendEmail($emailTemplateName, $vars, $params = []) {
+    public function getEmailContent($emailTemplateName, $vars, $params = []) {
 
         try {
-            $mailgunHelper = new MailgunHelper();
+
             $emailContent = $this->getEmailTemplate($emailTemplateName);
             $replacements = [];
             $patterns = [];
-            $to = $vars['to'];
+            
             if (!empty($emailContent)) {
                 $emailMessage = $emailContent['text1'];
 

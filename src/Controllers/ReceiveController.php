@@ -9,6 +9,7 @@ use Api\Models\Users;
 use Api\Models\BmpWalletWithdrawalTransactions;
 use stdClass;
 use Exception;
+use Api\Models\Email;
 
 class ReceiveController extends ApiController {
 
@@ -391,7 +392,8 @@ class ReceiveController extends ApiController {
             $result = $invoice->getInvoiceByID($requestedParams["invoiceId"]);
 
             $usersObj = new Users($this->pdo);
-
+            $email = new Email($this->pdo);
+            
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["userName"]);
             $purpose = $result['Purpose'];
 
@@ -405,7 +407,9 @@ class ReceiveController extends ApiController {
             $message .= "<tr><td>Paydate</td><td>".$result['Paydate']."</td></tr>";
             $message .= "</table>";
             
-            echo $message;
+            //echo $message;
+            $emailContent = $email->getEmailContent('INVOICE_PAID',['productDetails'=>$message]);
+            echo $emailContent;
             exit;
             $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $message, 'Email sent sucessfully.');
             /*$emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$message);
