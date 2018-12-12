@@ -398,7 +398,7 @@ class ReceiveController extends ApiController {
             $purpose = $result['Purpose'];
 
             $message = '';
-            $message .= "<table>";
+            $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
             $message .= "<tr><td>Invoice ID</td><td>".$result['Invoiceid']."</td></tr>";
             $message .= "<tr><td>Purpose</td><td>".$poolData[$purpose]['tittle']."</td></tr>";
             $message .= "<tr><td>Amount</td><td>".$result['Btcamount']."(In BTC)</td></tr>";
