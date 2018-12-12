@@ -398,8 +398,6 @@ class ReceiveController extends ApiController {
             $purpose = $result['Purpose'];
 
             $message = '';
-            $message .='Hi, '.$useResponse['Fullname'].' <br>';
-            $message .='Your payment has been received.Your invoice details are shown below for your reference:<br>';
             $message .= "<table>";
             $message .= "<tr><td>Invoice ID</td><td>".$result['Invoiceid']."</td></tr>";
             $message .= "<tr><td>Purpose</td><td>".$poolData[$purpose]['tittle']."</td></tr>";
