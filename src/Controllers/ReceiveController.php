@@ -406,7 +406,10 @@ class ReceiveController extends ApiController {
             $message .= "</table>";
             
             //echo $message;
-            $emailContent = $email->getEmailContent('INVOICE_PAID',['invoiceDetails'=>$message,'name'=>$useResponse['Fullname']]);
+            $emailContent = $email->getEmailContent('INVOICE_PAID',['invoiceDetails'=>$message,
+                    'name'=>$useResponse['Fullname'],
+                    'logo'=>getenv('BASE_URL').'/images/logo.png',
+                ]);
 
 
             $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$emailContent);
