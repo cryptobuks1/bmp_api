@@ -239,6 +239,7 @@ class AdminController extends ApiController {
                  $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
             
                  $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
+                 echo '<pre>'; print_r($transactionUserResponse); exit;
                  if ($UpdateWithdrawalTransaction) {
                     
                     $message = '';
