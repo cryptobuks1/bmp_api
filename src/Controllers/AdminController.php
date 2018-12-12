@@ -237,7 +237,8 @@ class AdminController extends ApiController {
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
                 $UpdateWithdrawalTransaction = $bmpWalletWithdrawalTransactions->updateWithdrawalTransaction($requestedParams);
                  $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
-                if ($UpdateWithdrawalTransaction) {
+                 $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
+                 if ($UpdateWithdrawalTransaction) {
                     
                     $message = '';
                     $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
@@ -249,12 +250,12 @@ class AdminController extends ApiController {
 
                     //echo $message;
                     $emailContent = $email->getEmailContent('WITHDRAWAL_PROCESSED', ['requestDetails' => $message,
-                        'name' => $useResponse['Fullname'],
+                        'name' => $transactionUserResponse['Fullname'],
                         'logo' => getenv('BASE_URL') . '/images/logo.png',
                     ]);
 
 
-                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $useResponse['Email'], $useResponse['Fullname'], "Withdrawal process request with ID " . $transactionDetail['id'], $emailContent);
+                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $transactionUserResponse['Email'], $transactionUserResponse['Fullname'], "Withdrawal process request with ID " . $transactionDetail['id'], $emailContent);
 
                     $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Transaction processed successfully.');
                 } else {
