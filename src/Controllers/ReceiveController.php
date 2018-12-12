@@ -407,9 +407,8 @@ class ReceiveController extends ApiController {
             
             //echo $message;
             $emailContent = $email->getEmailContent('INVOICE_PAID',['invoiceDetails'=>$message,'name'=>$useResponse['Fullname']]);
-            echo $emailContent;
-            exit;
-            $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $message, 'Email sent sucessfully.');
+
+            $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $emailContent, 'Email sent sucessfully.');
             /*$emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$message);
             if (isset($emailSent)) {
                 
