@@ -400,7 +400,7 @@ class ReceiveController extends ApiController {
             $message = '';
             $message .='Hi, '.$useResponse['Fullname'].' <br>';
             $message .='Your payment has been received.Your invoice details are shown below for your reference:<br>';
-            $message .= "<table bgcolor='#ffffff' class='content' align='' cellpadding='1' cellspacing='1' border='1'>";
+            $message .= "<table>";
             $message .= "<tr><td>Invoice ID</td><td>".$result['Invoiceid']."</td></tr>";
             $message .= "<tr><td>Purpose</td><td>".$poolData[$purpose]['tittle']."</td></tr>";
             $message .= "<tr><td>Amount</td><td>".$result['Btcamount']."(In BTC)</td></tr>";
@@ -408,7 +408,7 @@ class ReceiveController extends ApiController {
             $message .= "</table>";
             
             //echo $message;
-            $emailContent = $email->getEmailContent('INVOICE_PAID',['productDetails'=>$message]);
+            $emailContent = $email->getEmailContent('INVOICE_PAID',['invoiceDetails'=>$message,'name'=>$useResponse['Fullname']]);
             echo $emailContent;
             exit;
             $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $message, 'Email sent sucessfully.');
