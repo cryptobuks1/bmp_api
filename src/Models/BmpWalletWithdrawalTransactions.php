@@ -90,7 +90,7 @@ class BmpWalletWithdrawalTransactions extends ApiModel {
             $stmt = $this->pdo->prepare("SELECT id,user_name,response,(CASE WHEN status = 1 THEN 'Pending' WHEN status = 2 THEN 'Processed' WHEN status = 3 THEN 'Rejected' ELSE '' END) AS status_view,amount,status,to_address,created_at FROM bmp_wallet_withdrawl_transactions where id = ? order by id desc ");
             $stmt->execute([$transaction_id]);
 
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($result) {
                 return $result;
             } else {

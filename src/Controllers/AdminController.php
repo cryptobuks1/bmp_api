@@ -237,7 +237,7 @@ class AdminController extends ApiController {
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
                 $UpdateWithdrawalTransaction = $bmpWalletWithdrawalTransactions->updateWithdrawalTransaction($requestedParams);
                  $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
-                 echo '<pre>'; print_r($transactionDetail); exit;
+            
                  $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
                  if ($UpdateWithdrawalTransaction) {
                     
