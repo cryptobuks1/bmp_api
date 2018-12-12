@@ -408,14 +408,14 @@ class ReceiveController extends ApiController {
             //echo $message;
             $emailContent = $email->getEmailContent('INVOICE_PAID',['invoiceDetails'=>$message,'name'=>$useResponse['Fullname']]);
 
-            $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $emailContent, 'Email sent sucessfully.');
-            /*$emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$message);
+
+            $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'),getenv('REGISTER_FROM_EMAIL_NAME'),$useResponse['Email'],$useResponse['Fullname'],"Invoice for ".$result['Invoiceid'],$emailContent);
             if (isset($emailSent)) {
                 
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, [], 'Email sent sucessfully.');
             } else {
                 $content = $this->getResponse('Failure', parent::SUCCESS_RESPONSE_CODE,$requestedParams, 'No data found for requested invoice id.Please contact support@bitminepool.com');
-            }*/
+            }
         } catch (Exception $e) {
             $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
