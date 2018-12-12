@@ -259,7 +259,7 @@ class AdminController extends ApiController {
                     ]);
 
 
-                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $transactionUserResponse['Email'], $transactionUserResponse['Fullname'], "Withdrawal process request with ID " . $transactionDetail['id'], $emailContent);
+                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $transactionUserResponse['Email'], $transactionUserResponse['Fullname'], "Your withdrawal request is being processed.", $emailContent);
 
                     $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Transaction processed successfully.');
                 } else {
