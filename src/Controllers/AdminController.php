@@ -246,10 +246,10 @@ class AdminController extends ApiController {
                     
                     $message = '';
                     $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
-                    $message .= "<tr><td>Invoice ID</td><td>" . $transactionDetail['id'] . "</td></tr>";
+                    $message .= "<tr><td>Send To Address</td><td>" . $transactionDetail['to_address'] . "</td></tr>";
                     $message .= "<tr><td>Status</td><td>" . $transactionDetail['status_view'] . "</td></tr>";
                     $message .= "<tr><td>Amount</td><td>" . $transactionDetail['amount'] . "(In BTC)</td></tr>";
-                    $message .= "<tr><td>Address</td><td>" . $transactionDetail['to_address'] . "</td></tr>";
+                    
                     $message .= "</table>";
 
                     //echo $message;
