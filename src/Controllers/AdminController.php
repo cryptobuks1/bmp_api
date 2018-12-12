@@ -7,6 +7,7 @@ namespace Api\Controllers;
 use stdClass;
 use Exception;
 use Api\Models\Users;
+use Api\Models\Email;
 use Api\Models\BmpWallet;
 use Api\Models\Invoice;
 use Api\Models\BmpWalletSentReceiveTransactions;
@@ -232,6 +233,7 @@ class AdminController extends ApiController {
             }
             $bmpWalletWithdrawalTransactions = new BmpWalletWithdrawalTransactions($this->pdo);
             $usersObj = new Users($this->pdo);
+            $email = new Email($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
            
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
@@ -239,7 +241,7 @@ class AdminController extends ApiController {
                  $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
             
                  $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
-                 echo '<pre>'; print_r($transactionUserResponse); exit;
+
                  if ($UpdateWithdrawalTransaction) {
                     
                     $message = '';
