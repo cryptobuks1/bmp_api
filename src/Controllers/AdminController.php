@@ -233,9 +233,29 @@ class AdminController extends ApiController {
             $bmpWalletWithdrawalTransactions = new BmpWalletWithdrawalTransactions($this->pdo);
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
+           
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
                 $UpdateWithdrawalTransaction = $bmpWalletWithdrawalTransactions->updateWithdrawalTransaction($requestedParams);
+                 $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
                 if ($UpdateWithdrawalTransaction) {
+                    
+                    $message = '';
+                    $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
+                    $message .= "<tr><td>Invoice ID</td><td>" . $transactionDetail['id'] . "</td></tr>";
+                    $message .= "<tr><td>Status</td><td>" . $transactionDetail['status_view'] . "</td></tr>";
+                    $message .= "<tr><td>Amount</td><td>" . $transactionDetail['amount'] . "(In BTC)</td></tr>";
+                    $message .= "<tr><td>Address</td><td>" . $transactionDetail['to_address'] . "</td></tr>";
+                    $message .= "</table>";
+
+                    //echo $message;
+                    $emailContent = $email->getEmailContent('WITHDRAWAL_PROCESSED', ['requestDetails' => $message,
+                        'name' => $useResponse['Fullname'],
+                        'logo' => getenv('BASE_URL') . '/images/logo.png',
+                    ]);
+
+
+                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $useResponse['Email'], $useResponse['Fullname'], "Withdrawal process request with ID " . $transactionDetail['id'], $emailContent);
+
                     $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Transaction processed successfully.');
                 } else {
                     $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to process transaction.');
@@ -321,11 +341,11 @@ class AdminController extends ApiController {
                 throw new Exception("Please enter valid platform.");
             }
 
-           
+
             if (empty($requestedParams["user_name"]) || empty($requestedParams["option_name"]) || empty($requestedParams["option_value"])) {
                 throw new Exception("Please enter valid option parameters.");
             }
-            
+
             $requestedParams['status'] = '1';
             $siteOptions = new SiteOptions($this->pdo);
             $usersObj = new Users($this->pdo);
@@ -358,7 +378,7 @@ class AdminController extends ApiController {
             $transactionType = parent::TRANSACTION_TYPE;
 
             //array of required fields
-            $requiredData = array('to_email_address', 'to_email_name', 'subject','message');
+            $requiredData = array('to_email_address', 'to_email_name', 'subject', 'message');
             //Validate input parameters
             $this->validation($requestedParams, $requiredData);
 
@@ -369,10 +389,10 @@ class AdminController extends ApiController {
                 throw new Exception("Please enter valid platform.");
             }
 
-            if(empty($requestedParams["from_email_name"])){
+            if (empty($requestedParams["from_email_name"])) {
                 $requestedParams["from_email_name"] = getenv('REGISTER_FROM_EMAIL_NAME');
             }
-            if(empty($requestedParams["from_email_address"])){
+            if (empty($requestedParams["from_email_address"])) {
                 $requestedParams["from_email_address"] = getenv('REGISTER_FROM_EMAIL');
             }
 
@@ -380,18 +400,17 @@ class AdminController extends ApiController {
                 throw new Exception("Please enter valid option parameters.");
             }
             $result = $this->sendEmail($requestedParams["from_email_address"], $requestedParams["from_email_name"], $requestedParams["to_email_address"], $requestedParams["to_email_name"], $requestedParams["subject"], $requestedParams["message"]);
-                       
-                if ($result) {
-                    $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Email sent successfully.');
-                } else {
-                    $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, [], 'There is problem to sent email.');
-                }
-            } catch (Exception $e) {
+
+            if ($result) {
+                $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Email sent successfully.');
+            } else {
+                $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, [], 'There is problem to sent email.');
+            }
+        } catch (Exception $e) {
             $object = new stdClass();
             $content = $this->getResponse('Failure', parent::AUTH_RESPONSE_CODE, $object, $e->getMessage());
         }
         $this->response->setContent(json_encode($content)); // send response in json format*/
     }
-
 
 }

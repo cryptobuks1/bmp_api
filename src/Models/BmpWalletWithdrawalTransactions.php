@@ -84,6 +84,23 @@ class BmpWalletWithdrawalTransactions extends ApiModel {
         }
     }
 
+    public function getWithdrawalTransactionByID($transaction_id) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("SELECT id,user_name,response,(CASE WHEN status = 1 THEN 'Pending' WHEN status = 2 THEN 'Processed' WHEN status = 3 THEN 'Rejected' ELSE '' END) AS status_view,amount,status,to_address,created_at FROM bmp_wallet_withdrawl_transactions where id = ? order by id desc ");
+            $stmt->execute([$transaction_id]);
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return [];
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
     public function updateWithdrawalTransaction($params) {
         try {
             $stmt = $this->pdo->prepare("CALL processWithDrawalTransaction(?,?,?)");
