@@ -8,6 +8,7 @@ use stdClass;
 use Exception;
 use Api\Models\BmpWallet;
 use Api\Models\Users;
+use Api\Models\Email;
 use Api\Models\BmpWalletSentReceiveTransactions;
 use Api\Models\BmpWalletWithdrawalTransactions;
 use PDO;
@@ -97,14 +98,14 @@ class WalletController extends ApiController {
             }
             $mcryptCipher = new McryptCipher(getenv('ENCRYPTION_KEY'));
             $requestedParams["password"] = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'e');
-            
+
             $bmpWalletObj = new BmpWallet($this->pdo);
             $bmpWalletResponse = $bmpWalletObj->checkForWalletexist($requestedParams);
             if ($bmpWalletResponse) {
                 $response = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $bmpWalletResponse, 'Wallet is alredy exist.');
             } else {
                 $requestedParams['label'] = 'Main address of wallet of ' . $requestedParams["user_name"];
-                
+
                 $decodedPassword = $mcryptCipher->encryptDecrypt($requestedParams["password"], 'd');
                 $result = $this->blockchain->Create->create($decodedPassword, $requestedParams['email_address'], $requestedParams['label']);
                 //$result = '{"guid":"7e40a36a-d61a-4636-aa0e-a4ed3b06d237","address":"18SPT5NUNzkvibfw9J1ANkaF1y5NRFm1KS","label":null,"link":"Main address of wallet oftest8@gmail.com"}';
@@ -115,17 +116,35 @@ class WalletController extends ApiController {
                     $requestedParams['status'] = 1;
                     $bmpWallet = $bmpWalletObj->insert(array($requestedParams));
                     if ($bmpWallet) {
+                        $email = new Email($this->pdo);
+                        $message = '';
+                        $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
+                        $message .= "<tr><td>User Name</td><td>" . $requestedParams["user_name"] . "</td></tr>";
+                        $message .= "<tr><td>Wallet GUID</td><td>" . $requestedParams['guid'] . "</td></tr>";
+                        $message .= "<tr><td>Wallet Address</td><td>" . $requestedParams['address'] . "(In BTC)</td></tr>";
+
+                        $message .= "</table>";
+
+                        //echo $message;
+                        $emailContent = $email->getEmailContent('WALLET_CREATED', ['walletDetails' => $message,
+                            'name' => $requestedParams["user_name"],
+                            'logo' => getenv('BASE_URL') . '/images/logo.png',
+                        ]);
+
+
+                        $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $requestedParams['email_address'], $requestedParams["user_name"], "Your wallet/account with Bitminepool.com is created.", $emailContent);
+
                         // Email triggered after registartion
-                        $userEmailMessage = "<table>";
-                        $userEmailMessage .= "<tr><td>User Name</td><td>".$requestedParams["user_name"]."</td></tr>";
-                        $userEmailMessage .= "<tr><td>Wallet GUID</td><td>".$requestedParams['guid']."</td></tr>";
-                        
-                        $userEmailMessage .= "<tr><td>Wallet Address</td><td>".$requestedParams['address']."</td></tr>";
-                        
+                        /*$userEmailMessage = "<table>";
+                        $userEmailMessage .= "<tr><td>User Name</td><td>" . $requestedParams["user_name"] . "</td></tr>";
+                        $userEmailMessage .= "<tr><td>Wallet GUID</td><td>" . $requestedParams['guid'] . "</td></tr>";
+
+                        $userEmailMessage .= "<tr><td>Wallet Address</td><td>" . $requestedParams['address'] . "</td></tr>";
+
                         $userEmailMessage .= "</table>";
                         $sendUserEmail = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), $requestedParams['email_address'], $requestedParams["user_name"], "Welcome to BitMine Pool", $userEmailMessage);
                         $sendAdminEmail = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_NAME'), "New user is registered.", $userEmailMessage);
-
+                        */
 
                         $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Wallet created successfully.');
                     } else {
