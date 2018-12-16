@@ -8,6 +8,7 @@ use PDO;
 use Api\Models\Users;
 use Api\Models\Tree;
 use Api\Models\Rank;
+use Api\Models\Email;
 use Exception;
 use stdClass;
 use Api\Services\EmailHelper;
@@ -192,8 +193,21 @@ class UserController extends ApiController {
         try {
             //PHPMailer Object
             $mail = new EmailHelper;
+            $email = new Email($this->pdo);
 
-            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'Bit Mine Pool Email Verification Code', $params['token']);
+            $message = '';
+            $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
+            $message .= "<tr><td>Verification Code</td><td>" . $params['token'] . "</td></tr>";
+            
+            $message .= "</table>";
+
+            //echo $message;
+            $emailContent = $email->getEmailContent('EMAIL_VERIFICATION', ['verificationDetails' => $message,
+                'name' => $params['name'],
+                'logo' => getenv('BASE_URL') . '/images/logo.png',
+            ]);
+
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'BitMine Pool Email Verification Code', $emailContent);
 
             if ($result) {
                 return 1;
@@ -209,7 +223,23 @@ class UserController extends ApiController {
         try {
             //PHPMailer Object
             $mail = new EmailHelper;
-            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Fullname'], 'Bit Mine Pool Forget Password', $params['Password']);
+            $email = new Email($this->pdo);
+
+            $message = '';
+            $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
+            $message .= "<tr><td>User Name</td><td>" . $params['Username'] . "</td></tr>";
+            $message .= "<tr><td>Password</td><td>" . $params['Password'] . "</td></tr>";
+            
+            $message .= "</table>";
+
+            //echo $message;
+            $emailContent = $email->getEmailContent('FORGET_PASSWORD', ['passwordDetails' => $message,
+                'name' => $params['Fullname'],
+                'logo' => getenv('BASE_URL') . '/images/logo.png',
+            ]);
+
+
+            $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['Email'], $params['Fullname'], 'Bit Mine Pool Forget Password', $emailContent);
             if ($result) {
                 return 1;
             } else {
