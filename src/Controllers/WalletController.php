@@ -121,7 +121,7 @@ class WalletController extends ApiController {
                         $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
                         $message .= "<tr><td>User Name</td><td>" . $requestedParams["user_name"] . "</td></tr>";
                         $message .= "<tr><td>Wallet GUID</td><td>" . $requestedParams['guid'] . "</td></tr>";
-                        $message .= "<tr><td>Wallet Address</td><td>" . $requestedParams['address'] . "(In BTC)</td></tr>";
+                        $message .= "<tr><td>Wallet Address</td><td>" . $requestedParams['address'] . "</td></tr>";
 
                         $message .= "</table>";
 
