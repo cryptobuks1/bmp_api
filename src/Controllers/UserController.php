@@ -75,7 +75,7 @@ class UserController extends ApiController {
             $transactionType = self::TRANSACTION_TYPE;
             $grantType = parent::GRANT_TYPE;
 
-            $requiredData = array('name', 'email', 'telephone', 'gender', 'password', 'user_name', 'platform', 'transaction_type', 'country');
+            $requiredData = array('name', 'email', 'gender', 'password', 'user_name', 'platform', 'transaction_type', 'country');
 
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
@@ -144,7 +144,7 @@ class UserController extends ApiController {
             $transactionType = self::TRANSACTION_TYPE;
             $grantType = parent::GRANT_TYPE;
 
-            $requiredData = array('name', 'telephone', 'gender', 'platform', 'id');
+            $requiredData = array('name', 'gender', 'platform', 'id');
 
             $this->validation($requestedParams, $requiredData);
             $userDetails = "";
@@ -198,7 +198,7 @@ class UserController extends ApiController {
             $message = '';
             $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
             $message .= "<tr><td>Verification Code</td><td>" . $params['token'] . "</td></tr>";
-            
+
             $message .= "</table>";
 
             //echo $message;
@@ -229,7 +229,7 @@ class UserController extends ApiController {
             $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
             $message .= "<tr><td>User Name</td><td>" . $params['Username'] . "</td></tr>";
             $message .= "<tr><td>Password</td><td>" . $params['Password'] . "</td></tr>";
-            
+
             $message .= "</table>";
 
             //echo $message;
