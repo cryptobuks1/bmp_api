@@ -8,6 +8,7 @@ use stdClass;
 use Exception;
 use Api\Models\BmpWallet;
 use Api\Models\Users;
+use Api\Models\Email;
 use Api\Models\Support;
 use PDO;
 
@@ -94,6 +95,7 @@ class SupportController extends ApiController {
                 $addSupportTicket = $support->insert(array($requestedParams));
                 if ($addSupportTicket) {
                     $usersObj = new Users($this->pdo);
+                    /*
                     $requestedParams['from_email_address'] = $useResponse['Email'];
                     $requestedParams['from_email_name'] = $useResponse['Fullname'];
                     $requestedParams['to_email_address'] = 'support@bitminepool.com';
@@ -111,6 +113,25 @@ class SupportController extends ApiController {
                     $requestedParams['message'] = $message;
 
                     $sendEmailresult = $this->sendEmail($requestedParams);
+                    */
+                    $message = '';
+                    $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
+                    $message .= "<tr><td>User Name</td><td>" . $requestedParams["user_name"] . "</td></tr>";
+                    $message .= "<tr><td>Ticket ID</td><td>" . $requestedParams["ticket_id"] . "</td></tr>";
+                    $message .= "<tr><td>Description</td><td>" . $requestedParams["issue"] . "</td></tr>";
+                    
+                    $message .= "</table>";
+
+                    //echo $message;
+                    $emailContent = $email->getEmailContent('SUPPORT_TICKET_RAISED', ['ticketDetails' => $message,
+                        'name' => $requestedParams["user_name"],
+                        'logo' => getenv('BASE_URL') . '/images/logo.png',
+                    ]);
+
+
+                    $emailSent = $this->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), 'support@bitminepool.com', 'Support', 'Support ticket with ID ' . $requestedParams['ticket_id'], $emailContent);
+
+
                     $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $requestedParams, 'Support ticket submitted successfully.');
                 } else {
                     $content = $this->getResponse('Failure', parent::INVALID_PARAM_RESPONSE_CODE, $result, 'There is problem to submit ticket.');
