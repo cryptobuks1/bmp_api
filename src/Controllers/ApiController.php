@@ -45,7 +45,8 @@ abstract class ApiController {
     //SMS transaction type
     const SMS_MSG_TEMPLATES = [201 => "IN_LOGIN_OTP", 202 => "IN_MERCHANT_ADD", 203 => "IN_NUMBER_CHANGED_OTP", 204 => "LP_APP_CHANGE_NUMBER_OTP", 205 => "LP_KIOSK_CHANGE_NUMBER_OTP", 206 => "LP_KIOSK_REDEMPTION_OTP", 207 => "LP_KIOSK_PLACE_ORDER_OTP", 208 => "LP_REFUND_POINTS", 209 => "LP_REGISTRATION_OTP"];
     const PLATFORM = array("1" => "Android", "2" => "iOS", "3" => "Web");
-    const POOLDATA = array("Starter" => array('price' => '300', 'tittle' => 'Pool 1', 'dbtable' => 'starterpack'),
+    const POOLDATA = array("Registration" => array('price' => '100', 'tittle' => 'Registration', 'dbtable' => 'users'),
+        "Starter" => array('price' => '300', 'tittle' => 'Pool 1', 'dbtable' => 'starterpack'),
         "Mini" => array('price' => '600', 'tittle' => 'Pool 2', 'dbtable' => 'minipack'),
         "Medium" => array('price' => '1200', 'tittle' => 'Pool 3', 'dbtable' => 'mediumpack'),
         "Grand" => array('price' => '2400', 'tittle' => 'Pool 4', 'dbtable' => 'grandpack'),
