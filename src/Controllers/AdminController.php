@@ -83,7 +83,7 @@ class AdminController extends ApiController {
             if (!empty($requestedParams["start_date"])) {
                 $startDate = date('Y-m-d 00:00:00', strtotime($requestedParams["start_date"]));
             } else {
-                $startDate = date('Y-m-d 00:00:00', strtotime("-1 Months"));
+                $startDate = date('Y-m-d 00:00:00', strtotime("-12 Months"));
             }
             if (!empty($requestedParams["end_date"])) {
                 $endDate = date('Y-m-d 00:00:00', strtotime($requestedParams["end_date"]));
