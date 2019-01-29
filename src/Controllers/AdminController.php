@@ -142,7 +142,12 @@ class AdminController extends ApiController {
             $walletData = [];
             if ($useResponse) {
                 $invoice = new Invoice($this->pdo);
-                $invoiceDBResponse = $invoice->getAllInvoiceDBTransactions();
+                if ((isset($useResponse['is_admin_user'])) && $useResponse['is_admin_user'] == 1) {
+                    $invoiceDBResponse = $invoice->getAllInvoiceDBTransactions();
+                } else {
+                    $invoiceDBResponse = $invoice->getAllInvoiceDBTransactions($requestedParams["user_name"]);
+                }
+                
 
                 $response['invoice_data'] = $invoiceDBResponse;
                 $content = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'Success');
@@ -235,21 +240,21 @@ class AdminController extends ApiController {
             $usersObj = new Users($this->pdo);
             $email = new Email($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
-           
+
             if ($useResponse && $useResponse['is_admin_user'] == 1) {
                 $UpdateWithdrawalTransaction = $bmpWalletWithdrawalTransactions->updateWithdrawalTransaction($requestedParams);
-                 $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
-            
-                 $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
+                $transactionDetail = $bmpWalletWithdrawalTransactions->getWithdrawalTransactionByID($requestedParams["transaction_id"]);
 
-                 if ($UpdateWithdrawalTransaction) {
-                    
+                $transactionUserResponse = $usersObj->getUserDetailsByUserName($transactionDetail["user_name"]);
+
+                if ($UpdateWithdrawalTransaction) {
+
                     $message = '';
                     $message .= '<table style="font-family: Arial,Helvetica,sans-serif; font-size: 13px; color: #000000; line-height: 22px; width: 600px;" cellspacing="0" cellpadding="0" align="center">';
                     $message .= "<tr><td>Send To Address</td><td>" . $transactionDetail['to_address'] . "</td></tr>";
                     $message .= "<tr><td>Status</td><td>" . $transactionDetail['status_view'] . "</td></tr>";
                     $message .= "<tr><td>Amount</td><td>" . $transactionDetail['amount'] . "(In BTC)</td></tr>";
-                    
+
                     $message .= "</table>";
 
                     //echo $message;
