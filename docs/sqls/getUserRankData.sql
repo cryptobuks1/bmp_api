@@ -5,6 +5,8 @@ getUserRankData: BEGIN
         DECLARE success,done,selectedRankId,purchasedRegistrationMembership,purchasedAnyOfPool,dealerTotalEnrollment,dealerSixMinersEnrollment,dealerSixMinersWithTwoSubMinersEnrollment,superDealerTotalEnrollment,superDealerThreeDealersEnrollment INT(11) DEFAULT 0;
         DECLARE executiveDealerTotalEnrollment,executiveDealerTwoSuperDealersEnrollment,crownDealerTotalEnrollment,crownDealerThreeExecutiveDealersEnrollment,globalCrownDealerTotalEnrollment,globalCrownDealerThreeCrownDealersEnrollment INT(11) DEFAULT 0;
         DECLARE selectedAccountBalance,selectedMiningBalance,selectedTeamBalance,selectedCommissionBalance,selectedTeamVolumeBalance DECIMAL(14,4) DEFAULT 0.00;
+        DECLARE dealerTotalEnrollmentBalance,superDealerTotalEnrollmentBalance,executiveDealerTotalEnrollmentBalance,crownDealerTotalEnrollmentBalance,globalCrownDealerTotalEnrollmentBalance DECIMAL(14,4) DEFAULT 0.00;
+        DECLARE dealerSixMinersEnrollmentCount,dealerSixMinersWithTwoSubMinersEnrollmentCount,superDealerThreeDealersEnrollmentCount,executiveDealerTwoSuperDealersEnrollmentCount,crownDealerThreeExecutiveDealersEnrollmentCount,globalCrownDealerThreeCrownDealersEnrollmentCount INT(11) DEFAULT 0;
         DECLARE responseMessage,selectedRank VARCHAR(250) DEFAULT '';
         DECLARE isMinerRankAchieved,isDealerRankAchieved,isSuperDealerRankAchieved,isExecutiveRankAchieved,isCrownRankAchieved,isGlobalCrownRankAchieved INT(11) DEFAULT 0;
         
@@ -32,9 +34,9 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR MINER RANK END --
                 
                 -- CONDITIONS FOR DEALER RANK START --
-                    SELECT (balance >= 11400) INTO dealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 6 ) INTO dealerSixMinersEnrollment FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid';
-                    SELECT ( (count(*) >= 6 ) AND (t.left IS NOT NULL AND t.right IS NOT NULL) ) INTO dealerSixMinersWithTwoSubMinersEnrollment FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid' JOIN tree AS t ON  t.userid=i.Username;
+                    SELECT (balance >= 11400),balance INTO dealerTotalEnrollment,dealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (count(*) >= 6 ),count(*) INTO dealerSixMinersEnrollment,dealerSixMinersEnrollmentCount FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid';
+                    SELECT ( (count(*) >= 6 ) AND (t.left IS NOT NULL AND t.right IS NOT NULL) ),count(case when (t.left IS NOT NULL AND t.right IS NOT NULL) then 1 else null end) INTO dealerSixMinersWithTwoSubMinersEnrollment,dealerSixMinersWithTwoSubMinersEnrollmentCount FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid' JOIN tree AS t ON  t.userid=i.Username;
                 
                 IF(dealerTotalEnrollment = 1 AND dealerSixMinersEnrollment = 1 AND dealerSixMinersWithTwoSubMinersEnrollment = 1 ) THEN 
                     SET isDealerRankAchieved = 1;
@@ -43,8 +45,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR DEALER RANK END --
 
                 -- CONDITIONS FOR SUPER DEALER RANK START --
-                    SELECT (balance >= 50000) INTO superDealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 3 ) INTO superDealerThreeDealersEnrollment FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 2;
+                    SELECT (balance >= 50000),balance INTO superDealerTotalEnrollment,superDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (count(*) >= 3 ),count(*) INTO superDealerThreeDealersEnrollment,superDealerThreeDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 2;
 
                 IF(superDealerTotalEnrollment = 1 AND superDealerThreeDealersEnrollment = 1 ) THEN 
                     SET isSuperDealerRankAchieved = 1;
@@ -53,8 +55,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR SUPER DEALER RANK END --
                 
                -- CONDITIONS FOR EXECUTIVE DEALER RANK START --
-                    SELECT (balance >= 220000) INTO executiveDealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 2 ) INTO executiveDealerTwoSuperDealersEnrollment FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 3;
+                    SELECT (balance >= 220000),balance INTO executiveDealerTotalEnrollment,executiveDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (count(*) >= 2 ),count(*) INTO executiveDealerTwoSuperDealersEnrollment,executiveDealerTwoSuperDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 3;
 
                 IF(executiveDealerTotalEnrollment = 1 AND executiveDealerTwoSuperDealersEnrollment = 1 ) THEN 
                     SET isExecutiveRankAchieved = 1;
@@ -63,8 +65,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR EXECUTIVE DEALER RANK END -- 
 
                 -- CONDITIONS FOR CROWN DEALER RANK START --
-                    SELECT (balance >= 2000000) INTO crownDealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 3 ) INTO crownDealerThreeExecutiveDealersEnrollment FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 4;
+                    SELECT (balance >= 2000000),balance INTO crownDealerTotalEnrollment,crownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (count(*) >= 3 ),count(*) INTO crownDealerThreeExecutiveDealersEnrollment,crownDealerThreeExecutiveDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 4;
 
                 IF(crownDealerTotalEnrollment = 1 AND crownDealerThreeExecutiveDealersEnrollment = 1 ) THEN 
                     SET isCrownRankAchieved = 1;
@@ -73,8 +75,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR CROWN DEALER RANK END -- 
                 
                 -- CONDITIONS FOR GLOBAL CROWN DEALER RANK START --
-                    SELECT (balance >= 10000000) INTO globalCrownDealerTotalEnrollment FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 3 ) INTO globalCrownDealerThreeCrownDealersEnrollment FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 5;
+                    SELECT (balance >= 10000000),balance INTO globalCrownDealerTotalEnrollment,globalCrownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (count(*) >= 3 ),count(*) INTO globalCrownDealerThreeCrownDealersEnrollment,globalCrownDealerThreeCrownDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 5;
 
                 IF(globalCrownDealerTotalEnrollment = 1 AND globalCrownDealerThreeCrownDealersEnrollment = 1 ) THEN 
                     SET isGlobalCrownRankAchieved = 1;
@@ -92,7 +94,12 @@ getUserRankData: BEGIN
                                     superDealerTotalEnrollment,superDealerThreeDealersEnrollment,
                                     executiveDealerTotalEnrollment,executiveDealerTwoSuperDealersEnrollment,
                                     crownDealerTotalEnrollment,crownDealerThreeExecutiveDealersEnrollment,
-                                    globalCrownDealerTotalEnrollment,globalCrownDealerThreeCrownDealersEnrollment
+                                    globalCrownDealerTotalEnrollment,globalCrownDealerThreeCrownDealersEnrollment,
+                                    dealerTotalEnrollmentBalance,dealerSixMinersEnrollmentCount,dealerSixMinersWithTwoSubMinersEnrollmentCount,
+                                    superDealerTotalEnrollmentBalance,superDealerThreeDealersEnrollmentCount,
+                                    executiveDealerTotalEnrollmentBalance,executiveDealerTwoSuperDealersEnrollmentCount,
+                                    crownDealerTotalEnrollmentBalance,crownDealerThreeExecutiveDealersEnrollmentCount,
+                                    globalCrownDealerTotalEnrollmentBalance,globalCrownDealerThreeCrownDealersEnrollmentCount
                                     ; 
             ELSE 
                 SET responseMessage = 'Customer is not exist.';
