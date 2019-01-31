@@ -204,7 +204,7 @@ class UserController extends ApiController {
             //echo $message;
             $emailContent = $email->getEmailContent('EMAIL_VERIFICATION', ['verificationDetails' => $message,
                 'name' => $params['name'],
-                'logo' => getenv('BASE_URL') . '/images/logo.png',
+                'logo' => getenv('BASE_URL') . '/images/logo_transparent_small.png',
             ]);
 
             $result = $mail->sendEmail(getenv('REGISTER_FROM_EMAIL'), getenv('REGISTER_FROM_EMAIL_NAME'), $params['email'], $params['name'], 'BitMine Pool Email Verification Code', $emailContent);
@@ -235,7 +235,7 @@ class UserController extends ApiController {
             //echo $message;
             $emailContent = $email->getEmailContent('FORGET_PASSWORD', ['passwordDetails' => $message,
                 'name' => $params['Fullname'],
-                'logo' => getenv('BASE_URL') . '/images/logo.png',
+                'logo' => getenv('BASE_URL') . '/images/logo_transparent_small.png',
             ]);
 
 

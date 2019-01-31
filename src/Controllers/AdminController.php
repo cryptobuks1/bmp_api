@@ -260,7 +260,7 @@ class AdminController extends ApiController {
                     //echo $message;
                     $emailContent = $email->getEmailContent('WITHDRAWAL_PROCESSED', ['requestDetails' => $message,
                         'name' => $transactionUserResponse['Fullname'],
-                        'logo' => getenv('BASE_URL') . '/images/logo.png',
+                        'logo' => getenv('BASE_URL') . '/images/logo_transparent_small.png',
                     ]);
 
 

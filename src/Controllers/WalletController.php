@@ -128,7 +128,7 @@ class WalletController extends ApiController {
                         //echo $message;
                         $emailContent = $email->getEmailContent('WALLET_CREATED', ['walletDetails' => $message,
                             'name' => $requestedParams["user_name"],
-                            'logo' => getenv('BASE_URL') . '/images/logo.png',
+                            'logo' => getenv('BASE_URL') . '/images/logo_transparent_small.png',
                         ]);
 
 

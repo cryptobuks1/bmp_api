@@ -125,7 +125,7 @@ class SupportController extends ApiController {
                     //echo $message;
                     $emailContent = $email->getEmailContent('SUPPORT_TICKET_RAISED', ['ticketDetails' => $message,
                         'name' => $requestedParams["user_name"],
-                        'logo' => getenv('BASE_URL') . '/images/logo.png',
+                        'logo' => getenv('BASE_URL') . '/images/logo_transparent_small.png',
                     ]);
 
 
