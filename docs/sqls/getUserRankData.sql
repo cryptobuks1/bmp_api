@@ -34,7 +34,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR MINER RANK END --
                 
                 -- CONDITIONS FOR DEALER RANK START --
-                    SELECT (balance >= 11400),balance INTO dealerTotalEnrollment,dealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                   -- SELECT (balance >= 11400),balance INTO dealerTotalEnrollment,dealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (sum(balance) >= 11400),sum(balance) INTO dealerTotalEnrollment,dealerTotalEnrollmentBalance FROM teamvolume AS t JOIN users AS u ON t.Username = u.Username WHERE 1=1 AND ((t.Username = pUserName) OR (u.Sponsor = pUserName ));
                     SELECT (count(*) >= 6 ),count(*) INTO dealerSixMinersEnrollment,dealerSixMinersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 1;
                     SELECT ( (count(*) >= 6 ) AND (t.left IS NOT NULL AND t.right IS NOT NULL) ),count(case when (t.left IS NOT NULL AND t.right IS NOT NULL) then 1 else null end) INTO dealerSixMinersWithTwoSubMinersEnrollment,dealerSixMinersWithTwoSubMinersEnrollmentCount FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid' JOIN tree AS t ON  t.userid=i.Username;
                 
@@ -45,7 +46,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR DEALER RANK END --
 
                 -- CONDITIONS FOR SUPER DEALER RANK START --
-                    SELECT (balance >= 50000),balance INTO superDealerTotalEnrollment,superDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    -- SELECT (balance >= 50000),balance INTO superDealerTotalEnrollment,superDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (sum(balance) >= 50000),sum(balance) INTO superDealerTotalEnrollment,superDealerTotalEnrollmentBalance FROM teamvolume AS t JOIN users AS u ON t.Username = u.Username WHERE 1=1 AND ((t.Username = pUserName) OR (u.Sponsor = pUserName ));
                     SELECT (count(*) >= 3 ),count(*) INTO superDealerThreeDealersEnrollment,superDealerThreeDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 2;
 
                 IF(superDealerTotalEnrollment = 1 AND superDealerThreeDealersEnrollment = 1 ) THEN 
@@ -55,7 +57,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR SUPER DEALER RANK END --
                 
                -- CONDITIONS FOR EXECUTIVE DEALER RANK START --
-                    SELECT (balance >= 220000),balance INTO executiveDealerTotalEnrollment,executiveDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    -- SELECT (balance >= 220000),balance INTO executiveDealerTotalEnrollment,executiveDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (sum(balance) >= 220000),sum(balance) INTO executiveDealerTotalEnrollment,executiveDealerTotalEnrollmentBalance FROM teamvolume AS t JOIN users AS u ON t.Username = u.Username WHERE 1=1 AND ((t.Username = pUserName) OR (u.Sponsor = pUserName ));
                     SELECT (count(*) >= 2 ),count(*) INTO executiveDealerTwoSuperDealersEnrollment,executiveDealerTwoSuperDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 3;
 
                 IF(executiveDealerTotalEnrollment = 1 AND executiveDealerTwoSuperDealersEnrollment = 1 ) THEN 
@@ -65,7 +68,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR EXECUTIVE DEALER RANK END -- 
 
                 -- CONDITIONS FOR CROWN DEALER RANK START --
-                    SELECT (balance >= 2000000),balance INTO crownDealerTotalEnrollment,crownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                   -- SELECT (balance >= 2000000),balance INTO crownDealerTotalEnrollment,crownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (sum(balance) >= 2000000),sum(balance) INTO crownDealerTotalEnrollment,crownDealerTotalEnrollmentBalance FROM teamvolume AS t JOIN users AS u ON t.Username = u.Username WHERE 1=1 AND ((t.Username = pUserName) OR (u.Sponsor = pUserName ));
                     SELECT (count(*) >= 3 ),count(*) INTO crownDealerThreeExecutiveDealersEnrollment,crownDealerThreeExecutiveDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 4;
 
                 IF(crownDealerTotalEnrollment = 1 AND crownDealerThreeExecutiveDealersEnrollment = 1 ) THEN 
@@ -75,7 +79,8 @@ getUserRankData: BEGIN
                 -- CONDITIONS FOR CROWN DEALER RANK END -- 
                 
                 -- CONDITIONS FOR GLOBAL CROWN DEALER RANK START --
-                    SELECT (balance >= 10000000),balance INTO globalCrownDealerTotalEnrollment,globalCrownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    -- SELECT (balance >= 10000000),balance INTO globalCrownDealerTotalEnrollment,globalCrownDealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
+                    SELECT (sum(balance) >= 10000000),sum(balance) INTO globalCrownDealerTotalEnrollment,globalCrownDealerTotalEnrollmentBalance FROM teamvolume AS t JOIN users AS u ON t.Username = u.Username WHERE 1=1 AND ((t.Username = pUserName) OR (u.Sponsor = pUserName ));
                     SELECT (count(*) >= 3 ),count(*) INTO globalCrownDealerThreeCrownDealersEnrollment,globalCrownDealerThreeCrownDealersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 5;
 
                 IF(globalCrownDealerTotalEnrollment = 1 AND globalCrownDealerThreeCrownDealersEnrollment = 1 ) THEN 
