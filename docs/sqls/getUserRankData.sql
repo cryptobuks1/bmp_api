@@ -35,7 +35,7 @@ getUserRankData: BEGIN
                 
                 -- CONDITIONS FOR DEALER RANK START --
                     SELECT (balance >= 11400),balance INTO dealerTotalEnrollment,dealerTotalEnrollmentBalance FROM teamvolume WHERE Username = pUserName;
-                    SELECT (count(*) >= 6 ),count(*) INTO dealerSixMinersEnrollment,dealerSixMinersEnrollmentCount FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid';
+                    SELECT (count(*) >= 6 ),count(*) INTO dealerSixMinersEnrollment,dealerSixMinersEnrollmentCount FROM users AS u JOIN rank AS r on r.Username=u.Username WHERE u.Sponsor = pUserName AND  r.Rankid >= 1;
                     SELECT ( (count(*) >= 6 ) AND (t.left IS NOT NULL AND t.right IS NOT NULL) ),count(case when (t.left IS NOT NULL AND t.right IS NOT NULL) then 1 else null end) INTO dealerSixMinersWithTwoSubMinersEnrollment,dealerSixMinersWithTwoSubMinersEnrollmentCount FROM invoice AS i JOIN users AS u ON u.Username=i.Username AND u.Sponsor = pUserName AND i.status='Paid' JOIN tree AS t ON  t.userid=i.Username;
                 
                 IF(dealerTotalEnrollment = 1 AND dealerSixMinersEnrollment = 1 AND dealerSixMinersWithTwoSubMinersEnrollment = 1 ) THEN 
