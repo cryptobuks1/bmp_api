@@ -64,6 +64,10 @@ blockchain-wallet-service start --port 3000
 For production:
 nohup blockchain-wallet-service start --port 3000 & 
 
+Update blockchain service:
+ npm install -g blockchain-wallet-service@0.26.3
+ 
+ npm install -g blockchain-wallet-service@0.26.3
 //Verify Post request with Token in header
 curl -H "Authorization: Bearer 6de0734d69d54c98d79f4d0b905e2a788ef56d0c" http://localhost:8000/api-test -d ''
 // Token in body
