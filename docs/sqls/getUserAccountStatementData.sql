@@ -31,6 +31,9 @@ BEGIN
                  transaction_ref_no VARCHAR(500),
                  withdrawal DECIMAL(14,2),
                  deposit DECIMAL(14,2),
+                 withdrawal_flag INT(4),
+                 deposit_flag INT(4),
+                 transaction_ref_no_flag INT(4),
                  created_date DATE          
         );  
 
@@ -42,20 +45,20 @@ BEGIN
                 END IF;
 				IF pUserName <> NULL OR pUserName <> '' THEN 
 					INSERT INTO temp_account_statement (
-                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date)
+                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date,withdrawal_flag,deposit_flag,transaction_ref_no_flag)
                
-                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,(CASE WHEN reason_id='1' THEN 'Direct Commision' WHEN reason_id='2' THEN 'Indirect Commision' WHEN reason_id='3' THEN 'Matching Bonus' WHEN reason_id='4' THEN 'Residual Bonus' WHEN reason_id='5' THEN 'Mining Earning' ELSE '' END),0,amount,CURDATE() FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,(CASE WHEN reason_id='1' THEN 'Direct Commision' WHEN reason_id='2' THEN 'Indirect Commision' WHEN reason_id='3' THEN 'Matching Bonus' WHEN reason_id='4' THEN 'Residual Bonus' WHEN reason_id='5' THEN 'Mining Earning' ELSE '' END),0,amount,CURDATE(),0,1,reason_id FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName
                     UNION
-                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),id,amount,0,CURDATE() FROM `bmp_wallet_withdrawl_transactions` 
-                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName;
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),'N/A',amount,0,CURDATE(),1,0,0 FROM `bmp_wallet_withdrawl_transactions` 
+                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND user_name = pUserName AND status=2;
 				ELSE 
                 INSERT INTO temp_account_statement (
-                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date)
+                    user_name,transaction_date,transaction_narration,transaction_ref_no,withdrawal,deposit,created_date,withdrawal_flag,deposit_flag,transaction_ref_no_flag)
                
-                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,(CASE WHEN reason_id='1' THEN 'Direct Commision' WHEN reason_id='2' THEN 'Indirect Commision' WHEN reason_id='3' THEN 'Matching Bonus' WHEN reason_id='4' THEN 'Residual Bonus' WHEN reason_id='5' THEN 'Mining Earning' ELSE '' END),0,amount,CURDATE() FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),reason_description,(CASE WHEN reason_id='1' THEN 'Direct Commision' WHEN reason_id='2' THEN 'Indirect Commision' WHEN reason_id='3' THEN 'Matching Bonus' WHEN reason_id='4' THEN 'Residual Bonus' WHEN reason_id='5' THEN 'Mining Earning' ELSE '' END),0,amount,CURDATE(),0,1,reason_id FROM `bmp_bonus_commission_earn_log` WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate
                     UNION
-                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),id,amount,0,CURDATE() FROM `bmp_wallet_withdrawl_transactions`
-                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate;
+                    SELECT user_name,DATE_FORMAT(created_at,'%Y-%m-%d'),CONCAT('Transferred to ',' ',to_address),'N/A',amount,0,CURDATE(),1,0,0 FROM `bmp_wallet_withdrawl_transactions`
+                    WHERE DATE_FORMAT(created_at,'%Y-%m-%d') = selectedDate AND status=2;
 				END IF;	
 				
             END LOOP affiliate;
