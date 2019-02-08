@@ -1,215 +1,73 @@
-DELIMITER $$
+DELIMITER $$ 
 DROP PROCEDURE IF EXISTS checkAndProcessExpiredInvoice$$
-CREATE PROCEDURE checkAndProcessExpiredInvoice(IN pInvoiceId VARCHAR(250))
+CREATE PROCEDURE checkAndProcessExpiredInvoice(IN pUserName VARCHAR(255),IN pInvoiceId VARCHAR(255),IN isRenewal INT)
 checkAndProcessExpiredInvoice: BEGIN
-        DECLARE success,done,doneInner,selectedUserId,lastInsertedId,isMonthlyApplicable,isDailyApplicable,selectedPoolId INT(11) DEFAULT 0;
-        DECLARE responseMessage,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selectedPoolName,selectedPooltableName,tempStr,miningMonthDate,currentMonthDate VARCHAR(250) DEFAULT '';
-        DECLARE selecetdCreatedAt DATE;
-        DECLARE selectedStarterDailyBonus,selectedStarterMonthlyBonus,selectedMiniDailyBonus,selectedMiniMonthlyBonus,selectedMediumDailyBonus,selectedMediumMonthlyBonus DECIMAL(14,4) DEFAULT 0.00;
-        DECLARE selectedSponsorResidualBonus DECIMAL(14,4) DEFAULT 0.00;
-        DECLARE selectedGrandDailyBonus,selectedGrandMonthlyBonus,selectedUltimateDailyBonus,selectedUltimatMonthlyBonus,sumOfbenifits DECIMAL(14,4) DEFAULT 0.00;
-        DECLARE selectedStarterPurchaseDate,selectedStarterMiningDate,selectedStarterCompletionDate,selectedStarterStatus VARCHAR(250) DEFAULT '';
-        DECLARE selectedMiniPurchaseDate,selectedMiniMiningDate,selectedMiniCompletionDate,selectedMiniStatus VARCHAR(250) DEFAULT '';
-        DECLARE selectedMediumPurchaseDate,selectedMediumMiningDate,selectedMediumCompletionDate,selectedMediumStatus VARCHAR(250) DEFAULT '';
-        DECLARE selectedGrandPurchaseDate,selectedGrandMiningDate,selectedGrandCompletionDate,selectedGrandStatus VARCHAR(250) DEFAULT '';
-        DECLARE selectedUltimatePurchaseDate,selectedUltimateMiningDate,selectedUltimateCompletionDate,selectedUltimateStatus VARCHAR(250) DEFAULT '';
-        
-        SET success = 0;
-        SET lastInsertedId = 0;
-        SET selectedStarterDailyBonus = 1.5;
-        SET selectedStarterMonthlyBonus = 30;
-        SET selectedMiniDailyBonus = 3;
-        SET selectedMiniMonthlyBonus = 90;
-        SET selectedMediumDailyBonus = 6;
-        SET selectedMediumMonthlyBonus = 180;
-        SET selectedGrandDailyBonus = 12;
-        SET selectedGrandMonthlyBonus = 360;
-        SET selectedUltimateDailyBonus = 24;
-        SET selectedUltimatMonthlyBonus = 720;
+    DECLARE packageList,selectedPackPurposeCron VARCHAR(500) DEFAULT '';
+    DECLARE done INT(11) DEFAULT 0;
 
-            CREATE TEMPORARY TABLE IF NOT EXISTS tmp_target_user(
-                    temp_id integer(10) PRIMARY KEY AUTO_INCREMENT,
-                    user_name VARCHAR(250),
-                    pool_name VARCHAR(250),
-                    pool_table_name VARCHAR(250),
-                    benifit_type TINYINT DEFAULT 0, -- 1:Daily 2:Monthly 
-                    benifit_amount_usd DECIMAL(14,4),
-                    created_date DATE
-                );
+    CREATE TEMPORARY TABLE IF NOT EXISTS temp_expire_package (
+         temp_id INT unsigned PRIMARY KEY  NOT NULL AUTO_INCREMENT,            
+         selectedPaydateDB VARCHAR(250),
+         selectedInvoiceidDB VARCHAR(250),
+         selectedPurposeDB VARCHAR(250),
+         selectedBtcaddressDB VARCHAR(250),
+         selectedAmountDB VARCHAR(250),
+         selectedBtcamountDB VARCHAR(250),
+         selectedStatusDB VARCHAR(250),
+         selectedUsernameDB VARCHAR(250),
+         created_date DATE            
+    );
+ 
+    IF isRenewal = 1 THEN 
+        SELECT GROUP_CONCAT(i.id) INTO packageList  FROM invoice AS i 
+        WHERE IF(pUserName IS NOT NULL, i.Username = pUserName, 1=1)
+        AND IF(pInvoiceId IS NOT NULL, i.Invoiceid = pInvoiceId, 1=1)
+        AND i.Status = 'Paid' AND i.Purpose <> 'Registration'
+        AND DATEDIFF(DATE_ADD(DATE_FORMAT(i.created_at,'%y-%m-%d'), INTERVAL 364 DAY),CURDATE()) <= 3 ;
 
-            innerBlock:BEGIN   
-            DECLARE targetUserCursor CURSOR FOR         
+    ELSE 
+        SELECT GROUP_CONCAT(i.id) INTO packageList  FROM invoice AS i 
+        WHERE IF(pUserName IS NOT NULL, i.Username = pUserName, 1=1)
+        AND IF(pInvoiceId IS NOT NULL, i.Invoiceid = pInvoiceId, 1=1)
+        AND i.Status = 'Paid' AND i.Purpose <> 'Registration'    
+        AND DATE_ADD(DATE_FORMAT(i.created_at,'%y-%m-%d'), INTERVAL 364 DAY) < CURDATE();
+    END IF;
 
-                    SELECT
-                        u.id,
-                        u.Fullname,
-                        u.Username,
-                        u.Email,
-                        u.Status,
-                        u.Password,
-                        u.Sponsor,
-                        u.created_at,
-                        starter.PurchaseDate,starter.MiningDate,starter.CompletionDate,starter.Status,
-                        mini.PurchaseDate,mini.MiningDate,mini.CompletionDate,mini.Status,
-                        medium.PurchaseDate,medium.MiningDate,medium.CompletionDate,medium.Status,
-                        grand.PurchaseDate,grand.MiningDate,grand.CompletionDate,grand.Status,
-                        ultimate.PurchaseDate,ultimate.MiningDate,ultimate.CompletionDate,ultimate.Status
-                    FROM
-                        users AS u
-                    LEFT JOIN starterpack AS starter
-                        ON starter.Username=u.Username
-                    LEFT JOIN minipack AS mini
-                        ON mini.Username=u.Username
-                    LEFT JOIN mediumpack AS medium
-                        ON medium.Username=u.Username
-                    LEFT JOIN grandpack AS grand
-                        ON grand.Username=u.Username
-                    LEFT JOIN ultimatepack AS ultimate
-                        ON ultimate.Username=u.Username
-                    WHERE 
-                        u.Status = 'Close' 
-                    AND 
-                        u.Activation = '1'
-                    AND 
-                        if((pUserName <> ''),u.Username=pUserName, 1=1)
-                    ORDER BY
-                        u.id DESC;
+    
+
+    INSERT INTO temp_expire_package (selectedPaydateDB,selectedInvoiceidDB,selectedPurposeDB,selectedBtcaddressDB,selectedAmountDB,selectedBtcamountDB,selectedStatusDB,selectedUsernameDB,created_date)
+    SELECT i.Paydate,i.Invoiceid,i.Purpose,i.Btcaddress,i.Amount,i.Btcamount,i.Status,i.Username,CURDATE()
+    FROM invoice AS i
+    WHERE FIND_IN_SET(i.id, packageList)
+    ORDER BY i.id ASC;
+
+    UPDATE invoice SET Status = "Expired", updated_by = 1, updated_at = CURRENT_TIMESTAMP()
+    WHERE FIND_IN_SET(i.id, packageList);
+    -- Add logic here to update starter pack n other pack. 
+    -- UPDATE customer_order SET order_status = 5, updated_by = 1, updated_at = CURRENT_TIMESTAMP()
+    -- WHERE FIND_IN_SET(id, packageList);
+    
+ innerBlock:BEGIN
+    DECLARE targetPackageCursor CURSOR FOR
+        SELECT 
+            selectedPurposeDB
+        FROM 
+            temp_expire_package;
             
-                DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-                OPEN targetUserCursor;
-                targetUser: LOOP
-                    FETCH targetUserCursor INTO selectedUserId,selectedFullname,selectedUserName,selectedEmail,selectedStatus,selectedPassword,selectedSponsor,selecetdCreatedAt,
-                                                selectedStarterPurchaseDate,selectedStarterMiningDate,selectedStarterCompletionDate,selectedStarterStatus,
-                                                selectedMiniPurchaseDate,selectedMiniMiningDate,selectedMiniCompletionDate,selectedMiniStatus,
-                                                selectedMediumPurchaseDate,selectedMediumMiningDate,selectedMediumCompletionDate,selectedMediumStatus,
-                                                selectedGrandPurchaseDate,selectedGrandMiningDate,selectedGrandCompletionDate,selectedGrandStatus,
-                                                selectedUltimatePurchaseDate,selectedUltimateMiningDate,selectedUltimateCompletionDate,selectedUltimateStatus
-                                                    ;
-                    
-                        IF done = 1 THEN 
-                            LEAVE targetUser;
-                        END IF;
-                        SET sumOfbenifits = 0;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR STARTER START 
-                        -- ========================================================================================================================================================================================================
-                                IF (date(selectedStarterCompletionDate) > CURRENT_DATE() AND selectedStarterCompletionDate <> 0 AND date(selectedStarterMiningDate) < CURRENT_DATE() AND selectedStarterMiningDate <> 0 AND selectedStarterStatus = 'Active') THEN
-                                    -- QUERY TO INSERT DAILY BONUS --
-                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Starter','starterpack',1,selectedStarterDailyBonus,now());
-                                    INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Starter', 0, selectedStarterDailyBonus, 'Paid', selectedUserName, '0');     
-                                    SET sumOfbenifits = (sumOfbenifits + selectedStarterDailyBonus);
-                                    IF DATE_FORMAT(selectedStarterMiningDate,'%d') = DATE_FORMAT(CURRENT_DATE(),'%d') THEN
-                                        -- QUERY TO INSERT MONTHLY BONUS --
-                                        INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Starter','starterpack',2,selectedStarterMonthlyBonus,now());
-                                        INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Starter', 0, selectedStarterMonthlyBonus, 'Paid', selectedUserName, '1'); 
-                                    SET sumOfbenifits = (sumOfbenifits + selectedStarterMonthlyBonus);
-                                    END IF;  
-                                END IF;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR STARTER END 
-                        -- ========================================================================================================================================================================================================
-                        
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR MINI START 
-                        -- ========================================================================================================================================================================================================
-                                IF (date(selectedMiniCompletionDate) > CURRENT_DATE() AND selectedMiniCompletionDate <> 0 AND date(selectedMiniMiningDate) < CURRENT_DATE() AND selectedMiniMiningDate <> 0 AND selectedMiniStatus = 'Active') THEN
-                                    -- QUERY TO INSERT DAILY BONUS --
-                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Mini','minipack',1,selectedMiniDailyBonus,now());
-                                    INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Mini', 0, selectedMiniDailyBonus, 'Paid', selectedUserName, '0');
-                                    SET sumOfbenifits = (sumOfbenifits + selectedMiniDailyBonus);
-                                    IF DATE_FORMAT(selectedMiniMiningDate,'%d') = DATE_FORMAT(CURRENT_DATE(),'%d') THEN
-                                        -- QUERY TO INSERT MONTHLY BONUS --
-                                        INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Mini','minipack',2,selectedMiniMonthlyBonus,now());
-                                        INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Mini', 0, selectedMiniMonthlyBonus, 'Paid', selectedUserName, '1');
-                                        SET sumOfbenifits = (sumOfbenifits + selectedMiniMonthlyBonus);
-                                    END IF;  
-                                END IF;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR MINI END 
-                        -- ========================================================================================================================================================================================================
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+        OPEN targetPackageCursor;
+                targetPackage: LOOP
+                 FETCH targetPackageCursor INTO selectedPackPurposeCron;
+                 SELECT selectedPackPurposeCron;
+                IF done = 1 THEN 
+                    LEAVE targetPackage;
+                END IF;
+         END LOOP targetPackage;
+        CLOSE targetPackageCursor;
+        END innerBlock;
 
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR MEDIUM START 
-                        -- ========================================================================================================================================================================================================
-                                IF (date(selectedMediumCompletionDate) > CURRENT_DATE() AND selectedMediumCompletionDate <> 0 AND date(selectedMediumMiningDate) < CURRENT_DATE() AND selectedMediumMiningDate <> 0 AND selectedMediumStatus = 'Active') THEN
-                                    -- QUERY TO INSERT DAILY BONUS --
-                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Medium','mediumpack',1,selectedMediumDailyBonus,now());
-                                    INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Medium', 0, selectedMediumDailyBonus, 'Paid', selectedUserName, '0');
-                                    SET sumOfbenifits = (sumOfbenifits + selectedMediumDailyBonus);
-                                    IF DATE_FORMAT(selectedMediumMiningDate,'%d') = DATE_FORMAT(CURRENT_DATE(),'%d') THEN
-                                        -- QUERY TO INSERT MONTHLY BONUS --
-                                        INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Medium','mediumpack',2,selectedMediumMonthlyBonus,now());
-                                        INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Medium', 0, selectedMediumMonthlyBonus, 'Paid', selectedUserName, '1');
-                                        SET sumOfbenifits = (sumOfbenifits + selectedMediumMonthlyBonus);
-                                    END IF;  
-                                END IF;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR MEDIUM END 
-                        -- ========================================================================================================================================================================================================
+    SELECT * FROM temp_expire_package;
 
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR GRAND START 
-                        -- ========================================================================================================================================================================================================
-                                IF (date(selectedGrandCompletionDate) > CURRENT_DATE() AND selectedGrandCompletionDate <> 0 AND date(selectedGrandMiningDate) < CURRENT_DATE() AND selectedGrandMiningDate <> 0 AND selectedGrandStatus = 'Active') THEN
-                                        -- QUERY TO INSERT DAILY BONUS --
-                                        INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Grand','grandpack',1,selectedGrandDailyBonus,now());
-                                        INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Grand', 0, selectedGrandDailyBonus, 'Paid', selectedUserName, '0');
-                                        SET sumOfbenifits = (sumOfbenifits + selectedGrandDailyBonus);
-                                        IF DATE_FORMAT(selectedGrandMiningDate,'%d') = DATE_FORMAT(CURRENT_DATE(),'%d') THEN
-                                                -- QUERY TO INSERT MONTHLY BONUS --
-                                            INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Grand','grandpack',2,selectedGrandMonthlyBonus,now());
-                                            INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Grand', 0, selectedGrandMonthlyBonus, 'Paid', selectedUserName, '1');
-                                            SET sumOfbenifits = (sumOfbenifits + selectedGrandMonthlyBonus);
-                                        END IF;  
-                                END IF;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR GRAND END 
-                        -- ========================================================================================================================================================================================================
-
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR ULTIMATE START 
-                        -- ========================================================================================================================================================================================================
-                            IF (date(selectedUltimateCompletionDate) > CURRENT_DATE() AND selectedUltimateCompletionDate <> 0 AND date(selectedUltimateMiningDate) < CURRENT_DATE() AND selectedUltimateMiningDate <> 0 AND selectedUltimateStatus = 'Active') THEN
-                                -- QUERY TO INSERT DAILY BONUS --
-                                INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Ultimate','ultimatepack',1,selectedUltimateDailyBonus,now());
-                                INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Ultimate', 0, selectedUltimateDailyBonus, 'Paid', selectedUserName, '0');
-                                SET sumOfbenifits = (sumOfbenifits + selectedUltimateDailyBonus);
-                                IF DATE_FORMAT(selectedUltimateMiningDate,'%d') = DATE_FORMAT(CURRENT_DATE(),'%d') THEN
-                                    -- QUERY TO INSERT MONTHLY BONUS --
-                                    INSERT INTO tmp_target_user(user_name,pool_name,pool_table_name,benifit_type,benifit_amount_usd, created_date) VALUES(selectedUserName,'Ultimate','ultimatepack',2,selectedUltimateMonthlyBonus,now());
-                                    INSERT INTO dailymine (`Date`, Pack, Btc, Usd, Status, Username, is_monthly_mining) VALUES (now(), 'Ultimate', 0, selectedUltimateMonthlyBonus, 'Paid', selectedUserName, '1');
-                                    SET sumOfbenifits = (sumOfbenifits + selectedUltimateMonthlyBonus);
-                                END IF;  
-                            END IF;
-                        -- ========================================================================================================================================================================================================
-                        -- CHECK THAT MONTHLY AND DAILY MINING BENIFIT IS APPLICABLE FOR ULTIMATE END 
-                        -- ========================================================================================================================================================================================================
-                            
-                        IF(sumOfbenifits > 0 ) THEN 
-                            UPDATE mining SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
-                            UPDATE accountbalance SET Balance = (Balance+sumOfbenifits),updated_at=now() WHERE Username=selectedUserName;
-
-                            INSERT INTO bmp_bonus_commission_earn_log (user_name, reason_id, reason_description, is_added_by_cron, amount, added_in) 
-                                                              VALUES (selectedUserName, '5', CONCAT('Mining earning of user ',selectedUserName), '1', sumOfbenifits, 'mining');
-
-                            -- TO PROCESS RESIDUAL BONUS --
-                            SET selectedSponsorResidualBonus = 0; 
-                            IF(selectedSponsor <> '' AND selectedSponsor IS NOT NULL) THEN
-                                SET selectedSponsorResidualBonus = (sumOfbenifits * 0.005);
-                                UPDATE team SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
-                                UPDATE accountbalance SET Balance = (Balance+selectedSponsorResidualBonus),updated_at=now() WHERE Username=selectedSponsor;
-
-                                INSERT INTO bmp_bonus_commission_earn_log (user_name, reason_id, reason_description, is_added_by_cron, amount, added_in) 
-                                                              VALUES (selectedSponsor, '4', CONCAT('Residual bonus of parent user ',selectedSponsor,' on joining of ',selectedUserName), '1', selectedSponsorResidualBonus, 'team');
-
-                            END IF;
-                        END IF;
-                      END LOOP targetUser;
-                CLOSE targetUserCursor;
-                END innerBlock;
-                
-              --  INSERT INTO()
-                SELECT * FROM tmp_target_user;
-                DROP TEMPORARY TABLE tmp_target_user;
-        END$$
+    DROP TEMPORARY TABLE temp_expire_package;
+END$$
 DELIMITER ;
