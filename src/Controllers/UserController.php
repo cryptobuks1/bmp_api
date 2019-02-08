@@ -391,9 +391,10 @@ class UserController extends ApiController {
             }
             $usersObj = new Users($this->pdo);
             $useResponse = $usersObj->getUserDetailsByUserName($requestedParams["user_name"]);
-
+            print_r($useResponse);
             if ($useResponse) {
                 $sendVerificationCode = $this->sendVerficationEmail($useResponse);
+                print_r($sendVerificationCode);
                 if ($sendVerificationCode) {
                     $response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $useResponse, 'The code has been sent to your register email address.');
                 } else {
@@ -402,7 +403,7 @@ class UserController extends ApiController {
             } else {
                 throw new Exception('Please enter valid user name.');
             }
-
+            exit;
             //$response = $this->getResponse('Success', parent::SUCCESS_RESPONSE_CODE, $response, 'User Details');
         } catch (Exception $e) {
             $object = new stdClass();
