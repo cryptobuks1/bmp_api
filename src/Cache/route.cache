@@ -206,6 +206,11 @@
         0 => 'Api\\Controllers\\CommandController',
         1 => 'resetDailyBinaryIncome',
       ),
+      '/checkAndProcessExpiredInvoice' => 
+      array (
+        0 => 'Api\\Controllers\\CommandController',
+        1 => 'checkAndProcessExpiredInvoice',
+      ),
       '/sendApiEmail' => 
       array (
         0 => 'Api\\Controllers\\AdminController',

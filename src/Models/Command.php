@@ -63,5 +63,29 @@ class Command extends ApiModel {
             echo $e->getMessage();
         }
     }
-
+	
+	   /**
+     * check expired invoice is presented or not
+     * return success response or error response in json 
+     * return id in data params
+     */
+    public function checkAndProcessExpiredInvoice($user_name = '',$invoice_id = '',$is_renewal = 0) {
+        try {
+            // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
+            $stmt = $this->pdo->prepare("CALL checkAndProcessExpiredInvoice(?,?,?)");
+            $stmt->execute([
+                $user_name,
+				$invoice_id,
+				$is_renewal
+            ]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result;
+            } else {
+                return 0;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 }
