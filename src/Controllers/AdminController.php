@@ -352,7 +352,7 @@ class AdminController extends ApiController {
             }
 
 
-            if (empty($requestedParams["user_name"]) || empty($requestedParams["option_name"]) || empty($requestedParams["option_value"])) {
+            if (empty($requestedParams["user_name"]) || empty($requestedParams["option_name"])) {
                 throw new Exception("Please enter valid option parameters.");
             }
 
