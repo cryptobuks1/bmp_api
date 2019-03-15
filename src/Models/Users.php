@@ -85,8 +85,13 @@ class Users extends ApiModel {
         try {
             // $stmt = $pdo->prepare("SELECT * FROM users WHERE id=:id");
 
-            $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
-            $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
+            if (isset($params["email"])) {
+                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name OR Email=:email order by id desc limit 1");
+                $stmt->execute(['user_name' => $params['user_name'], 'email' => $params['email']]);
+            } else {
+                $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE  Username=:user_name AND Password=:password order by id desc limit 1");
+                $stmt->execute(['user_name' => $params['user_name'], 'password' => $params['password']]);
+            }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             //$stmt->closeCursor();
             return $result;
@@ -211,8 +216,7 @@ class Users extends ApiModel {
             return $e->getMessage();
         }
     }
-    
-    
+
     public function getDashboardDataByUserName($user_name) {
         try {
             //$stmt = $this->pdo->prepare("SELECT * FROM rank where Username =? order by id desc limit 1");
@@ -232,7 +236,7 @@ class Users extends ApiModel {
         }
     }
 
-    public function getAccountDetailsByUserName($user_name,$startDate,$endDate) {
+    public function getAccountDetailsByUserName($user_name, $startDate, $endDate) {
         try {
             //$stmt = $this->pdo->prepare("SELECT * FROM rank where Username =? order by id desc limit 1");
             $stmt = $this->pdo->prepare("CALL getUserAccountStatementData(?,?,?)");
